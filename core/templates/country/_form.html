@@ -1,0 +1,65 @@
+{% set editing = country is defined and country %}
+
+<div class="form-group">
+    <label for="name">Country name</label>
+    <input
+        id="name"
+        name="name"
+        type="text"
+        value="{{ country.name if editing else '' }}"
+        placeholder="e.g. Bulgaria"
+        required
+        autofocus
+    >
+</div>
+
+<div class="form-group">
+    <label for="code">Country code</label>
+    <input
+        id="code"
+        name="code"
+        type="text"
+        maxlength="2"
+        value="{{ country.code if editing else '' }}"
+        placeholder="e.g. BG"
+        required
+    >
+
+    <small class="form-help">
+        Use the 2-letter ISO country code, e.g. BG, DE, TH.
+    </small>
+</div>
+
+<div class="form-group">
+    <label for="currency_code">Currency code</label>
+    <input
+        id="currency_code"
+        name="currency_code"
+        type="text"
+        maxlength="3"
+        value="{{ country.currency_code if editing else '' }}"
+        placeholder="e.g. BGN"
+        required
+    >
+
+    <small class="form-help">
+        Use the 3-letter ISO currency code, e.g. EUR, GBP, BGN.
+    </small>
+</div>
+
+<div class="form-group">
+    <label class="checkbox-label" for="is_schengen">
+        <input
+            id="is_schengen"
+            name="is_schengen"
+            type="checkbox"
+            {% if editing and country.is_schengen %}checked{% endif %}
+        >
+
+        <span>Schengen member</span>
+    </label>
+
+    <small class="form-help">
+        Tick this if the country is currently part of the Schengen Area.
+    </small>
+</div>

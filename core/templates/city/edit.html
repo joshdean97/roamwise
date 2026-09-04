@@ -1,0 +1,57 @@
+{% extends "components/base.html" %}
+
+{% block content %}
+<section class="admin-dashboard">
+
+    <div class="admin-panel" style="max-width: 760px; margin: 30px auto;">
+        <div class="admin-panel-header">
+            <div>
+                <span class="admin-panel-kicker">City management</span>
+                <h2>Edit {{ city.name }}</h2>
+            </div>
+
+            <a
+                class="admin-text-link"
+                href="{{ url_for('city.get_city', city_id=city.id) }}"
+            >
+                ← Back
+            </a>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, msg in messages %}
+                    <div class="flash {{ category }}">{{ msg }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form
+            method="post"
+            action="{{ url_for('city.update_city', city_id=city.id) }}"
+            class="auth-form"
+        >
+
+            {% if csrf_token is defined %}
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            {% endif %}
+
+            {% include "city/_form.html" %}
+
+            <div class="city-form-actions">
+                <a
+                    class="landing-btn secondary"
+                    href="{{ url_for('city.get_city', city_id=city.id) }}"
+                >
+                    Cancel
+                </a>
+
+                <button class="landing-btn primary" type="submit">
+                    Save changes <span class="arrow" aria-hidden="true">→</span>
+                </button>
+            </div>
+        </form>
+    </div>
+
+</section>
+{% endblock %}

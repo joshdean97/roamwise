@@ -1,0 +1,80 @@
+{% extends "components/base.html" %}
+
+{% block content %}
+
+<section class="admin-dashboard">
+
+    <div
+        class="admin-panel"
+        style="max-width: 760px; margin: 30px auto;"
+    >
+
+        <div class="admin-panel-header">
+            <div>
+                <span class="admin-panel-kicker">
+                    Country management
+                </span>
+
+                <h2>Add a country</h2>
+            </div>
+
+            <a
+                class="admin-text-link"
+                href="{{ url_for('country.get_all_countries') }}"
+            >
+                ← All countries
+            </a>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, msg in messages %}
+                    <div class="flash {{ category }}">
+                        {{ msg }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form
+            method="post"
+            action="{{ url_for('country.add_country') }}"
+            class="auth-form"
+        >
+
+            {% if csrf_token is defined %}
+                <input
+                    type="hidden"
+                    name="csrf_token"
+                    value="{{ csrf_token() }}"
+                >
+            {% endif %}
+
+            {% include "country/_form.html" %}
+
+            <div class="city-form-actions">
+
+                <a
+                    class="landing-btn secondary"
+                    href="{{ url_for('country.get_all_countries') }}"
+                >
+                    Cancel
+                </a>
+
+                <button
+                    class="landing-btn primary"
+                    type="submit"
+                >
+                    Add country
+                    <span class="arrow" aria-hidden="true">→</span>
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</section>
+
+{% endblock %}

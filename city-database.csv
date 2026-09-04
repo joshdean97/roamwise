@@ -1,0 +1,112 @@
+,,,,,,,,,,,,,,,,
+,City Cost Database — Backpacking Europe,,,,,,,,,,,,,,,
+,All source costs are stored in GBP (£). The Trip Planner converts estimates live into the user's selected display currency.,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,
+,City,Country,Region,Schengen Area?,Non-Schengen (visa buffer)?,Hostel dorm £/night,Living cost £/mo (excl. accom.),Shoestring £/day,Balanced £/day,Comfort £/day,Work-friendly (1-5),Nightlife & social (1-5),Sightseeing draw (1-5),Last Updated,Source,rank key (helper)
+,Amsterdam,Netherlands,Central Europe,Yes,No,£30,£968,£48,£66,£102,4,5,4,15-Aug,Numbeo + Hostelworld (2025),£66
+,Athens,Greece,Balkans,Yes,No,£24,£721,£37,£51,£79,3,5,5,15-Aug,Numbeo + Hostelworld (2025),£51
+,Barcelona,Spain,Southern Europe,Yes,No,£30,£698,£41,£57,£88,,,,15-Aug,,£57
+,Belgrade,Serbia,Balkans,No,Yes,£17,£605,£29,£40,£62,5,5,5,15-Aug,Numbeo + Hostelworld (2025),£40
+,Berat,Albania,Balkans,No,Yes,£11,£501,£22,£31,£48,,,,,,£31
+,Berlin,Germany,Central Europe,Yes,No,£30,£897,£45,£63,£98,2,5,3,15-Aug,Numbeo + Hostelworld (2025),£63
+,Bologna,Italy,Southern Europe,Yes,No,£31,£829,£44,£61,£95,3,3,3,15-Aug,Numbeo + Hostelworld (2025),£61
+,Bordeaux,France,Western Europe,Yes,No,£28,£829,£42,£59,£91,,,,18-Aug,,£59
+,Brasov,Romania,Balkans,Yes,No,£18,£557,£29,£40,£62,4,4,4,15-Aug,Numbeo + Hostelworld (2025),£40
+,Bratislava,Slovakia,Central Europe,Yes,No,£19,£731,£34,£47,£73,3,4,3,15-Aug,Numbeo + Hostelworld (2025),£47
+,Brno,Czechia,Central Europe,Yes,No,£33,£670,£42,£59,£91,3,4,3,15-Aug,Numbeo + Hostelworld (2025),£59
+,Brussels,Belgium,Western Europe,Yes,No,£25,£889,£42,£58,£90,2,3,3,15-Aug,Numbeo + Hostelworld (2025),£58
+,Bucharest,Romania,Balkans,Yes,No,£17,£576,£29,£40,£62,5,4,4,15-Aug,Numbeo + Hostelworld (2025),£40
+,Budapest,Hungary,Central Europe,Yes,No,£14,£653,£28,£39,£60,5,5,5,15-Aug,Numbeo + Hostelworld (2025),£39
+,Budva,Montenegro,Balkans,No,Yes,£40,£618,£46,£64,£99,,,,,,£64
+,Catania,Italy,Southern Europe,Yes,No,£28,£674,£39,£54,£84,,,,,,£54
+,Chania,Greece,Balkans,Yes,No,£26,£695,£37,£52,£81,,,,,,£52
+,Chisinau,Moldova,Eastern Europe,No,Yes,£14,£521,£25,£35,£54,3,3,3,15-Aug,Numbeo + Hostelworld (2025),£35
+,Cluj-Napoca,Romania,Balkans,Yes,No,£21,£574,£31,£43,£67,4,4,4,15-Aug,Numbeo + Hostelworld (2025),£43
+,Coimbra,Portugal,Southern Europe,Yes,No,£35,£571,£41,£57,£88,3,4,3,15-Aug,Numbeo + Hostelworld (2025),£57
+,Copenhagen,Denmark,Nordics,Yes,No,£56,"£1,037",£68,£94,£146,,,,17-Aug,,£94
+,Dresden,Germany,Central Europe,Yes,No,£24,£877,£41,£57,£88,3,4,3,15-Aug,Numbeo + Hostelworld (2025),£57
+,Dublin,Ireland,Western Europe,No,Yes,£26,£924,£43,£60,£93,,,,17-Aug,,£60
+,Dubrovnik,Croatia,Balkans,Yes,No,£46,£649,£51,£71,£110,,,,,,£71
+,Edinburgh,United Kingdom,Western Europe,No,Yes,£45,£913,£57,£79,£122,,,,17-Aug,,£79
+,Gdansk,Poland,Central Europe,Yes,No,£23,£652,£35,£48,£74,4,4,3,15-Aug,Numbeo + Hostelworld (2025),£48
+,Geneva,Switzerland,Central Europe,Yes,No,£42,"£1,248",£63,£87,£135,,,,17-Aug,,£87
+,Genoa,Italy,Southern Europe,Yes,No,£31,£777,£43,£60,£93,,,,,,£60
+,Ghent / Gent,Belgium,Western Europe,Yes,No,£35,£850,£48,£66,£102,,,,17-Aug,,£66
+,Glasgow,United Kingdom,Western Europe,No,Yes,£42,£830,£53,£73,£113,,,,17-Aug,,£73
+,Granada,Spain,Southern Europe,Yes,No,£12,£582,£25,£35,£54,,,,15-Aug,,£35
+,Helsinki,Finland,Nordics,Yes,No,£34,£863,£48,£66,£102,,,,17-Aug,,£66
+,Heraklion,Greece,Balkans,Yes,No,£27,£709,£39,£54,£84,,,,,,£54
+,Innsbruck,Austria,Central Europe,Yes,No,£56,£923,£65,£90,£140,,,,17-Aug,,£90
+,Istanbul,Turkey,Anatolia,No,Yes,£15,£575,£27,£37,£57,5,5,5,15-Aug,Numbeo + Hostelworld (2025),£37
+,Kaunas,Lithuania,Baltics,Yes,No,£15,£661,£29,£40,£62,3,4,4,15-Aug,Numbeo + Hostelworld (2025),£40
+,Kotor,Montenegro,Balkans,No,Yes,£18,£528,£28,£39,£60,3,4,4,15-Aug,Numbeo + Hostelworld (2025),£39
+,Krakow,Poland,Central Europe,Yes,No,£18,£659,£31,£43,£67,5,5,5,15-Aug,Numbeo + Hostelworld (2025),£43
+,Kyiv / Kyiv,Ukraine,Eastern Europe,No,Yes,£7,£397,£17,£24,£37,,,,18-Aug,,£24
+,Larissa,Greece,Balkans,Yes,No,£37,£735,£47,£65,£101,,,,,,£65
+,Leipzig,Germany,Central Europe,Yes,No,£15,£853,£34,£47,£73,5,4,3,15-Aug,Numbeo + Hostelworld (2025),£47
+,Lisbon,Portugal,Southern Europe,Yes,No,£30,£652,£40,£55,£85,,,,17-Aug,,£55
+,Ljubljana,Slovenia,Balkans,Yes,No,£23,£752,£37,£51,£79,3,4,4,15-Aug,Numbeo + Hostelworld (2025),£51
+,London,United Kingdom,Western Europe,No,Yes,£30,"£1,091",£50,£70,£109,2,3,3,15-Aug,Numbeo + Hostelworld (2025),£70
+,Lublin,Poland,Central Europe,Yes,No,£25,£577,£35,£48,£74,4,4,3,15-Aug,Numbeo + Hostelworld (2025),£48
+,Lviv,Ukraine,Eastern Europe,No,Yes,£6,£390,£16,£22,£34,3,3,5,15-Aug,Numbeo + Hostelworld (2025),£22
+,Lyon,France,Western Europe,Yes,No,£21,£873,£38,£53,£82,,,,18-Aug,,£53
+,Madrid,Spain,Southern Europe,Yes,No,£17,£695,£32,£44,£68,,,,15-Aug,,£44
+,Manchester,United Kingdom,Western Europe,No,Yes,£25,£833,£40,£56,£87,,,,17-Aug,,£56
+,Marrakech,Morocco,North Africa,No,Yes,£13,£387,£21,£29,£45,4,5,5,15-Aug,Numbeo + Hostelworld (2025),£29
+,Marseille,France,Western Europe,Yes,No,£39,£863,£51,£71,£110,,,,18-Aug,,£71
+,Milan,Italy,Southern Europe,Yes,No,£24,£942,£42,£59,£91,,,,15-Aug,,£59
+,Montpellier,France,Western Europe,Yes,No,£33,£749,£44,£61,£95,,,,18-Aug,,£61
+,Mostar,Bosnia & Herzegovina,Balkans,No,Yes,£24,£489,£32,£44,£68,,,,,,£44
+,Munich,Germany,Central Europe,Yes,No,£22,£951,£41,£57,£88,2,4,3,15-Aug,Numbeo + Hostelworld (verified Jul 2026),£57
+,Naples,Italy,Southern Europe,Yes,No,£27,£740,£40,£55,£85,,,,,,£55
+,Nice,France,Western Europe,Yes,No,£40,£890,£53,£73,£113,,,,18-Aug,,£73
+,Novi Sad,Serbia,Balkans,No,Yes,£22,£598,£32,£45,£70,4,4,4,15-Aug,Numbeo + Hostelworld (2025),£45
+,Nuremberg,Germany,Central Europe,Yes,No,£38,£869,£50,£70,£109,2,4,3,15-Aug,Numbeo + Hostelworld (2025),£70
+,Odessa / Odesa,Ukraine,Eastern Europe,No,Yes,£6,£382,£16,£22,£34,,,,18-Aug,,£22
+,Ohrid,North Macedonia,Balkans,No,Yes,£16,£491,£26,£36,£56,,,,,,£36
+,Oslo,Norway,Nordics,Yes,No,£60,"£1,144",£73,£101,£157,,,,17-Aug,,£101
+,Palermo,Italy,Southern Europe,Yes,No,£28,£684,£39,£54,£84,,,,,,£54
+,Palma de Mallorca,Spain,Southern Europe,Yes,No,£50,£730,£56,£78,£121,,,,,,£78
+,Paris,France,Western Europe,Yes,No,£42,£904,£54,£75,£116,2,3,3,15-Aug,Numbeo + Hostelworld (verified Jul 2026),£75
+,Plovdiv,Bulgaria,Balkans,Yes,No,£13,£538,£24,£34,£53,,,,18-Aug,,£34
+,Podgorica,Montenegro,Balkans,No,Yes,£17,£530,£27,£38,£59,,,,,,£38
+,Porto,Portugal,Southern Europe,Yes,No,£29,£612,£38,£53,£82,3,5,3,15-Aug,Numbeo + Hostelworld (2025),£53
+,Poznan,Poland,Central Europe,Yes,No,£18,£608,£30,£42,£65,,,,17-Aug,,£42
+,Prague,Czechia,Central Europe,Yes,No,£18,£687,£32,£44,£68,3,5,5,15-Aug,Numbeo + Hostelworld (2025),£44
+,Pristina,Kosovo,Balkans,No,Yes,£10,£395,£19,£27,£42,,,,,,£27
+,Prizren,Kosovo,Balkans,No,Yes,£13,£397,£22,£30,£47,,,,17-Aug,,£30
+,Rabat,Morocco,North Africa,No,Yes,£13,£414,£22,£30,£47,4,3,5,15-Aug,Numbeo + Hostelworld (2025),£30
+,Reykjavik,Iceland,Nordics,Yes,No,£49,"£1,187",£66,£92,£143,,,,17-Aug,,£92
+,Rhodes,Greece,Balkans,Yes,No,£38,£676,£46,£64,£99,,,,,,£64
+,Riga,Latvia,Baltics,Yes,No,£20,£749,£35,£48,£74,3,5,5,15-Aug,Numbeo + Hostelworld (2025),£48
+,Rijeka,Croatia,Balkans,Yes,No,£27,£675,£38,£53,£82,3,4,4,15-Aug,Numbeo + Hostelworld (2025),£53
+,Rome,Italy,Southern Europe,Yes,No,£32,£722,£42,£59,£91,,,,15-Aug,Numbeo + Hostelworld (2025),£59
+,Salzburg,Austria,Central Europe,Yes,No,£26,"£1,058",£47,£65,£101,,,,17-Aug,,£65
+,San Sebastian,Spain,Southern Europe,Yes,No,£56,£688,£59,£82,£127,,,,21-Aug,,£82
+,Sarajevo,Bosnia & Herzegovina,Balkans,No,Yes,£15,£553,£27,£37,£57,5,4,5,15-Aug,Numbeo + Hostelworld (2025),£37
+,Seville,Spain,Southern Europe,Yes,No,£19,£594,£30,£42,£65,3,5,3,15-Aug,Numbeo + Hostelworld (2025),£42
+,Shkodër,Albania,Balkans,No,Yes,£14,£527,£25,£35,£54,,,,,,£35
+,Sibiu,Romania,Balkans,Yes,No,£18,£452,£26,£36,£56,4,4,4,15-Aug,Numbeo + Hostelworld (2025),£36
+,Skopje,North Macedonia,Balkans,No,Yes,£17,£485,£26,£36,£56,5,4,4,15-Aug,Numbeo + Hostelworld (2025),£36
+,Sofia,Bulgaria,Balkans,Yes,No,£15,£649,£29,£40,£62,5,5,5,15-Aug,Numbeo + Hostelworld (2025),£40
+,Split,Croatia,Balkans,Yes,No,£30,£699,£41,£57,£88,3,5,4,15-Aug,Numbeo + Hostelworld (2025),£57
+,Stockholm,Sweden,Nordics,Yes,No,£36,£998,£53,£73,£113,,,,17-Aug,,£73
+,Tallinn,Estonia,Baltics,Yes,No,£18,£831,£35,£49,£76,3,5,5,15-Aug,Numbeo + Hostelworld (2025),£49
+,Tashkent,Uzbekistan,Central Asia,No,Yes,£12,£414,£21,£29,£45,5,3,5,15-Aug,Numbeo + Hostelworld (2025),£29
+,Tbilisi,Georgia,Caucasus,No,Yes,£13,£497,£24,£33,£51,5,5,5,15-Aug,Numbeo + Hostelworld (verified Jul 2026),£33
+,Thessaloniki,Greece,Balkans,Yes,No,£20,£700,£34,£47,£73,3,4,4,15-Aug,Numbeo + Hostelworld (2025),£47
+,Timisoara,Romania,Balkans,Yes,No,£19,£512,£28,£39,£60,,,,18-Aug,,£39
+,Tirana,Albania,Balkans,No,Yes,£20,£569,£30,£42,£65,5,4,4,15-Aug,Numbeo + Hostelworld (2025),£42
+,Toulouse,France,Western Europe,Yes,No,£25,£838,£40,£56,£87,,,,18-Aug,,£56
+,Tromso,Norway,Nordics,Yes,No,£50,"£1,126",£66,£91,£141,2,3,3,15-Aug,Numbeo + Hostelworld (2025),£91
+,Turin,Italy,Southern Europe,Yes,No,£32,£772,£44,£61,£95,,,,,,£61
+,Valencia,Spain,Southern Europe,Yes,No,£26,£619,£36,£50,£78,3,5,3,15-Aug,Numbeo + Hostelworld (2025),£50
+,Varna,Bulgaria,Balkans,Yes,No,£20,£607,£32,£44,£68,,,,18-Aug,,£44
+,Venice,Italy,Southern Europe,Yes,No,£23,£922,£41,£57,£88,,,,15-Aug,,£57
+,Vienna,Austria,Central Europe,Yes,No,£24,£898,£41,£57,£88,2,4,3,15-Aug,Numbeo + Hostelworld (2025),£57
+,Vilnius,Lithuania,Baltics,Yes,No,£19,£667,£32,£45,£70,3,4,4,15-Aug,Numbeo + Hostelworld (2025),£45
+,Warsaw,Poland,Central Europe,Yes,No,£18,£696,£32,£45,£70,,,,17-Aug,,£45
+,Wroclaw,Poland,Central Europe,Yes,No,£18,£651,£31,£43,£67,4,4,3,15-Aug,Numbeo + Hostelworld (2025),£43
+,Yerevan,Armenia,Caucasus,No,Yes,£13,£542,£24,£34,£53,3,3,5,15-Aug,Numbeo + Hostelworld (2025),£34
+,Zagreb,Croatia,Balkans,Yes,No,£20,£705,£34,£47,£73,3,4,4,15-Aug,Numbeo + Hostelworld (2025),£47
+,Zurich,Switzerland,Central Europe,Yes,No,£58,"£1,399",£78,£108,£167,2,4,3,15-Aug,Numbeo + Hostelworld (verified Jul 2026),£108

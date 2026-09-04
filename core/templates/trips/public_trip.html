@@ -1,0 +1,499 @@
+{% extends "components/base.html" %}
+
+{% block content %}
+{% set symbol = share_data.symbol %}
+
+<style>
+    .public-trip-page {
+        max-width: 1040px;
+        margin: 0 auto;
+        padding: 48px 22px 78px;
+        color: #142136;
+    }
+
+    .public-trip-hero {
+        position: relative;
+        overflow: hidden;
+        padding: clamp(28px, 5vw, 54px);
+        border-radius: 30px;
+        background: #f6f1e7;
+    }
+
+    .public-trip-hero::after {
+        content: "";
+        position: absolute;
+        width: 260px;
+        height: 260px;
+        top: -120px;
+        right: -70px;
+        border-radius: 999px;
+        background: #f0dfbd;
+        opacity: .8;
+    }
+
+    .public-eyebrow,
+    .route-kicker {
+        display: block;
+        color: #08776c;
+        font-size: .7rem;
+        font-weight: 900;
+        letter-spacing: .11em;
+        text-transform: uppercase;
+    }
+
+    .public-eyebrow {
+        position: relative;
+        z-index: 1;
+        margin-bottom: 11px;
+    }
+
+    .public-trip-hero h1 {
+        position: relative;
+        z-index: 1;
+        max-width: 820px;
+        margin: 0;
+        font-size: clamp(2.3rem, 7vw, 5rem);
+        line-height: .97;
+        letter-spacing: -.055em;
+    }
+
+    .public-trip-sub {
+        position: relative;
+        z-index: 1;
+        margin: 18px 0 0;
+        color: #687588;
+        line-height: 1.65;
+    }
+
+    .public-trip-stats {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        grid-template-columns: 1.4fr repeat(3, 1fr);
+        gap: 12px;
+        margin-top: 28px;
+    }
+
+    .public-stat {
+        padding: 18px;
+        border: 1px solid rgba(20,33,54,.08);
+        border-radius: 18px;
+        background: rgba(255,255,255,.72);
+    }
+
+    .public-stat.primary {
+        background: #142136;
+        color: white;
+    }
+
+    .public-stat span,
+    .public-stat strong,
+    .public-stat small {
+        display: block;
+    }
+
+    .public-stat span {
+        margin-bottom: 5px;
+        color: #768296;
+        font-size: .7rem;
+        font-weight: 800;
+        letter-spacing: .05em;
+        text-transform: uppercase;
+    }
+
+    .public-stat.primary span {
+        color: #aab7c7;
+    }
+
+    .public-stat strong {
+        font-size: clamp(1.35rem, 3vw, 2rem);
+        letter-spacing: -.03em;
+    }
+
+    .public-stat.primary small {
+        margin-top: 4px;
+        color: #a8e6d8;
+        font-weight: 800;
+    }
+
+    .public-trip-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 300px;
+        gap: 22px;
+        margin-top: 22px;
+        align-items: start;
+    }
+
+    .public-panel {
+        border: 1px solid #dfe7e4;
+        border-radius: 24px;
+        background: white;
+        box-shadow: 0 16px 42px rgba(17,28,47,.06);
+    }
+
+    .route-panel,
+    .use-panel {
+        padding: 24px;
+    }
+
+    .route-panel h2,
+    .use-panel h2 {
+        margin: 6px 0 0;
+        letter-spacing: -.025em;
+    }
+
+    .public-route {
+        margin-top: 20px;
+    }
+
+    .public-stop {
+        display: grid;
+        grid-template-columns: 40px minmax(0,1fr) auto;
+        gap: 13px;
+        align-items: center;
+        padding: 14px 0;
+        border-bottom: 1px solid #edf1f0;
+    }
+
+    .public-stop:last-child {
+        border-bottom: 0;
+    }
+
+    .public-stop-number {
+        display: grid;
+        place-items: center;
+        width: 36px;
+        height: 36px;
+        border-radius: 999px;
+        background: #dff3ed;
+        color: #08776c;
+        font-size: .74rem;
+        font-weight: 900;
+    }
+
+    .public-stop strong,
+    .public-stop small {
+        display: block;
+    }
+
+    .public-stop small {
+        margin-top: 3px;
+        color: #738096;
+        font-size: .78rem;
+    }
+
+    .public-stop-cost {
+        font-size: .9rem;
+        font-weight: 900;
+    }
+
+    .public-transport-leg {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin: 5px 0 5px 53px;
+        padding: 9px 11px;
+        border-radius: 11px;
+        background: #f5faf8;
+        color: #667487;
+        font-size: .74rem;
+    }
+
+    .public-transport-leg strong {
+        color: #08776c;
+        font-size: .76rem;
+    }
+
+    .public-transport-summary {
+        margin-top: 18px;
+        padding: 14px 15px;
+        border-radius: 15px;
+        background: #142136;
+        color: white;
+    }
+
+    .public-transport-summary span,
+    .public-transport-summary strong {
+        display: block;
+    }
+
+    .public-transport-summary span {
+        color: #aab7c7;
+        font-size: .67rem;
+        font-weight: 850;
+        letter-spacing: .05em;
+        text-transform: uppercase;
+    }
+
+    .public-transport-summary strong {
+        margin-top: 5px;
+        font-size: 1.15rem;
+    }
+
+    .visa-split {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-top: 18px;
+    }
+
+    .visa-box {
+        padding: 15px;
+        border-radius: 15px;
+        background: #f8faf9;
+    }
+
+    .visa-box:first-child {
+        background: #e8f6f2;
+    }
+
+    .visa-box span,
+    .visa-box strong {
+        display: block;
+    }
+
+    .visa-box span {
+        color: #738096;
+        font-size: .67rem;
+        font-weight: 850;
+        letter-spacing: .05em;
+        text-transform: uppercase;
+    }
+
+    .visa-box strong {
+        margin-top: 4px;
+        font-size: 1.05rem;
+    }
+
+    .use-panel {
+        position: sticky;
+        top: 104px;
+    }
+
+    .use-panel p {
+        margin: 9px 0 18px;
+        color: #738096;
+        font-size: .86rem;
+        line-height: 1.55;
+    }
+
+    .use-route-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 50px;
+        border-radius: 13px;
+        background: #0e9384;
+        color: white;
+        font-weight: 900;
+        text-decoration: none;
+    }
+
+    .use-route-button:hover {
+        background: #08776c;
+    }
+
+    .use-note {
+        margin-top: 12px !important;
+        font-size: .72rem !important;
+        text-align: center;
+    }
+
+    .public-disclaimer {
+        margin: 18px 0 0;
+        color: #8792a3;
+        font-size: .72rem;
+        line-height: 1.5;
+    }
+
+    @media (max-width: 760px) {
+        .public-trip-page {
+            padding: 24px 14px 54px;
+        }
+
+        .public-trip-stats {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .public-stat.primary {
+            grid-column: 1 / -1;
+        }
+
+        .public-trip-layout {
+            grid-template-columns: 1fr;
+        }
+
+        .use-panel {
+            position: static;
+            order: -1;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .public-stop {
+            grid-template-columns: 36px minmax(0,1fr);
+        }
+
+        .public-stop-cost {
+            grid-column: 2;
+        }
+    }
+</style>
+
+<main class="public-trip-page">
+    <section class="public-trip-hero">
+        <span class="public-eyebrow">Shared Roamwise trip</span>
+
+        <h1>{{ share_data.name }}</h1>
+
+        <p class="public-trip-sub">
+            {{ share_data.total_nights }}
+            {{ 'night' if share_data.total_nights == 1 else 'nights' }}
+            · {{ share_data.travel_style }}
+            {% if share_data.date_label %}
+                · {{ share_data.date_label }}
+            {% endif %}
+        </p>
+
+        <div class="public-trip-stats">
+            <div class="public-stat primary">
+                <span>Estimated trip cost</span>
+                <strong>
+                    {{ symbol }}{{ "%.2f"|format(share_data.total_cost) }}
+                </strong>
+                <small>
+                    {{ symbol }}{{ "%.2f"|format(share_data.average_cost) }} / stay day
+                </small>
+            </div>
+
+            <div class="public-stat">
+                <span>Stops</span>
+                <strong>{{ share_data.stops|length }}</strong>
+            </div>
+
+            <div class="public-stat">
+                <span>Planned nights</span>
+                <strong>{{ share_data.total_nights }}</strong>
+            </div>
+
+            <div class="public-stat">
+                <span>Transport</span>
+                <strong>{{ symbol }}{{ "%.2f"|format(share_data.transport_cost) }}</strong>
+            </div>
+        </div>
+    </section>
+
+    <section class="public-trip-layout">
+        <div class="public-panel route-panel">
+            <span class="route-kicker">The route</span>
+            <h2>Where this trip goes</h2>
+
+            <div class="public-route">
+                {% if share_data.transport.arrival.has_details %}
+                    <div class="public-transport-leg" style="margin-left:0;">
+                        <span>
+                            Getting to {{ share_data.stops[0].city }}
+                            {% if share_data.transport.arrival.mode %}
+                                · {{ share_data.transport.arrival.mode_label }}
+                            {% endif %}
+                        </span>
+                        <strong>{{ symbol }}{{ "%.2f"|format(share_data.transport.arrival.cost) }}</strong>
+                    </div>
+                {% endif %}
+
+                {% for stop in share_data.stops %}
+                    <div class="public-stop">
+                        <div class="public-stop-number">{{ "%02d"|format(loop.index) }}</div>
+                        <div>
+                            <strong>{{ stop.city }}</strong>
+                            <small>
+                                {{ stop.country }} · {{ stop.nights }}
+                                {{ 'night' if stop.nights == 1 else 'nights' }}
+                            </small>
+                        </div>
+                        <div class="public-stop-cost">
+                            {{ symbol }}{{ "%.2f"|format(stop.cost) }}
+                        </div>
+                    </div>
+
+                    {% if not loop.last and share_data.transport.legs|length > loop.index0 %}
+                        {% set leg = share_data.transport.legs[loop.index0] %}
+                        {% if leg.has_details %}
+                            <div class="public-transport-leg">
+                                <span>
+                                    {{ leg.from_city }} → {{ leg.to_city }}
+                                    {% if leg.mode %}· {{ leg.mode_label }}{% endif %}
+                                </span>
+                                <strong>{{ symbol }}{{ "%.2f"|format(leg.cost) }}</strong>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+
+                {% if share_data.transport.departure.has_details %}
+                    <div class="public-transport-leg" style="margin-left:0;">
+                        <span>
+                            Getting home from {{ share_data.stops[-1].city }}
+                            {% if share_data.transport.departure.mode %}
+                                · {{ share_data.transport.departure.mode_label }}
+                            {% endif %}
+                        </span>
+                        <strong>{{ symbol }}{{ "%.2f"|format(share_data.transport.departure.cost) }}</strong>
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="public-transport-summary">
+                <span>Transport included in total</span>
+                <strong>{{ symbol }}{{ "%.2f"|format(share_data.transport_cost) }}</strong>
+            </div>
+
+            <div class="visa-split">
+                <div class="visa-box">
+                    <span>Schengen</span>
+                    <strong>
+                        {{ share_data.schengen_nights }}
+                        {{ 'night' if share_data.schengen_nights == 1 else 'nights' }}
+                    </strong>
+                </div>
+
+                <div class="visa-box">
+                    <span>Non-Schengen</span>
+                    <strong>
+                        {{ share_data.non_schengen_nights }}
+                        {{ 'night' if share_data.non_schengen_nights == 1 else 'nights' }}
+                    </strong>
+                </div>
+            </div>
+
+            <p class="public-disclaimer">
+                Costs are planning estimates from the saved version of this
+                itinerary. Schengen figures are a route snapshot, not a full
+                90/180-day travel-history check.
+            </p>
+        </div>
+
+        <aside class="public-panel use-panel">
+            <span class="route-kicker">Make it yours</span>
+            <h2>Like this route?</h2>
+            <p>
+                Load the same cities, nights and travel style into your own
+                Roamwise planner. Change anything before saving.
+            </p>
+
+            <a
+                class="use-route-button"
+                href="{{ url_for('main.plan_trip', use=trip.share_token) }}"
+            >
+                Use this route →
+            </a>
+
+            <p class="use-note">
+                Your travel dates start blank rather than copying someone
+                else's dates.
+            </p>
+        </aside>
+    </section>
+</main>
+{% endblock %}

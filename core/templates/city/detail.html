@@ -1,0 +1,200 @@
+{% extends "components/base.html" %}
+
+{% block content %}
+<section class="admin-dashboard">
+
+    {% set currency = cost_currency|default('GBP') %}
+
+    <div class="admin-hero">
+        <div>
+            <span class="admin-eyebrow">City management</span>
+            <h1>{{ city.name }}.</h1>
+            <p>
+                {{ city.country.name }}
+                {% if city.region %} · {{ city.region }}{% endif %}
+                · {{ city.country.currency_code }}
+                {% if city.country.is_schengen %} · Schengen{% endif %}
+            </p>
+        </div>
+
+        <a
+            class="landing-btn primary"
+            href="{{ url_for('city.update_city', city_id=city.id) }}"
+        >
+            Edit city <span class="arrow" aria-hidden="true">→</span>
+        </a>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, msg in messages %}
+                <div class="flash {{ category }}">{{ msg }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="admin-stats">
+        <div class="admin-stat-card">
+            <div class="admin-stat-icon">🛏</div>
+            <div class="admin-stat-copy">
+                <span>Hostel / night</span>
+                <strong>{{ "%.2f"|format(city.hostel_per_night|float) }}</strong>
+                <small>{{ currency }}</small>
+            </div>
+        </div>
+
+        <div class="admin-stat-card">
+            <div class="admin-stat-icon">🎒</div>
+            <div class="admin-stat-copy">
+                <span>Shoestring / day</span>
+                <strong>{{ "%.2f"|format(city.shoestring_cost) }}</strong>
+                <small>{{ currency }}</small>
+            </div>
+        </div>
+
+        <div class="admin-stat-card">
+            <div class="admin-stat-icon">⚖</div>
+            <div class="admin-stat-copy">
+                <span>Balanced / day</span>
+                <strong>{{ "%.2f"|format(city.balanced_cost) }}</strong>
+                <small>{{ currency }}</small>
+            </div>
+        </div>
+
+        <div class="admin-stat-card">
+            <div class="admin-stat-icon">✨</div>
+            <div class="admin-stat-copy">
+                <span>Comfortable / day</span>
+                <strong>{{ "%.2f"|format(city.comfortable_cost) }}</strong>
+                <small>{{ currency }}</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="admin-grid">
+        <div class="admin-panel">
+            <div class="admin-panel-header">
+                <div>
+                    <span class="admin-panel-kicker">Raw data</span>
+                    <h2>City details</h2>
+                </div>
+            </div>
+
+            <div class="city-detail-list">
+                <div>
+                    <span>City</span>
+                    <strong>{{ city.name }}</strong>
+                </div>
+
+                <div>
+                    <span>Region</span>
+                    <strong>{{ city.region or "—" }}</strong>
+                </div>
+
+                <div>
+                    <span>Country</span>
+                    <strong>{{ city.country.name }}</strong>
+                </div>
+
+                <div>
+                    <span>Country code</span>
+                    <strong>{{ city.country.code }}</strong>
+                </div>
+
+                <div>
+                    <span>Local currency</span>
+                    <strong>{{ city.country.currency_code }}</strong>
+                </div>
+
+                <div>
+                    <span>Schengen</span>
+                    <strong>{{ "Yes" if city.country.is_schengen else "No" }}</strong>
+                </div>
+
+                <div>
+                    <span>Monthly living cost</span>
+                    <strong>
+                        {{ "%.2f"|format(city.monthly_living_cost|float) }} {{ currency }}
+                    </strong>
+                </div>
+
+                <div>
+                    <span>Last updated</span>
+                    <strong>
+                        {% if city.last_updated %}
+                            {{ city.last_updated.strftime("%d %b %Y · %H:%M") }}
+                        {% else %}
+                            —
+                        {% endif %}
+                    </strong>
+                </div>
+            </div>
+        </div>
+
+        <aside class="admin-side">
+            <div class="admin-panel">
+                <div class="admin-panel-header compact">
+                    <div>
+                        <span class="admin-panel-kicker">Actions</span>
+                        <h2>Manage</h2>
+                    </div>
+                </div>
+
+                <div class="admin-actions">
+                    <a
+                        class="admin-action primary"
+                        href="{{ url_for('city.update_city', city_id=city.id) }}"
+                    >
+                        <span class="admin-action-icon">✎</span>
+                        <span>
+                            <strong>Edit city</strong>
+                            <small>Update costs or location data</small>
+                        </span>
+                        <span>→</span>
+                    </a>
+
+                    <a
+                        class="admin-action"
+                        href="{{ url_for('city.get_all_cities') }}"
+                    >
+                        <span class="admin-action-icon">←</span>
+                        <span>
+                            <strong>All cities</strong>
+                            <small>Return to city management</small>
+                        </span>
+                        <span>→</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="admin-panel city-danger-zone">
+                <div class="admin-panel-header compact">
+                    <div>
+                        <span class="admin-panel-kicker">Danger zone</span>
+                        <h2>Delete city</h2>
+                    </div>
+                </div>
+
+                <p class="city-danger-copy">
+                    Permanently remove {{ city.name }} from the database.
+                </p>
+
+                <form
+                    method="post"
+                    action="{{ url_for('city.delete_city', city_id=city.id) }}"
+                    onsubmit="return confirm('Delete {{ city.name }}? This cannot be undone.');"
+                >
+                    {% if csrf_token is defined %}
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    {% endif %}
+
+                    <button class="city-delete-button" type="submit">
+                        Delete {{ city.name }}
+                    </button>
+                </form>
+            </div>
+        </aside>
+    </div>
+
+</section>
+{% endblock %}

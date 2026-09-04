@@ -1,0 +1,77 @@
+{% set editing = city is defined and city %}
+{% set currency = cost_currency|default('GBP') %}
+
+<div class="form-group">
+    <label for="name">City name</label>
+    <input
+        id="name"
+        name="name"
+        type="text"
+        value="{{ city.name if editing else '' }}"
+        placeholder="e.g. Sofia"
+        required
+        autofocus
+    >
+</div>
+
+<div class="form-group">
+    <label for="region">Region <span class="muted">(optional)</span></label>
+    <input
+        id="region"
+        name="region"
+        type="text"
+        value="{{ city.region if editing and city.region else '' }}"
+        placeholder="e.g. Sofia City Province"
+    >
+</div>
+
+<div class="form-group">
+    <label for="country_id">Country</label>
+    <select id="country_id" name="country_id" required>
+        <option value="" disabled {% if not editing %}selected{% endif %}>
+            Choose a country
+        </option>
+
+        {% for country in countries %}
+            <option
+                value="{{ country.id }}"
+                {% if editing and city.country_id == country.id %}selected{% endif %}
+            >
+                {{ country.name }} ({{ country.code }})
+            </option>
+        {% endfor %}
+    </select>
+</div>
+
+<div class="form-group">
+    <label for="hostel_per_night">Hostel per night ({{ currency }})</label>
+    <input
+        id="hostel_per_night"
+        name="hostel_per_night"
+        type="number"
+        min="0"
+        step="0.01"
+        value="{{ city.hostel_per_night if editing else '' }}"
+        placeholder="22.00"
+        required
+    >
+</div>
+
+<div class="form-group">
+    <label for="monthly_living_cost">Monthly living cost ({{ currency }})</label>
+    <input
+        id="monthly_living_cost"
+        name="monthly_living_cost"
+        type="number"
+        min="0"
+        step="0.01"
+        value="{{ city.monthly_living_cost if editing else '' }}"
+        placeholder="950.00"
+        required
+    >
+
+    <small class="form-help">
+        Keep this consistent with the formula in your City model — i.e. the monthly cost figure
+        should represent the same thing for every city.
+    </small>
+</div>

@@ -1,0 +1,181 @@
+{% extends "components/base.html" %}
+
+{% block content %}
+
+<section class="admin-dashboard">
+
+    <div class="admin-hero">
+
+        <div>
+            <span class="admin-eyebrow">Country management</span>
+
+            <h1>Manage countries.</h1>
+
+            <p>
+                Keep currency, country codes and Schengen status
+                accurate across Roamwise.
+            </p>
+        </div>
+
+        <a
+            class="landing-btn primary"
+            href="{{ url_for('country.add_country') }}"
+        >
+            Add country
+            <span class="arrow" aria-hidden="true">→</span>
+        </a>
+
+    </div>
+
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, msg in messages %}
+                <div class="flash {{ category }}">
+                    {{ msg }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+
+    <div class="admin-panel">
+
+        <div class="admin-panel-header">
+
+            <div>
+                <span class="admin-panel-kicker">
+                    Database
+                </span>
+
+                <h2>
+                    {{ countries|length }} countries
+                </h2>
+            </div>
+
+            <a
+                class="admin-text-link"
+                href="{{ url_for('country.add_country') }}"
+            >
+                + Add country
+            </a>
+
+        </div>
+
+
+        {% if countries %}
+
+            <div class="admin-table-wrap">
+
+                <table class="admin-table">
+
+                    <thead>
+                        <tr>
+                            <th>Country</th>
+                            <th>Code</th>
+                            <th>Currency</th>
+                            <th>Schengen</th>
+                            <th>Cities</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for country in countries %}
+
+                            <tr>
+
+                                <td>
+                                    <strong>
+                                        {{ country.name }}
+                                    </strong>
+                                </td>
+
+                                <td>
+                                    {{ country.code }}
+                                </td>
+
+                                <td>
+                                    {{ country.currency_code }}
+                                </td>
+
+                                <td>
+
+                                    {% if country.is_schengen %}
+
+                                        <span class="admin-status-pill success">
+                                            Yes
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="admin-status-pill">
+                                            No
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+                                <td>
+                                    {{ country.cities|length }}
+                                </td>
+
+                                <td>
+                                    <a
+                                        class="admin-text-link"
+                                        href="{{ url_for(
+                                            'country.edit_country',
+                                            country_id=country.id
+                                        ) }}"
+                                    >
+                                        Edit →
+                                    </a>
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        {% else %}
+
+            <div class="admin-empty-state">
+
+                <div class="admin-empty-icon">
+                    ◎
+                </div>
+
+                <h3>No countries yet</h3>
+
+                <p>
+                    Add your first country before creating
+                    destination data.
+                </p>
+
+                <div style="margin-top: 18px;">
+
+                    <a
+                        class="landing-btn primary"
+                        href="{{ url_for('country.add_country') }}"
+                    >
+                        Add first country
+                    </a>
+
+                </div>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</section>
+
+{% endblock %}

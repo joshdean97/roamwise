@@ -1,0 +1,203 @@
+{% extends "components/base.html" %}
+
+{% block content %}
+
+<section class="admin-dashboard">
+
+    <div
+        class="admin-panel"
+        style="max-width: 760px; margin: 30px auto;"
+    >
+
+        <div class="admin-panel-header">
+
+            <div>
+                <span class="admin-panel-kicker">
+                    Country management
+                </span>
+
+                <h2>
+                    Edit {{ country.name }}
+                </h2>
+            </div>
+
+            <a
+                class="admin-text-link"
+                href="{{ url_for('country.get_all_countries') }}"
+            >
+                ← All countries
+            </a>
+
+        </div>
+
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, msg in messages %}
+
+                    <div class="flash {{ category }}">
+                        {{ msg }}
+                    </div>
+
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+
+        <form
+            method="post"
+            action="{{ url_for(
+                'country.edit_country',
+                country_id=country.id
+            ) }}"
+            class="auth-form"
+        >
+
+            {% if csrf_token is defined %}
+                <input
+                    type="hidden"
+                    name="csrf_token"
+                    value="{{ csrf_token() }}"
+                >
+            {% endif %}
+
+
+            {% include "country/_form.html" %}
+
+
+            <div class="city-form-actions">
+
+                <a
+                    class="landing-btn secondary"
+                    href="{{ url_for('country.get_all_countries') }}"
+                >
+                    Cancel
+                </a>
+
+
+                <button
+                    class="landing-btn primary"
+                    type="submit"
+                >
+                    Save changes
+                    <span
+                        class="arrow"
+                        aria-hidden="true"
+                    >
+                        →
+                    </span>
+                </button>
+
+            </div>
+
+        </form>
+
+
+        {% if country.cities|length == 0 %}
+
+            <div class="city-danger-zone" style="margin-top: 32px;">
+
+                <div class="admin-panel-header compact">
+
+                    <div>
+                        <span class="admin-panel-kicker">
+                            Danger zone
+                        </span>
+
+                        <h2>
+                            Delete country
+                        </h2>
+                    </div>
+
+                </div>
+
+
+                <p class="city-danger-copy">
+                    Permanently remove {{ country.name }}
+                    from Roamwise.
+                </p>
+
+
+                <form
+                    method="post"
+                    action="{{ url_for(
+                        'country.delete_country',
+                        country_id=country.id
+                    ) }}"
+                    onsubmit="return confirm(
+                        'Delete {{ country.name }}? This cannot be undone.'
+                    );"
+                >
+
+                    {% if csrf_token is defined %}
+                        <input
+                            type="hidden"
+                            name="csrf_token"
+                            value="{{ csrf_token() }}"
+                        >
+                    {% endif %}
+
+
+                    <button
+                        class="city-delete-button"
+                        type="submit"
+                    >
+                        Delete {{ country.name }}
+                    </button>
+
+                </form>
+
+            </div>
+
+        {% else %}
+
+            <div
+                class="city-danger-zone"
+                style="margin-top: 32px;"
+            >
+
+                <div class="admin-panel-header compact">
+
+                    <div>
+                        <span class="admin-panel-kicker">
+                            Danger zone
+                        </span>
+
+                        <h2>
+                            Delete country
+                        </h2>
+                    </div>
+
+                </div>
+
+
+                <p class="city-danger-copy">
+
+                    {{ country.name }} currently has
+
+                    <strong>
+                        {{ country.cities|length }}
+                    </strong>
+
+                    {% if country.cities|length == 1 %}
+                        city
+                    {% else %}
+                        cities
+                    {% endif %}
+
+                    linked to it.
+
+                    Remove or reassign those cities before
+                    deleting the country.
+
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</section>
+
+{% endblock %}

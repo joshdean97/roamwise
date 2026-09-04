@@ -1,0 +1,662 @@
+{% extends "components/base.html" %}
+
+{% block content %}
+<style>
+    .my-trips-page {
+        max-width: 1120px;
+        margin: 0 auto;
+        padding: 42px 22px 72px;
+        color: #111c2f;
+    }
+
+    .trips-hero {
+        display: flex;
+        justify-content: space-between;
+        align-items: end;
+        gap: 24px;
+        margin-bottom: 28px;
+    }
+
+    .trips-eyebrow {
+        display: block;
+        margin-bottom: 8px;
+        color: #0e9384;
+        font-size: .72rem;
+        font-weight: 800;
+        letter-spacing: .13em;
+        text-transform: uppercase;
+    }
+
+    .trips-hero h1 {
+        margin: 0;
+        font-size: clamp(2rem, 5vw, 3.4rem);
+        letter-spacing: -.045em;
+        line-height: 1;
+    }
+
+    .trips-hero p {
+        max-width: 640px;
+        margin: 14px 0 0;
+        color: #738096;
+        line-height: 1.6;
+    }
+
+    .new-trip-button {
+        flex: 0 0 auto;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 46px;
+        padding: 0 18px;
+        border-radius: 13px;
+        background: #0e9384;
+        color: white;
+        font-weight: 800;
+        text-decoration: none;
+    }
+
+    .new-trip-button:hover {
+        background: #08776c;
+    }
+
+    .trip-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+    }
+
+    .saved-trip-card {
+        overflow: hidden;
+        border: 1px solid #dfe7e4;
+        border-radius: 24px;
+        background: white;
+        box-shadow: 0 18px 50px rgba(17,28,47,.07);
+        transition: transform .16s ease, box-shadow .16s ease;
+    }
+
+    .saved-trip-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 22px 58px rgba(17,28,47,.10);
+    }
+
+    .saved-trip-main-link {
+        display: block;
+        color: inherit;
+        text-decoration: none;
+    }
+
+    .saved-trip-header {
+        display: flex;
+        justify-content: space-between;
+        gap: 18px;
+        padding: 22px 22px 17px;
+    }
+
+    .saved-trip-header h2 {
+        margin: 0;
+        font-size: 1.25rem;
+        letter-spacing: -.025em;
+    }
+
+    .saved-trip-meta {
+        margin-top: 6px;
+        color: #738096;
+        font-size: .82rem;
+    }
+
+    .trip-pills {
+        display: flex;
+        align-items: flex-start;
+        justify-content: flex-end;
+        gap: 7px;
+        flex-wrap: wrap;
+    }
+
+    .public-pill {
+        height: fit-content;
+        padding: 7px 10px;
+        border-radius: 999px;
+        background: #142136;
+        color: white;
+        font-size: .68rem;
+        font-weight: 850;
+        letter-spacing: .04em;
+        text-transform: uppercase;
+    }
+
+    .style-pill {
+        height: fit-content;
+        padding: 7px 10px;
+        border-radius: 999px;
+        background: #e8f6f2;
+        color: #08776c;
+        font-size: .72rem;
+        font-weight: 800;
+        text-transform: capitalize;
+    }
+
+    .saved-trip-budget {
+        margin: 0 22px 18px;
+        padding: 18px;
+        border-radius: 18px;
+        background:
+            linear-gradient(
+                135deg,
+                rgba(14,147,132,.12),
+                rgba(14,147,132,.04)
+            );
+    }
+
+    .budget-label {
+        color: #738096;
+        font-size: .72rem;
+        font-weight: 800;
+        letter-spacing: .06em;
+        text-transform: uppercase;
+    }
+
+    .budget-value {
+        margin-top: 5px;
+        font-size: 1.8rem;
+        font-weight: 900;
+        letter-spacing: -.035em;
+    }
+
+    .budget-sub {
+        margin-top: 3px;
+        color: #08776c;
+        font-size: .8rem;
+        font-weight: 700;
+    }
+
+    .stop-list {
+        padding: 0 22px;
+    }
+
+    .saved-stop {
+        display: grid;
+        grid-template-columns: 30px minmax(0, 1fr) auto;
+        gap: 11px;
+        align-items: center;
+        padding: 11px 0;
+        border-bottom: 1px solid #edf1f0;
+    }
+
+    .saved-stop:last-child {
+        border-bottom: 0;
+    }
+
+    .stop-number {
+        display: grid;
+        place-items: center;
+        width: 28px;
+        height: 28px;
+        border-radius: 9px;
+        background: #e8f6f2;
+        color: #08776c;
+        font-size: .75rem;
+        font-weight: 900;
+    }
+
+    .saved-stop strong,
+    .saved-stop small {
+        display: block;
+    }
+
+    .saved-stop strong {
+        font-size: .88rem;
+    }
+
+    .saved-stop small {
+        margin-top: 2px;
+        color: #738096;
+        font-size: .73rem;
+    }
+
+    .stop-price {
+        font-size: .8rem;
+        font-weight: 800;
+    }
+
+    .saved-transport {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin: 4px 0 4px 41px;
+        padding: 8px 10px;
+        border-radius: 10px;
+        background: #f6faf8;
+        color: #667487;
+        font-size: .72rem;
+    }
+
+    .saved-transport strong {
+        color: #08776c;
+        font-size: .72rem;
+    }
+
+    .transport-budget-line {
+        margin-top: 5px;
+        color: #657386;
+        font-size: .75rem;
+        font-weight: 700;
+    }
+
+    .trip-stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        margin-top: 17px;
+        border-top: 1px solid #edf1f0;
+    }
+
+    .trip-stat {
+        padding: 15px 10px;
+        text-align: center;
+    }
+
+    .trip-stat + .trip-stat {
+        border-left: 1px solid #edf1f0;
+    }
+
+    .trip-stat strong,
+    .trip-stat span {
+        display: block;
+    }
+
+    .trip-stat strong {
+        font-size: .92rem;
+    }
+
+    .trip-stat span {
+        margin-top: 3px;
+        color: #738096;
+        font-size: .67rem;
+        text-transform: uppercase;
+        letter-spacing: .05em;
+    }
+
+    .trip-card-actions {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 14px 18px;
+        border-top: 1px solid #edf1f0;
+        background: #fbfdfc;
+    }
+
+    .edit-trip-link,
+    .share-trip-link,
+    .delete-trip-button {
+        border: 0;
+        background: transparent;
+        font: inherit;
+        font-size: .78rem;
+        font-weight: 800;
+        cursor: pointer;
+    }
+
+    .edit-trip-link,
+    .share-trip-link {
+        color: #08776c;
+        text-decoration: none;
+    }
+
+    .trip-action-links {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .delete-trip-button {
+        padding: 0;
+        color: #a53c3c;
+    }
+
+    .delete-trip-button:hover,
+    .edit-trip-link:hover,
+    .share-trip-link:hover {
+        text-decoration: underline;
+    }
+
+    .trip-feedback {
+        display: grid;
+        gap: 10px;
+        margin-bottom: 18px;
+    }
+
+    .trip-feedback-message {
+        padding: 12px 14px;
+        border: 1px solid #dfe7e4;
+        border-radius: 12px;
+        background: white;
+        font-size: .86rem;
+    }
+
+    .trip-feedback-message.success {
+        border-color: #bfe2d9;
+        background: #edf9f5;
+        color: #08776c;
+    }
+
+    .trip-feedback-message.error {
+        border-color: #efcaca;
+        background: #fff3f3;
+        color: #9b3434;
+    }
+
+    .delete-trip-button:disabled {
+        opacity: .55;
+        cursor: wait;
+    }
+
+    .empty-trips {
+        padding: 55px 24px;
+        border: 1px dashed #cfdcda;
+        border-radius: 24px;
+        background: #fbfdfc;
+        text-align: center;
+    }
+
+    .empty-trips-icon {
+        display: grid;
+        place-items: center;
+        width: 48px;
+        height: 48px;
+        margin: 0 auto 14px;
+        border-radius: 15px;
+        background: #e8f6f2;
+        color: #0e9384;
+        font-size: 1.2rem;
+    }
+
+    .empty-trips h2 {
+        margin: 0;
+    }
+
+    .empty-trips p {
+        max-width: 480px;
+        margin: 9px auto 18px;
+        color: #738096;
+        line-height: 1.55;
+    }
+
+    @media (max-width: 760px) {
+        .trips-hero {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .trip-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .trip-card-actions {
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+    }
+</style>
+
+<main class="my-trips-page">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="trip-feedback" aria-live="polite">
+                {% for category, message in messages %}
+                    <div class="trip-feedback-message {{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <section class="trips-hero">
+        <div>
+            <span class="trips-eyebrow">My trips</span>
+            <h1>Your routes, saved.</h1>
+            <p>
+                Pick up where you left off. Saved budgets use the prices and exchange
+                rate from the moment you saved the trip.
+            </p>
+        </div>
+
+        <a
+            class="new-trip-button"
+            href="{{ url_for('main.plan_trip') }}"
+        >
+            + Plan another trip
+        </a>
+    </section>
+
+    {% if trips %}
+        <section class="trip-grid">
+            {% for trip in trips %}
+                {% set symbol_map = {
+                    'GBP': '£',
+                    'EUR': '€',
+                    'USD': '$',
+                    'AUD': 'A$'
+                } %}
+                {% set symbol = symbol_map.get(
+                    trip.display_currency,
+                    trip.display_currency ~ ' '
+                ) %}
+
+                <article class="saved-trip-card">
+                    <a
+                        class="saved-trip-main-link"
+                        href="{{ url_for('main.edit_trip', trip_id=trip.id) }}"
+                        aria-label="Edit {{ trip.name }}"
+                    >
+                    <div class="saved-trip-header">
+                        <div>
+                            <h2>{{ trip.name }}</h2>
+
+                            <div class="saved-trip-meta">
+                                {% if trip.start_date and trip.end_date %}
+                                    {{ trip.start_date.strftime('%d %b %Y') }}
+                                    →
+                                    {{ trip.end_date.strftime('%d %b %Y') }}
+                                {% elif trip.start_date %}
+                                    From {{ trip.start_date.strftime('%d %b %Y') }}
+                                {% else %}
+                                    Dates not set
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="trip-pills">
+                            {% if trip.is_public and trip.share_token %}
+                                <span class="public-pill">Public</span>
+                            {% endif %}
+
+                            <span class="style-pill">
+                                {{ trip.travel_style }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="saved-trip-budget">
+                        <div class="budget-label">
+                            Saved estimate
+                        </div>
+
+                        <div class="budget-value">
+                            {{ symbol }}{{ "%.2f"|format(trip.total_cost_display) }}
+                        </div>
+
+                        <div class="budget-sub">
+                            {{ symbol }}{{ "%.2f"|format(trip.average_cost_display) }}
+                            / day · {{ trip.total_nights }}
+                            {{ 'night' if trip.total_nights == 1 else 'nights' }}
+                        </div>
+
+                        <div class="transport-budget-line">
+                            {{ symbol }}{{ "%.2f"|format(trip.transport_cost_display) }}
+                            transport included
+                        </div>
+                    </div>
+
+                    <div class="stop-list">
+                        {% if trip.arrival_transport_mode or trip.arrival_transport_cost_gbp %}
+                            <div class="saved-transport">
+                                <span>
+                                    Getting to {{ trip.stops[0].city.name }}
+                                    {% if trip.arrival_transport_mode %}
+                                        · {{ trip.arrival_transport_mode|title }}
+                                    {% endif %}
+                                </span>
+                                <strong>
+                                    {{ symbol }}{{ "%.2f"|format(trip.convert_from_gbp(trip.arrival_transport_cost_gbp or 0)) }}
+                                </strong>
+                            </div>
+                        {% endif %}
+
+                        {% for stop in trip.stops %}
+                            <div class="saved-stop">
+                                <div class="stop-number">{{ loop.index }}</div>
+                                <div>
+                                    <strong>{{ stop.city.name }}</strong>
+                                    <small>
+                                        {{ stop.city.country.name }} · {{ stop.nights }}
+                                        {{ 'night' if stop.nights == 1 else 'nights' }}
+                                    </small>
+                                </div>
+                                <div class="stop-price">
+                                    {{ symbol }}{{ "%.2f"|format(trip.convert_from_gbp(stop.total_cost_gbp)) }}
+                                </div>
+                            </div>
+
+                            {% if not loop.last and trip.legs|length > loop.index0 %}
+                                {% set leg = trip.legs[loop.index0] %}
+                                {% if leg.mode or leg.cost_gbp %}
+                                    <div class="saved-transport">
+                                        <span>
+                                            {{ stop.city.name }} → {{ trip.stops[loop.index].city.name }}
+                                            {% if leg.mode %}· {{ leg.mode|title }}{% endif %}
+                                        </span>
+                                        <strong>
+                                            {{ symbol }}{{ "%.2f"|format(trip.convert_from_gbp(leg.cost_gbp or 0)) }}
+                                        </strong>
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if trip.departure_transport_mode or trip.departure_transport_cost_gbp %}
+                            <div class="saved-transport">
+                                <span>
+                                    Getting home from {{ trip.stops[-1].city.name }}
+                                    {% if trip.departure_transport_mode %}
+                                        · {{ trip.departure_transport_mode|title }}
+                                    {% endif %}
+                                </span>
+                                <strong>
+                                    {{ symbol }}{{ "%.2f"|format(trip.convert_from_gbp(trip.departure_transport_cost_gbp or 0)) }}
+                                </strong>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="trip-stats">
+                        <div class="trip-stat">
+                            <strong>{{ trip.stops|length }}</strong>
+                            <span>Stops</span>
+                        </div>
+
+                        <div class="trip-stat">
+                            <strong>{{ trip.schengen_nights }}</strong>
+                            <span>Schengen</span>
+                        </div>
+
+                        <div class="trip-stat">
+                            <strong>{{ trip.non_schengen_nights }}</strong>
+                            <span>Non-Schengen</span>
+                        </div>
+                    </div>
+                    </a>
+
+                    <div class="trip-card-actions">
+                        <div class="trip-action-links">
+                            <a
+                                class="edit-trip-link"
+                                href="{{ url_for('main.edit_trip', trip_id=trip.id) }}"
+                            >
+                                Edit trip
+                            </a>
+
+                            <a
+                                class="share-trip-link"
+                                href="{{ url_for('main.share_trip', trip_id=trip.id) }}"
+                            >
+                                Share
+                            </a>
+                        </div>
+
+                        <form
+                            class="delete-trip-form"
+                            method="post"
+                            action="{{ url_for('main.delete_trip', trip_id=trip.id) }}"
+                        >
+                            {% if csrf_token is defined %}
+                                <input
+                                    type="hidden"
+                                    name="csrf_token"
+                                    value="{{ csrf_token() }}"
+                                >
+                            {% endif %}
+
+                            <button
+                                class="delete-trip-button"
+                                type="submit"
+                            >
+                                Delete
+                            </button>
+                        </form>
+                    </div>
+                </article>
+            {% endfor %}
+        </section>
+    {% else %}
+        <section class="empty-trips">
+            <div class="empty-trips-icon">⌖</div>
+
+            <h2>No saved trips yet</h2>
+
+            <p>
+                Build your first route, choose your travel style and hit Save Trip.
+                It will show up here with its budget and Schengen split.
+            </p>
+
+            <a
+                class="new-trip-button"
+                href="{{ url_for('main.plan_trip') }}"
+            >
+                Plan your first trip
+            </a>
+        </section>
+    {% endif %}
+</main>
+
+<script>
+(() => {
+    document.querySelectorAll(".delete-trip-form").forEach(form => {
+        form.addEventListener("submit", event => {
+            if (!confirm("Delete this trip? This cannot be undone.")) {
+                event.preventDefault();
+                return;
+            }
+
+            const button = form.querySelector(".delete-trip-button");
+
+            if (button) {
+                button.disabled = true;
+                button.textContent = "Deleting…";
+            }
+        });
+    });
+})();
+</script>
+{% endblock %}

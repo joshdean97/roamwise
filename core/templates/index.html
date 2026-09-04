@@ -1,0 +1,227 @@
+{% extends "components/base.html" %}
+{% block content %}
+<main class="landing">
+    <section class="landing-hero">
+        <div class="hero-copy">
+            <div class="eyebrow">
+                <span class="eyebrow-dot"></span>
+                Built for backpackers, not package holidays
+            </div>
+
+            <h1 class="hero-title">
+                Travel further.<br>
+                <span class="accent">Guess less.</span>
+            </h1>
+
+            <p class="hero-lead">
+                Plan a multi-city trip, see what each stop will actually cost, and keep your backpacking budget under control before the first hostel check-in.
+            </p>
+
+            <div class="hero-actions">
+                {% if current_user.is_authenticated %}
+                    <a class="landing-btn primary" href="#features">
+                        Explore Roamwise <span class="arrow">→</span>
+                    </a>
+                {% else %}
+                    <a class="landing-btn primary" href="{{ url_for('auth.register') }}">
+                        Start planning free <span class="arrow">→</span>
+                    </a>
+                {% endif %}
+                <a class="landing-btn secondary" href="#how-it-works">See how it works</a>
+            </div>
+
+            <div class="hero-note" aria-label="Roamwise benefits">
+                <span>Multi-city budgets</span>
+                <span>Backpacker-first costs</span>
+                <span>No spreadsheet maths</span>
+            </div>
+        </div>
+
+        <div class="hero-visual" aria-label="Example trip budget">
+            <div class="floating-tag one">🏨 Hostel + food + transport</div>
+            <div class="floating-tag two">✈️ 17 days. One budget.</div>
+
+            <div class="trip-shell">
+                <article class="trip-card">
+                    <div class="trip-topbar">
+                        <div class="trip-title-wrap">
+                            <div class="trip-kicker">Your trip</div>
+                            <div class="trip-name">Central Europe → Sofia</div>
+                        </div>
+                        <div class="live-pill">On budget</div>
+                    </div>
+
+                    <div class="trip-content">
+                        <div class="budget-overview">
+                            <div>
+                                <div class="budget-label">Estimated trip cost</div>
+                                <div class="budget-number">£787 <small>/ 17 days</small></div>
+                            </div>
+                            <div class="budget-badge">£46 / day</div>
+                        </div>
+
+                        <div class="route-list">
+                            <div class="route-row">
+                                <div class="flag">🇨🇿</div>
+                                <div>
+                                    <div class="route-city">Prague</div>
+                                    <div class="route-days">3 nights</div>
+                                </div>
+                                <div class="route-price">£171</div>
+                            </div>
+
+                            <div class="route-row">
+                                <div class="flag">🇭🇺</div>
+                                <div>
+                                    <div class="route-city">Budapest</div>
+                                    <div class="route-days">4 nights</div>
+                                </div>
+                                <div class="route-price">£204</div>
+                            </div>
+
+                            <div class="route-row">
+                                <div class="flag">🇷🇴</div>
+                                <div>
+                                    <div class="route-city">Brașov</div>
+                                    <div class="route-days">3 nights</div>
+                                </div>
+                                <div class="route-price">£132</div>
+                            </div>
+
+                            <div class="route-row">
+                                <div class="flag">🇧🇬</div>
+                                <div>
+                                    <div class="route-city">Sofia</div>
+                                    <div class="route-days">7 nights</div>
+                                </div>
+                                <div class="route-price">£280</div>
+                            </div>
+                        </div>
+
+                        <div class="breakdown" aria-label="Trip cost breakdown">
+                            <div class="breakdown-item">
+                                <div class="breakdown-label">Hostels</div>
+                                <div class="breakdown-value">£291</div>
+                            </div>
+                            <div class="breakdown-item">
+                                <div class="breakdown-label">Food</div>
+                                <div class="breakdown-value">£238</div>
+                            </div>
+                            <div class="breakdown-item">
+                                <div class="breakdown-label">Transport</div>
+                                <div class="breakdown-value">£106</div>
+                            </div>
+                            <div class="breakdown-item">
+                                <div class="breakdown-label">Other</div>
+                                <div class="breakdown-value">£152</div>
+                            </div>
+                        </div>
+
+                        <div class="trip-insight">
+                            <div class="insight-icon">💡</div>
+                            <div>
+                                <strong>Your budget has room to breathe.</strong>
+                                <p>Swap one expensive stop and you could stretch this route even further.</p>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section class="value-strip" aria-label="What makes Roamwise different">
+        <div class="value-chip">
+            <strong>Real backpacker logic</strong>
+            <span>Hostels, cheap eats, local transport and the stuff travellers actually spend on.</span>
+        </div>
+        <div class="value-chip">
+            <strong>One route. One budget.</strong>
+            <span>Stop juggling tabs and calculators every time you add another city.</span>
+        </div>
+        <div class="value-chip">
+            <strong>Built to help you go further</strong>
+            <span>See where your money disappears before your bank balance has to tell you.</span>
+        </div>
+    </section>
+
+    <section class="landing-section" id="features">
+        <div class="section-heading">
+            <div class="section-kicker">Made for the way you travel</div>
+            <h2 class="section-title">Less admin.<br>More accidental adventures.</h2>
+            <p class="section-subtitle">
+                Roamwise turns the boring part of backpacking into something you can understand at a glance.
+            </p>
+        </div>
+
+        <div class="feature-grid">
+            <article class="feature-card">
+                <div class="feature-icon">🗺️</div>
+                <h3>Build your route visually</h3>
+                <p>Add cities, change the number of days and instantly see how each stop changes the total trip.</p>
+            </article>
+
+            <article class="feature-card">
+                <div class="feature-icon">💸</div>
+                <h3>Know the real daily cost</h3>
+                <p>Budget around backpacker spending instead of generic cost-of-living numbers that tell you basically nothing.</p>
+            </article>
+
+            <article class="feature-card">
+                <div class="feature-icon">🎒</div>
+                <h3>Stretch the trip, not the maths</h3>
+                <p>Compare stops, spot expensive cities and make smarter trade-offs without turning travel into an Excel internship.</p>
+            </article>
+        </div>
+    </section>
+
+    <section class="landing-section" id="how-it-works">
+        <div class="how-card">
+            <div>
+                <div class="section-kicker">How it works</div>
+                <h2 class="section-title">From “maybe” to a route you can afford.</h2>
+                <p class="section-subtitle">
+                    The whole point is to answer the question every backpacker eventually asks: “Can I actually afford this?”
+                </p>
+            </div>
+
+            <div class="steps">
+                <div class="step">
+                    <div class="step-num">01</div>
+                    <div>
+                        <h3>Pick your stops</h3>
+                        <p>Drop in the cities you want to visit and how long you want to stay.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-num">02</div>
+                    <div>
+                        <h3>Set your travel style</h3>
+                        <p>Keep it shoestring, comfortable, or somewhere in the messy middle.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-num">03</div>
+                    <div>
+                        <h3>See the trip take shape</h3>
+                        <p>Get a clean budget breakdown and tweak the route until the numbers work.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="final-cta">
+        <h2>Spend less time budgeting.<br>Spend more time roaming.</h2>
+        <p>Build the trip, understand the cost, then go do something more interesting than updating a spreadsheet.</p>
+        <div class="hero-actions">
+            {% if current_user.is_authenticated %}
+                <a class="landing-btn primary" href="#features">Keep exploring <span class="arrow">→</span></a>
+            {% else %}
+                <a class="landing-btn primary" href="{{ url_for('auth.register') }}">Start planning free <span class="arrow">→</span></a>
+                <a class="landing-btn secondary" href="{{ url_for('auth.login') }}">I already have an account</a>
+            {% endif %}
+        </div>
+    </section>
+</main>
+{% endblock %}
