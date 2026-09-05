@@ -79,6 +79,12 @@
                 Create an account
             </a>
         </div>
+        <div class="auth-footer">
+            <span>Didn't get your confirmation email?</span>
+            <a href="{{ url_for('auth.resend_confirmation') }}">
+                Resend it
+            </a>
+        </div>
 
     </div>
 

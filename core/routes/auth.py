@@ -1,4 +1,5 @@
 import hmac
+from datetime import datetime, timezone
 
 from flask import (
     Blueprint,
@@ -15,7 +16,7 @@ from sqlalchemy import func
 from sqlalchemy.exc import IntegrityError
 
 from core.extensions import db, limiter
-from core.mail import send_password_reset_email
+from core.mail import send_email_confirmation, send_password_reset_email
 from core.models.user import User
 
 
@@ -26,6 +27,7 @@ MAX_PASSWORD_LENGTH = 128
 MAX_USERNAME_LENGTH = 80
 MAX_EMAIL_LENGTH = 120
 RESET_TOKEN_SALT = "roamwise-password-reset-v1"
+EMAIL_CONFIRMATION_TOKEN_SALT = "leaveprints-email-confirmation-v1"
 
 
 def normalise_email(value):
@@ -36,6 +38,13 @@ def _reset_serializer():
     return URLSafeTimedSerializer(
         current_app.config["SECRET_KEY"],
         salt=RESET_TOKEN_SALT,
+    )
+
+
+def _email_confirmation_serializer():
+    return URLSafeTimedSerializer(
+        current_app.config["SECRET_KEY"],
+        salt=EMAIL_CONFIRMATION_TOKEN_SALT,
     )
 
 
@@ -79,6 +88,38 @@ def verify_password_reset_token(token):
     return user
 
 
+def generate_email_confirmation_token(user):
+    return _email_confirmation_serializer().dumps({
+        "user_id": user.id,
+        "email": user.email,
+    })
+
+
+def verify_email_confirmation_token(token):
+    try:
+        payload = _email_confirmation_serializer().loads(
+            token,
+            max_age=current_app.config["EMAIL_CONFIRMATION_MAX_AGE_SECONDS"],
+        )
+    except (BadSignature, SignatureExpired):
+        return None
+
+    try:
+        user_id = int(payload.get("user_id"))
+    except (TypeError, ValueError, AttributeError):
+        return None
+
+    user = db.session.get(User, user_id)
+    if not user:
+        return None
+
+    payload_email = payload.get("email") or ""
+    if not hmac.compare_digest(user.email, payload_email):
+        return None
+
+    return user
+
+
 def _password_error(password, confirm_password):
     if not password or not confirm_password:
         return "Please fill out both password fields."
@@ -95,14 +136,20 @@ def _password_error(password, confirm_password):
     return None
 
 
-def _external_reset_url(token):
-    path = url_for("auth.reset_password", token=token)
+def _public_url(endpoint, **values):
+    path = url_for(endpoint, **values)
     public_app_url = current_app.config.get("PUBLIC_APP_URL")
 
     if public_app_url:
         return f"{public_app_url}{path}"
 
-    return url_for("auth.reset_password", token=token, _external=True)
+    return url_for(endpoint, _external=True, **values)
+
+
+def _send_confirmation_for(user):
+    token = generate_email_confirmation_token(user)
+    confirmation_url = _public_url("auth.confirm_email", token=token)
+    send_email_confirmation(user, confirmation_url)
 
 
 @auth_bp.route("/login", methods=["GET", "POST"])
@@ -123,6 +170,13 @@ def login():
         )
 
         if user and user.check_password(password):
+            if not user.is_email_confirmed:
+                flash(
+                    "Confirm your email before logging in. You can request a new link below.",
+                    "info",
+                )
+                return redirect(url_for("auth.resend_confirmation", email=email))
+
             login_user(user)
             flash("Login successful.", "success")
             return redirect(url_for("main.home"))
@@ -134,7 +188,7 @@ def login():
     return render_template("auth/login.html", title="Login")
 
 
-@auth_bp.route("/logout", methods=["GET","POST"])
+@auth_bp.route("/logout", methods=["GET", "POST"])
 @login_required
 def logout():
     logout_user()
@@ -195,10 +249,90 @@ def register():
             flash("Username or email already exists.", "error")
             return redirect(url_for("auth.register"))
 
-        flash("Registration successful. Please log in.", "success")
-        return redirect(url_for("auth.login"))
+        try:
+            _send_confirmation_for(new_user)
+        except Exception:
+            current_app.logger.exception(
+                "Could not send account confirmation email for user id %s",
+                new_user.id,
+            )
+            flash(
+                "Your account was created, but we couldn't send the confirmation email. Try resending it below.",
+                "error",
+            )
+        else:
+            flash(
+                "Account created. Check your inbox and confirm your email before logging in.",
+                "success",
+            )
+
+        return redirect(url_for("auth.resend_confirmation", email=email))
 
     return render_template("auth/register.html", title="Register")
+
+
+@auth_bp.get("/confirm-email/<token>")
+def confirm_email(token):
+    user = verify_email_confirmation_token(token)
+
+    if not user:
+        flash(
+            "That confirmation link is invalid or has expired. Request a new one.",
+            "error",
+        )
+        return redirect(url_for("auth.resend_confirmation"))
+
+    if user.is_email_confirmed:
+        flash("Your email is already confirmed. You can log in.", "info")
+        return redirect(url_for("auth.login"))
+
+    user.email_confirmed_at = datetime.now(timezone.utc)
+    db.session.commit()
+
+    flash("Email confirmed. Welcome to LeavePrints — you can log in now.", "success")
+    return redirect(url_for("auth.login"))
+
+
+@auth_bp.route("/resend-confirmation", methods=["GET", "POST"])
+@limiter.limit("5 per 15 minutes", methods=["POST"])
+def resend_confirmation():
+    if current_user.is_authenticated:
+        return redirect(url_for("main.home"))
+
+    email_value = normalise_email(request.args.get("email"))
+
+    if request.method == "POST":
+        email = normalise_email(request.form.get("email"))
+
+        user = None
+        if email and len(email) <= MAX_EMAIL_LENGTH:
+            user = (
+                User.query
+                .filter(func.lower(User.email) == email)
+                .first()
+            )
+
+        if user and not user.is_email_confirmed:
+            try:
+                _send_confirmation_for(user)
+            except Exception:
+                current_app.logger.exception(
+                    "Could not resend account confirmation email for user id %s",
+                    user.id,
+                )
+
+        # Deliberately generic so this endpoint cannot be used to enumerate users.
+        flash(
+            "If that address belongs to an unconfirmed account, we've sent a fresh confirmation link.",
+            "success",
+        )
+        return redirect(url_for("auth.resend_confirmation"))
+
+    return render_template(
+        "auth/resend_confirmation.html",
+        title="Confirm your email",
+        email_value=email_value,
+    )
 
 
 @auth_bp.route("/forgot-password", methods=["GET", "POST"])
@@ -220,7 +354,7 @@ def forgot_password():
 
         if user:
             token = generate_password_reset_token(user)
-            reset_url = _external_reset_url(token)
+            reset_url = _public_url("auth.reset_password", token=token)
 
             try:
                 send_password_reset_email(user, reset_url)

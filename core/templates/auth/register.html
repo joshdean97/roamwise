@@ -13,7 +13,7 @@
 
             <p>
                 Create your account and start building trips around
-                what you can actually afford.
+                what you can actually afford. We'll send you a quick email to confirm it's really you.
             </p>
         </div>
 
@@ -50,6 +50,7 @@
                     type="text"
                     placeholder="joshtravels"
                     required
+                    maxlength="80"
                     autocomplete="username"
                     autofocus
                 >
@@ -64,6 +65,7 @@
                     type="email"
                     placeholder="you@example.com"
                     required
+                    maxlength="120"
                     autocomplete="email"
                 >
             </div>
@@ -77,6 +79,8 @@
                     type="password"
                     placeholder="Create a password"
                     required
+                    minlength="8"
+                    maxlength="128"
                     autocomplete="new-password"
                 >
             </div>
@@ -90,6 +94,8 @@
                     type="password"
                     placeholder="One more time"
                     required
+                    minlength="8"
+                    maxlength="128"
                     autocomplete="new-password"
                 >
             </div>

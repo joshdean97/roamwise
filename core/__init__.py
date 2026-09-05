@@ -99,10 +99,18 @@ def create_app(test_config=None):
         PASSWORD_RESET_MAX_AGE_SECONDS=int(
             os.environ.get("PASSWORD_RESET_MAX_AGE_SECONDS", "3600")
         ),
+        EMAIL_CONFIRMATION_MAX_AGE_SECONDS=int(
+            os.environ.get("EMAIL_CONFIRMATION_MAX_AGE_SECONDS", "86400")
+        ),
         PASSWORD_RESET_LOG_LINKS=(
             False
             if is_production
             else _env_bool("PASSWORD_RESET_LOG_LINKS")
+        ),
+        EMAIL_CONFIRMATION_LOG_LINKS=(
+            False
+            if is_production
+            else _env_bool("EMAIL_CONFIRMATION_LOG_LINKS")
         ),
         PUBLIC_APP_URL=public_app_url,
         SMTP_HOST=os.environ.get("SMTP_HOST", ""),

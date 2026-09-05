@@ -1,0 +1,52 @@
+{% extends "components/base.html" %}
+
+{% block content %}
+<section class="auth-page">
+    <div class="auth-card">
+        <div class="auth-heading">
+            <span class="auth-eyebrow">One quick check</span>
+            <h1>Confirm your email.</h1>
+            <p>
+                We send a confirmation link when you create an account.
+                It expires after 24 hours, but you can request a fresh one here.
+            </p>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, msg in messages %}
+                    <div class="flash {{ category }}">{{ msg }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form method="post" action="{{ url_for('auth.resend_confirmation') }}" class="auth-form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    placeholder="you@example.com"
+                    value="{{ email_value }}"
+                    required
+                    maxlength="120"
+                    autocomplete="email"
+                    autofocus
+                >
+            </div>
+
+            <button class="btn auth-submit" type="submit">
+                Send confirmation link
+                <span aria-hidden="true">→</span>
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            <a href="{{ url_for('auth.login') }}">← Back to login</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

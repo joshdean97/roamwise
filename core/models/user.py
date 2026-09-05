@@ -35,6 +35,15 @@ class User(UserMixin, db.Model):
         default=False
     )
 
+    email_confirmed_at = db.Column(
+        db.DateTime(timezone=True),
+        nullable=True
+    )
+
+    @property
+    def is_email_confirmed(self):
+        return self.email_confirmed_at is not None
+
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 

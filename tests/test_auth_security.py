@@ -1,10 +1,14 @@
+from datetime import datetime, timezone
+
 import pytest
 
 from core import create_app
 from core.extensions import db
 from core.models.user import User
 from core.routes.auth import (
+    generate_email_confirmation_token,
     generate_password_reset_token,
+    verify_email_confirmation_token,
     verify_password_reset_token,
 )
 
@@ -18,12 +22,17 @@ def app():
         "WTF_CSRF_ENABLED": False,
         "RATELIMIT_ENABLED": False,
         "PASSWORD_RESET_LOG_LINKS": True,
-        "PUBLIC_APP_URL": "https://roamwise.example",
+        "EMAIL_CONFIRMATION_LOG_LINKS": True,
+        "PUBLIC_APP_URL": "https://leaveprints.example",
     })
 
     with app.app_context():
         db.create_all()
-        user = User(username="josh", email="josh@example.com")
+        user = User(
+            username="josh",
+            email="josh@example.com",
+            email_confirmed_at=datetime.now(timezone.utc),
+        )
         user.set_password("old-password")
         db.session.add(user)
         db.session.commit()
@@ -83,6 +92,65 @@ def test_reset_password_changes_credentials(app, client):
         user = User.query.filter_by(email="josh@example.com").one()
         assert user.check_password("brand-new-password")
         assert not user.check_password("old-password")
+
+
+def test_unconfirmed_user_cannot_log_in(app, client):
+    with app.app_context():
+        user = User(username="new-user", email="new@example.com")
+        user.set_password("test-password")
+        db.session.add(user)
+        db.session.commit()
+
+    response = client.post(
+        "/auth/login",
+        data={"email": "new@example.com", "password": "test-password"},
+        follow_redirects=True,
+    )
+
+    assert response.status_code == 200
+    assert b"Confirm your email before logging in" in response.data
+
+
+def test_confirmation_token_confirms_user(app, client):
+    with app.app_context():
+        user = User(username="confirm-me", email="confirm@example.com")
+        user.set_password("test-password")
+        db.session.add(user)
+        db.session.commit()
+        token = generate_email_confirmation_token(user)
+        assert verify_email_confirmation_token(token).id == user.id
+
+    response = client.get(
+        f"/auth/confirm-email/{token}",
+        follow_redirects=True,
+    )
+
+    assert response.status_code == 200
+    assert b"Email confirmed" in response.data
+
+    with app.app_context():
+        user = User.query.filter_by(email="confirm@example.com").one()
+        assert user.is_email_confirmed
+
+
+def test_registration_creates_unconfirmed_account(app, client):
+    response = client.post(
+        "/auth/register",
+        data={
+            "username": "fresh-user",
+            "email": "fresh@example.com",
+            "password": "test-password",
+            "confirm_password": "test-password",
+        },
+        follow_redirects=True,
+    )
+
+    assert response.status_code == 200
+    assert b"Account created" in response.data
+
+    with app.app_context():
+        user = User.query.filter_by(email="fresh@example.com").one()
+        assert not user.is_email_confirmed
 
 
 def test_login_limit_returns_429_when_enabled():
