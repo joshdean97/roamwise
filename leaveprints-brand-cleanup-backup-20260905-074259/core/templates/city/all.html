@@ -1,0 +1,125 @@
+{% extends "components/base.html" %}
+
+{% block content %}
+<section class="admin-dashboard">
+
+    <div class="admin-hero">
+        <div>
+            <span class="admin-eyebrow">City management</span>
+            <h1>Manage cities.</h1>
+            <p>
+                Keep Roamwise's backpacker cost data tidy, current and easy to update.
+            </p>
+        </div>
+
+        <a class="landing-btn primary" href="{{ url_for('city.add_city') }}">
+            Add city <span class="arrow" aria-hidden="true">→</span>
+        </a>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, msg in messages %}
+                <div class="flash {{ category }}">{{ msg }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="admin-panel">
+        <div class="admin-panel-header">
+            <div>
+                <span class="admin-panel-kicker">Database</span>
+                <h2>{{ cities|length }} cities</h2>
+            </div>
+
+            <a class="admin-text-link" href="{{ url_for('city.add_city') }}">
+                + Add city
+            </a>
+        </div>
+
+        {% if cities %}
+            <div class="admin-table-wrap">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>City</th>
+                            <th>Country</th>
+                            <th>Hostel / night</th>
+                            <th>Shoestring</th>
+                            <th>Balanced</th>
+                            <th>Comfortable</th>
+                            <th>Updated</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% set currency = cost_currency|default('GBP') %}
+
+                        {% for city in cities %}
+                            <tr>
+                                <td>
+                                    <strong>{{ city.name }}</strong>
+                                    {% if city.region %}
+                                        <small>{{ city.region }}</small>
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    <strong>{{ city.country.name }}</strong>
+                                    <small>{{ city.country.code }}</small>
+                                </td>
+
+                                <td class="admin-price">
+                                    {{ "%.2f"|format(city.hostel_per_night|float) }} {{ currency }}
+                                </td>
+
+                                <td>
+                                    {{ "%.2f"|format(city.shoestring_cost) }} {{ currency }}
+                                </td>
+
+                                <td>
+                                    <strong>{{ "%.2f"|format(city.balanced_cost) }} {{ currency }}</strong>
+                                </td>
+
+                                <td>
+                                    {{ "%.2f"|format(city.comfortable_cost) }} {{ currency }}
+                                </td>
+
+                                <td>
+                                    {% if city.last_updated %}
+                                        {{ city.last_updated.strftime("%d %b %Y") }}
+                                    {% else %}
+                                        —
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    <a
+                                        class="admin-text-link"
+                                        href="{{ url_for('city.get_city', city_id=city.id) }}"
+                                    >
+                                        Manage →
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="admin-empty-state">
+                <div class="admin-empty-icon">＋</div>
+                <h3>No cities yet</h3>
+                <p>Add your first city and start moving the Roamwise dataset into the app.</p>
+                <div style="margin-top: 18px;">
+                    <a class="landing-btn primary" href="{{ url_for('city.add_city') }}">
+                        Add first city
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+</section>
+{% endblock %}

@@ -42,7 +42,7 @@ def create_app(test_config=None):
     if not configured_secret:
         raise RuntimeError(
             "SECRET_KEY is not set. Set a long random SECRET_KEY environment "
-            "variable before starting Roamwise."
+            "variable before starting LeavePrints."
         )
 
     database_url = _normalise_database_url(
@@ -62,7 +62,7 @@ def create_app(test_config=None):
         and not test_config
     ):
         raise RuntimeError(
-            "Roamwise is running with APP_ENV=production but DATABASE_URL "
+            "LeavePrints is running with APP_ENV=production but DATABASE_URL "
             "still points to SQLite. Configure a production PostgreSQL "
             "DATABASE_URL, or explicitly set ALLOW_SQLITE_PRODUCTION=1."
         )
@@ -72,7 +72,7 @@ def create_app(test_config=None):
     if is_production and not public_app_url and not test_config:
         raise RuntimeError(
             "PUBLIC_APP_URL is required in production. Set it to the public "
-            "HTTPS origin for Roamwise, for example https://roamwise.app."
+            "HTTPS origin for LeavePrints, for example https://leaveprints.com."
         )
 
     secure_cookie_default = "1" if is_production else "0"

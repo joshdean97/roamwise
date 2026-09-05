@@ -1,0 +1,199 @@
+{% extends "components/base.html" %}
+
+{% block content %}
+{% set dashboard_stats = stats|default({}) %}
+{% set recent_city_rows = recent_cities|default([]) %}
+
+<main class="admin-dashboard">
+
+    <section class="admin-hero">
+        <div>
+            <span class="admin-eyebrow">Roamwise admin</span>
+            <h1>Keep the data sharp.</h1>
+            <p>
+                Welcome back, {{ current_user.username }}. Manage destination data,
+                keep pricing fresh and make sure travellers are seeing useful numbers.
+            </p>
+        </div>
+
+        <div class="admin-status">
+            <span class="admin-status-dot" aria-hidden="true"></span>
+            <div>
+                <strong>System online</strong>
+                <span>Admin access enabled</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="admin-stats" aria-label="Dashboard statistics">
+
+        <article class="admin-stat-card">
+            <div class="admin-stat-icon">⌖</div>
+            <div class="admin-stat-copy">
+                <span>Cities</span>
+                <strong>{{ dashboard_stats.get('city_count', 0) }}</strong>
+                <small>Destinations in Roamwise</small>
+            </div>
+        </article>
+
+        <article class="admin-stat-card">
+            <div class="admin-stat-icon">◎</div>
+            <div class="admin-stat-copy">
+                <span>Countries</span>
+                <strong>{{ dashboard_stats.get('country_count', 0) }}</strong>
+                <small>Country profiles configured</small>
+            </div>
+        </article>
+
+        <article class="admin-stat-card">
+            <div class="admin-stat-icon">↗</div>
+            <div class="admin-stat-copy">
+                <span>Users</span>
+                <strong>{{ dashboard_stats.get('user_count', 0) }}</strong>
+                <small>Registered accounts</small>
+            </div>
+        </article>
+
+        <article class="admin-stat-card {% if dashboard_stats.get('stale_city_count', 0) %}needs-attention{% endif %}">
+            <div class="admin-stat-icon">◷</div>
+            <div class="admin-stat-copy">
+                <span>Needs updating</span>
+                <strong>{{ dashboard_stats.get('stale_city_count', 0) }}</strong>
+                <small>Cities with stale cost data</small>
+            </div>
+        </article>
+
+    </section>
+
+    <section class="admin-grid">
+
+        <div class="admin-panel admin-data-panel">
+            <div class="admin-panel-header">
+                <div>
+                    <span class="admin-panel-kicker">Destination data</span>
+                    <h2>Recently updated cities</h2>
+                </div>
+                <a class="admin-text-link" href="{{ url_for('city.get_all_cities') }}">View all →</a>
+            </div>
+
+            {% if recent_city_rows %}
+                <div class="admin-table-wrap">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>City</th>
+                                <th>Country</th>
+                                <th>Balanced / day</th>
+                                <th>Updated</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for city in recent_city_rows %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ city.name }}</strong>
+                                        {% if city.region %}
+                                            <span>{{ city.region }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {{ city.country.name }}
+                                        <small>{{ city.country.code }}</small>
+                                    </td>
+                                    <td class="admin-price">
+                                        {{ "%.2f"|format(city.balanced_cost) }}
+                                    </td>
+                                    <td>
+                                        {% if city.last_updated %}
+                                            {{ city.last_updated.strftime('%d %b %Y') }}
+                                        {% else %}
+                                            —
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="admin-empty-state">
+                    <div class="admin-empty-icon">⌖</div>
+                    <h3>No city data yet</h3>
+                    <p>
+                        Once cities are added, your latest destination updates will appear here.
+                    </p>
+                </div>
+            {% endif %}
+        </div>
+
+        <aside class="admin-side">
+
+            <div class="admin-panel">
+                <div class="admin-panel-header compact">
+                    <div>
+                        <span class="admin-panel-kicker">Quick actions</span>
+                        <h2>Manage Roamwise</h2>
+                    </div>
+                </div>
+
+                <div class="admin-actions">
+                    <a href="{{ url_for('city.add_city') }}" class="admin-action primary">
+                        <span class="admin-action-icon">＋</span>
+                        <span>
+                            <strong>Add a city</strong>
+                            <small>Create destination pricing data</small>
+                        </span>
+                        <span class="admin-action-arrow">→</span>
+                    </a>
+
+                    <a href="{{ url_for('country.get_all_countries') }}" class="admin-action">
+                        <span class="admin-action-icon">◎</span>
+                        <span>
+                            <strong>Manage countries</strong>
+                            <small>Currency, Schengen and codes</small>
+                        </span>
+                        <span class="admin-action-arrow">→</span>
+                    </a>
+
+                    
+                    <a href="{{ url_for('admin.get_all_users') }}" class="admin-action">
+                        <span class="admin-action-icon">♙</span>
+                        <span>
+                            <strong>View users</strong>
+                            <small>Review registered accounts</small>
+                        </span>
+                        <span class="admin-action-arrow">→</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="admin-panel admin-health-panel">
+                <div class="admin-panel-header compact">
+                    <div>
+                        <span class="admin-panel-kicker">Data health</span>
+                        <h2>Coverage</h2>
+                    </div>
+                </div>
+
+                <div class="admin-health-list">
+                    <div>
+                        <span>Schengen countries</span>
+                        <strong>{{ dashboard_stats.get('schengen_country_count', 0) }}</strong>
+                    </div>
+                    <div>
+                        <span>Currencies tracked</span>
+                        <strong>{{ dashboard_stats.get('currency_count', 0) }}</strong>
+                    </div>
+                    <div>
+                        <span>Fresh this month</span>
+                        <strong>{{ dashboard_stats.get('fresh_city_count', 0) }}</strong>
+                    </div>
+                </div>
+            </div>
+
+        </aside>
+
+    </section>
+
+</main>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends "components/base.html" %}
+
+{% block content %}
+<section class="auth-page">
+    <div class="auth-card">
+        <div class="auth-heading">
+            <span class="auth-eyebrow">Slow down a sec</span>
+            <h1>Too many attempts.</h1>
+            <p>
+                Roamwise has temporarily limited requests from this connection.
+                Give it a little time, then try again.
+            </p>
+        </div>
+
+        <div class="auth-footer">
+            <a href="{{ url_for('auth.login') }}">Back to login</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

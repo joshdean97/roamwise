@@ -42,7 +42,7 @@ def get_exchange_rates():
 
     Rates are cached in memory for six hours. If the provider is
     unavailable, the last successful rates remain usable. Before the
-    first successful lookup, Roamwise falls back to GBP and retries
+    first successful lookup, LeavePrints falls back to GBP and retries
     after a short cooldown rather than blocking every page request.
     """
     now = time.time()
@@ -62,7 +62,7 @@ def get_exchange_rates():
     req = Request(
         url,
         headers={
-            "User-Agent": "Roamwise/1.0",
+            "User-Agent": "LeavePrints/1.0",
             "Accept": "application/json",
         },
     )

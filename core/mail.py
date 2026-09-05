@@ -30,11 +30,11 @@ def send_password_reset_email(user, reset_url):
         )
 
     message = EmailMessage()
-    message["Subject"] = "Reset your Roamwise password"
+    message["Subject"] = "Reset your LeavePrints password"
     message["From"] = mail_from
     message["To"] = user.email
     message.set_content(
-        "You asked to reset your Roamwise password.\n\n"
+        "You asked to reset your LeavePrints password.\n\n"
         f"Open this link to choose a new password:\n{reset_url}\n\n"
         "This link expires soon and stops working after your password is changed.\n\n"
         "If you did not request this, you can ignore this email."

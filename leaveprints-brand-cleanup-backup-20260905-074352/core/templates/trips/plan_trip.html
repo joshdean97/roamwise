@@ -1,0 +1,1092 @@
+{% extends "components/base.html" %}
+
+{% block content %}
+{% set city_rows = cities|default([]) %}
+{% set fx_rates = exchange_rates|default({'GBP': 1.0}) %}
+{% set selected_currency = display_currency|default('GBP') %}
+{% set planner_initial = initial_trip|default({
+    'route': [],
+    'travel_style': 'balanced',
+    'display_currency': selected_currency,
+    'start_date': '',
+    'end_date': '',
+    'transport': {
+        'arrival': {'mode': '', 'cost_gbp': 0, 'note': ''},
+        'departure': {'mode': '', 'cost_gbp': 0, 'note': ''},
+        'legs': []
+    }
+}) %}
+
+<style>
+    .planner-alerts {
+        display: grid;
+        gap: 10px;
+        margin-bottom: 18px;
+    }
+
+    .planner-alert {
+        padding: 12px 14px;
+        border: 1px solid #dfe7e4;
+        border-radius: 12px;
+        background: #fff;
+        color: #334155;
+        font-size: .86rem;
+        line-height: 1.45;
+    }
+
+    .planner-alert.success {
+        border-color: #bfe2d9;
+        background: #edf9f5;
+        color: #08776c;
+    }
+
+    .planner-alert.error {
+        border-color: #efcaca;
+        background: #fff3f3;
+        color: #9b3434;
+    }
+
+    .planner-alert.warning {
+        border-color: #ead6aa;
+        background: #fff9ea;
+        color: #805d17;
+    }
+
+    .save-button.is-submitting {
+        cursor: wait;
+    }
+
+    .transport-help {
+        margin: 11px 0 0;
+        color: var(--rw-muted);
+        font-size: .78rem;
+        line-height: 1.45;
+    }
+
+    .transport-editor {
+        margin: 10px 0 12px 54px;
+        padding: 13px 14px;
+        border: 1px solid #dbe5e2;
+        border-radius: 14px;
+        background: #f8fbfa;
+    }
+
+    .transport-editor.endpoint {
+        margin: 14px 0;
+        background: #f3f8f6;
+    }
+
+    .transport-editor-heading {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 9px;
+    }
+
+    .transport-editor-heading strong {
+        font-size: .82rem;
+    }
+
+    .transport-editor-heading span {
+        color: var(--rw-muted);
+        font-size: .7rem;
+    }
+
+    .transport-fields {
+        display: grid;
+        grid-template-columns: 125px 130px minmax(0, 1fr);
+        gap: 9px;
+    }
+
+    .transport-field label {
+        display: block;
+        margin-bottom: 5px;
+        color: var(--rw-muted);
+        font-size: .67rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: .04em;
+    }
+
+    .transport-field select,
+    .transport-field input {
+        width: 100%;
+        min-height: 39px;
+        padding: 0 10px;
+        border: 1px solid #d6e0de;
+        border-radius: 10px;
+        background: white;
+        color: var(--rw-ink);
+        font: inherit;
+        font-size: .82rem;
+    }
+
+    .transport-cost-wrap {
+        position: relative;
+    }
+
+    .transport-cost-symbol {
+        position: absolute;
+        left: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--rw-muted);
+        font-size: .78rem;
+        pointer-events: none;
+    }
+
+    .transport-cost-input {
+        padding-left: 34px !important;
+    }
+
+    .transport-connector {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        color: var(--rw-teal-dark);
+        font-size: .72rem;
+        font-weight: 800;
+    }
+
+    .transport-connector::before {
+        content: "↓";
+    }
+
+    @media (max-width: 680px) {
+        .transport-editor {
+            margin-left: 0;
+        }
+
+        .transport-fields {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .transport-field.note {
+            grid-column: 1 / -1;
+        }
+    }
+
+    @media (max-width: 560px) {
+        .route-stop input[type="number"],
+        .transport-field input,
+        .transport-field select {
+            font-size: 16px;
+        }
+
+        .transport-fields {
+            grid-template-columns: 1fr;
+        }
+
+        .transport-field.note {
+            grid-column: auto;
+        }
+    }
+</style>
+
+<main class="trip-planner">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages or fx_limited %}
+            <div class="planner-alerts" aria-live="polite">
+                {% for category, message in messages %}
+                    <div class="planner-alert {{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+
+                {% if fx_limited %}
+                    <div class="planner-alert warning">
+                        Live currency conversion is temporarily limited.
+                        GBP estimates still work and unavailable currencies are hidden.
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <section class="planner-hero">
+        <div>
+            <span class="planner-eyebrow">Trip planner</span>
+            <h1>Build the route. Know the damage.</h1>
+            <p>
+                Add your stops, choose how you travel and Roamwise will turn the route
+                into a realistic backpacking budget before your bank account gets a surprise.
+            </p>
+        </div>
+
+        <div class="planner-hero-badge">
+            <span>GBP source data</span>
+            <small>Converted only for display</small>
+        </div>
+    </section>
+
+    <form id="tripPlannerForm" method="post" action="{{ form_action|default(url_for('main.plan_trip')) }}">
+        {% if csrf_token is defined %}
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        {% endif %}
+
+        <input type="hidden" name="route_json" id="routeJson" value="[]">
+        <input type="hidden" name="transport_json" id="transportJson" value="{}">
+        <input type="hidden" name="travel_style" id="travelStyleHidden" value="balanced">
+        <input type="hidden" name="display_currency" id="displayCurrencyHidden" value="{{ selected_currency }}">
+
+        <section class="planner-controls" aria-label="Trip settings">
+            <div class="field">
+                <label for="tripStart">Start date</label>
+                <input type="date" id="tripStart" name="start_date" value="{{ planner_initial.start_date|default('') }}">
+            </div>
+
+            <div class="field">
+                <label for="tripEnd">End date</label>
+                <input type="date" id="tripEnd" name="end_date" value="{{ planner_initial.end_date|default('') }}">
+            </div>
+
+            <div class="field">
+                <label for="travelStyle">Travel style</label>
+                <select id="travelStyle">
+                    <option value="shoestring" {% if planner_initial.travel_style == 'shoestring' %}selected{% endif %}>Shoestring</option>
+                    <option value="balanced" {% if planner_initial.travel_style == 'balanced' %}selected{% endif %}>Balanced</option>
+                    <option value="comfortable" {% if planner_initial.travel_style == 'comfortable' %}selected{% endif %}>Comfortable</option>
+                </select>
+            </div>
+
+            <div class="field">
+                <label for="displayCurrency">Display currency</label>
+                <select id="displayCurrency">
+                    {% for code, rate in fx_rates.items() %}
+                        <option value="{{ code }}" {% if code == selected_currency %}selected{% endif %}>{{ code }}</option>
+                    {% endfor %}
+                </select>
+                <p class="currency-note">All source costs remain stored in GBP.</p>
+            </div>
+        </section>
+
+        <section class="planner-layout">
+            <div class="planner-panel">
+                <div class="panel-header">
+                    <div>
+                        <span class="panel-kicker">Your route</span>
+                        <h2>Where are you going?</h2>
+                        <p>Add destinations in travel order, then set the number of nights in each city.</p>
+                    </div>
+
+                    <span class="route-count" id="routeCount">0 stops</span>
+                </div>
+
+                <div class="city-picker">
+                    <input
+                        id="citySearch"
+                        class="city-search-input"
+                        type="search"
+                        autocomplete="off"
+                        placeholder="Start typing a city..."
+                        aria-label="Search cities"
+                        aria-expanded="false"
+                        aria-controls="cityResults"
+                    >
+                    <span class="city-search-icon" aria-hidden="true">⌕</span>
+                    <div id="cityResults" class="city-results" role="listbox"></div>
+                </div>
+
+                <p class="transport-help">
+                    Add transport manually between stops — bus, train, flight,
+                    ferry, hitchhiking or anything else. Roamwise adds it to the
+                    full trip total without pretending to know which journey you'll book.
+                </p>
+
+                <div id="routeEmpty" class="route-empty">
+                    <div class="route-empty-icon">⌖</div>
+                    <strong>Your route is empty</strong>
+                    <p>Search for your first city above. You can reorder stops once they are added.</p>
+                </div>
+
+                <div id="routeList" class="route-list"></div>
+            </div>
+
+            <aside class="summary-stack">
+                <div class="summary-card">
+                    <span class="panel-kicker">Your estimate</span>
+                    <h2>Trip budget</h2>
+
+                    <div class="summary-total">
+                        <span>Estimated total</span>
+                        <strong id="tripTotal">£0.00</strong>
+                        <small id="averagePerDay">£0.00 / day</small>
+                    </div>
+
+                    <div class="summary-list">
+                        <div class="summary-line">
+                            <span>Planned nights</span>
+                            <strong id="totalNights">0</strong>
+                        </div>
+
+                        <div class="summary-line">
+                            <span>Accommodation</span>
+                            <strong id="accommodationTotal">£0.00</strong>
+                        </div>
+
+                        <div class="summary-line">
+                            <span>Living costs</span>
+                            <strong id="livingTotal">£0.00</strong>
+                        </div>
+
+                        <div class="summary-line">
+                            <span>Transport</span>
+                            <strong id="transportTotal">£0.00</strong>
+                        </div>
+
+                        <div class="summary-line">
+                            <span>Travel style</span>
+                            <strong id="styleLabel">Balanced</strong>
+                        </div>
+                    </div>
+
+                    <div id="dateFit" class="date-fit"></div>
+                </div>
+
+                <div class="summary-card">
+                    <span class="panel-kicker">Schengen</span>
+                    <h2>Visa-day snapshot</h2>
+
+                    <div class="schengen-meter" aria-hidden="true">
+                        <div id="schengenMeter" class="schengen-meter-fill"></div>
+                    </div>
+
+                    <div class="summary-list">
+                        <div class="schengen-line">
+                            <span>Schengen</span>
+                            <strong id="schengenDays">0 days</strong>
+                        </div>
+                        <div class="schengen-line">
+                            <span>Non-Schengen</span>
+                            <strong id="nonSchengenDays">0 days</strong>
+                        </div>
+                    </div>
+
+                    <p class="schengen-caption">
+                        Based on planned nights in each destination. This is a trip snapshot,
+                        not yet a full 90/180-day history check.
+                    </p>
+                </div>
+
+                <div class="summary-card save-area">
+                    <button class="save-button" id="saveTripButton" type="submit" disabled>{{ submit_label|default('Save trip') }}</button>
+                    <p class="save-note">
+                        {% if is_editing %}
+                            Update this saved route with your latest changes.
+                        {% else %}
+                            Save this route to your account so you can come back to the budget later.
+                        {% endif %}
+                    </p>
+                    {% if is_editing %}
+                        <a href="{{ url_for('main.my_trips') }}" style="display:inline-block;margin-top:10px;font-size:.82rem;color:var(--rw-muted);">
+                            ← Back to my trips
+                        </a>
+                    {% endif %}
+                </div>
+            </aside>
+        </section>
+    </form>
+</main>
+
+<script>
+(() => {
+    const FX_RATES = {{ fx_rates|tojson }};
+    const CITY_OPTIONS = {{ city_options|tojson }};
+    const INITIAL_TRIP = {{ planner_initial|tojson }};
+    const IS_EDITING = {{ is_editing|default(false)|tojson }};
+
+    const cityById = new Map(
+        CITY_OPTIONS.map(city => [
+            Number(city.id),
+            city
+        ])
+    );
+
+    const initialRoute = (INITIAL_TRIP.route || [])
+        .map(stop => {
+            const city = cityById.get(
+                Number(stop.city_id)
+            );
+
+            if (!city) return null;
+
+            return {
+                ...city,
+                nights: Math.max(
+                    1,
+                    Math.min(
+                        90,
+                        Number(stop.nights) || 1
+                    )
+                )
+            };
+        })
+        .filter(Boolean);
+
+    const TRANSPORT_MODES = [
+        ["", "Not set"],
+        ["bus", "Bus"],
+        ["train", "Train"],
+        ["flight", "Flight"],
+        ["ferry", "Ferry"],
+        ["car", "Car"],
+        ["hitchhike", "Hitchhike"],
+        ["other", "Other"]
+    ];
+
+    const makeRouteUid = (() => {
+        let counter = 0;
+
+        return () => {
+            counter += 1;
+            return `route-${Date.now()}-${counter}`;
+        };
+    })();
+
+    initialRoute.forEach(city => {
+        city.routeUid = makeRouteUid();
+    });
+
+    const initialTransport = INITIAL_TRIP.transport || {};
+
+    const normaliseTransportEntry = entry => ({
+        mode: String(entry?.mode || ""),
+        cost_gbp: Math.max(0, Number(entry?.cost_gbp) || 0),
+        note: String(entry?.note || "").slice(0, 200)
+    });
+
+    const state = {
+        route: initialRoute,
+        style: INITIAL_TRIP.travel_style || "balanced",
+        currency: INITIAL_TRIP.display_currency || {{ selected_currency|tojson }},
+        arrivalTransport: normaliseTransportEntry(initialTransport.arrival),
+        departureTransport: normaliseTransportEntry(initialTransport.departure),
+        transportLegs: new Map()
+    };
+
+    (initialTransport.legs || []).forEach(leg => {
+        const index = Number(leg.position) - 1;
+
+        if (index < 0 || index >= state.route.length - 1) return;
+
+        const from = state.route[index];
+        const to = state.route[index + 1];
+        const key = `${from.routeUid}->${to.routeUid}`;
+
+        state.transportLegs.set(key, normaliseTransportEntry(leg));
+    });
+
+    const searchInput = document.getElementById("citySearch");
+    const resultsBox = document.getElementById("cityResults");
+    const routeList = document.getElementById("routeList");
+    const routeEmpty = document.getElementById("routeEmpty");
+    const routeCount = document.getElementById("routeCount");
+
+    const tripStart = document.getElementById("tripStart");
+    const tripEnd = document.getElementById("tripEnd");
+    const travelStyle = document.getElementById("travelStyle");
+    const displayCurrency = document.getElementById("displayCurrency");
+
+    const tripTotal = document.getElementById("tripTotal");
+    const averagePerDay = document.getElementById("averagePerDay");
+    const totalNights = document.getElementById("totalNights");
+    const accommodationTotal = document.getElementById("accommodationTotal");
+    const livingTotal = document.getElementById("livingTotal");
+    const transportTotal = document.getElementById("transportTotal");
+    const styleLabel = document.getElementById("styleLabel");
+    const schengenDays = document.getElementById("schengenDays");
+    const nonSchengenDays = document.getElementById("nonSchengenDays");
+    const schengenMeter = document.getElementById("schengenMeter");
+    const dateFit = document.getElementById("dateFit");
+    const saveButton = document.getElementById("saveTripButton");
+
+    const routeJson = document.getElementById("routeJson");
+    const transportJson = document.getElementById("transportJson");
+    const travelStyleHidden = document.getElementById("travelStyleHidden");
+    const displayCurrencyHidden = document.getElementById("displayCurrencyHidden");
+
+    travelStyle.value = state.style;
+
+    const currencyExists = Array.from(
+        displayCurrency.options
+    ).some(
+        option => option.value === state.currency
+    );
+
+    if (currencyExists) {
+        displayCurrency.value = state.currency;
+    } else {
+        state.currency = {{ selected_currency|tojson }};
+        displayCurrency.value = state.currency;
+    }
+
+    function styleMultiplier() {
+        if (state.style === "shoestring") return 0.72;
+        if (state.style === "comfortable") return 1.55;
+        return 1;
+    }
+
+    function dailyCost(city) {
+        if (state.style === "shoestring") return city.shoestringCost;
+        if (state.style === "comfortable") return city.comfortableCost;
+        return city.balancedCost;
+    }
+
+    function convertFromGBP(value) {
+        const rate = Number(FX_RATES[state.currency] ?? 1);
+        return value * rate;
+    }
+
+    function convertToGBP(value) {
+        const rate = Number(FX_RATES[state.currency] ?? 1);
+        const numeric = Number(value);
+
+        if (!Number.isFinite(numeric) || numeric <= 0) return 0;
+
+        return rate > 0 ? numeric / rate : numeric;
+    }
+
+    function transportInputValue(costGBP) {
+        const converted = convertFromGBP(Number(costGBP) || 0);
+        return converted ? converted.toFixed(2) : "";
+    }
+
+    function currencySymbol(code) {
+        const symbols = {
+            GBP: "£",
+            EUR: "€",
+            USD: "$",
+            AUD: "A$",
+            CAD: "C$",
+            NZD: "NZ$"
+        };
+        return symbols[code] || `${code} `;
+    }
+
+    function money(value) {
+        const converted = convertFromGBP(value);
+        const symbol = currencySymbol(state.currency);
+
+        return `${symbol}${converted.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        })}`;
+    }
+
+    function currentEndpointUids() {
+        return {
+            first: state.route[0]?.routeUid || null,
+            last: state.route[state.route.length - 1]?.routeUid || null
+        };
+    }
+
+    function resetChangedEndpointTransport(previous) {
+        const current = currentEndpointUids();
+
+        if (previous.first !== current.first) {
+            state.arrivalTransport = normaliseTransportEntry({});
+        }
+
+        if (previous.last !== current.last) {
+            state.departureTransport = normaliseTransportEntry({});
+        }
+    }
+
+    function currentLegKeys() {
+        const keys = new Set();
+
+        for (let index = 0; index < state.route.length - 1; index += 1) {
+            const from = state.route[index];
+            const to = state.route[index + 1];
+            keys.add(`${from.routeUid}->${to.routeUid}`);
+        }
+
+        return keys;
+    }
+
+    function pruneTransportLegs() {
+        const validKeys = currentLegKeys();
+
+        for (const key of state.transportLegs.keys()) {
+            if (!validKeys.has(key)) state.transportLegs.delete(key);
+        }
+    }
+
+    function transportLegEntry(from, to) {
+        const key = `${from.routeUid}->${to.routeUid}`;
+
+        if (!state.transportLegs.has(key)) {
+            state.transportLegs.set(key, normaliseTransportEntry({}));
+        }
+
+        return state.transportLegs.get(key);
+    }
+
+    function addCity(city) {
+        const previous = currentEndpointUids();
+
+        state.route.push({
+            ...city,
+            nights: 2,
+            routeUid: makeRouteUid()
+        });
+
+        resetChangedEndpointTransport(previous);
+        pruneTransportLegs();
+        searchInput.value = "";
+        closeResults();
+        render();
+    }
+
+    function removeCity(index) {
+        const previous = currentEndpointUids();
+        state.route.splice(index, 1);
+        resetChangedEndpointTransport(previous);
+        pruneTransportLegs();
+        render();
+    }
+
+    function moveCity(index, direction) {
+        const newIndex = index + direction;
+        if (newIndex < 0 || newIndex >= state.route.length) return;
+
+        const previous = currentEndpointUids();
+        const [item] = state.route.splice(index, 1);
+        state.route.splice(newIndex, 0, item);
+        resetChangedEndpointTransport(previous);
+        pruneTransportLegs();
+        render();
+    }
+
+    function setNights(index, value) {
+        const nights = Math.max(1, Math.min(90, Number(value) || 1));
+        state.route[index].nights = nights;
+        render();
+    }
+
+    function renderSearchResults(query) {
+        const q = query.trim().toLowerCase();
+
+        if (!q) {
+            closeResults();
+            return;
+        }
+
+        const matches = CITY_OPTIONS
+            .filter(city => `${city.name} ${city.country} ${city.region}`.toLowerCase().includes(q))
+            .sort((a, b) => {
+                const aStarts = a.name.toLowerCase().startsWith(q) ? 0 : 1;
+                const bStarts = b.name.toLowerCase().startsWith(q) ? 0 : 1;
+                return aStarts - bStarts || a.name.localeCompare(b.name);
+            })
+            .slice(0, 8);
+
+        resultsBox.innerHTML = "";
+
+        if (!matches.length) {
+            resultsBox.innerHTML = `
+                <div style="padding:14px;color:var(--rw-muted);font-size:.86rem;">
+                    No matching cities yet.
+                </div>
+            `;
+            openResults();
+            return;
+        }
+
+        matches.forEach(city => {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "city-result";
+            button.innerHTML = `
+                <span>
+                    <strong>${escapeHtml(city.name)}</strong>
+                    <span>${escapeHtml(city.country)}${city.region ? ` · ${escapeHtml(city.region)}` : ""}</span>
+                </span>
+                <span class="city-result-price">${money(dailyCost(city))}/day</span>
+            `;
+            button.addEventListener("click", () => addCity(city));
+            resultsBox.appendChild(button);
+        });
+
+        openResults();
+    }
+
+    function openResults() {
+        resultsBox.classList.add("open");
+        searchInput.setAttribute("aria-expanded", "true");
+    }
+
+    function closeResults() {
+        resultsBox.classList.remove("open");
+        searchInput.setAttribute("aria-expanded", "false");
+    }
+
+    function transportModeOptions(selected) {
+        return TRANSPORT_MODES
+            .map(([value, label]) => `
+                <option value="${value}" ${value === selected ? "selected" : ""}>
+                    ${label}
+                </option>
+            `)
+            .join("");
+    }
+
+    function createTransportEditor({ entry, heading, subheading, endpoint = false }) {
+        const wrapper = document.createElement("div");
+        wrapper.className = `transport-editor${endpoint ? " endpoint" : ""}`;
+
+        wrapper.innerHTML = `
+            <div class="transport-editor-heading">
+                <strong class="transport-connector">${escapeHtml(heading)}</strong>
+                <span>${escapeHtml(subheading)}</span>
+            </div>
+
+            <div class="transport-fields">
+                <div class="transport-field">
+                    <label>Mode</label>
+                    <select data-transport="mode">
+                        ${transportModeOptions(entry.mode)}
+                    </select>
+                </div>
+
+                <div class="transport-field">
+                    <label>Cost</label>
+                    <div class="transport-cost-wrap">
+                        <span class="transport-cost-symbol">${escapeHtml(currencySymbol(state.currency))}</span>
+                        <input
+                            class="transport-cost-input"
+                            data-transport="cost"
+                            type="number"
+                            min="0"
+                            step="0.01"
+                            inputmode="decimal"
+                            value="${transportInputValue(entry.cost_gbp)}"
+                            placeholder="0.00"
+                        >
+                    </div>
+                </div>
+
+                <div class="transport-field note">
+                    <label>Note · optional</label>
+                    <input
+                        data-transport="note"
+                        type="text"
+                        maxlength="200"
+                        value="${escapeHtml(entry.note)}"
+                        placeholder="e.g. FlixBus, night train..."
+                    >
+                </div>
+            </div>
+        `;
+
+        wrapper.querySelector('[data-transport="mode"]').addEventListener("change", event => {
+            entry.mode = event.target.value;
+            syncPayload();
+        });
+
+        wrapper.querySelector('[data-transport="cost"]').addEventListener("input", event => {
+            entry.cost_gbp = convertToGBP(event.target.value);
+            renderSummary();
+        });
+
+        wrapper.querySelector('[data-transport="note"]').addEventListener("input", event => {
+            entry.note = event.target.value.slice(0, 200);
+            syncPayload();
+        });
+
+        return wrapper;
+    }
+
+    function renderRoute() {
+        routeList.innerHTML = "";
+        routeEmpty.style.display = state.route.length ? "none" : "block";
+        routeCount.textContent = `${state.route.length} ${state.route.length === 1 ? "stop" : "stops"}`;
+
+        if (!state.route.length) return;
+
+        routeList.appendChild(
+            createTransportEditor({
+                entry: state.arrivalTransport,
+                heading: `Getting to ${state.route[0].name}`,
+                subheading: "Optional",
+                endpoint: true
+            })
+        );
+
+        state.route.forEach((city, index) => {
+            const row = document.createElement("div");
+            row.className = "route-stop";
+            const stopTotal = dailyCost(city) * city.nights;
+
+            row.innerHTML = `
+                <div class="route-number">${index + 1}</div>
+                <div class="route-city">
+                    <strong>${escapeHtml(city.name)}</strong>
+                    <span>
+                        ${escapeHtml(city.country)}
+                        ${city.region ? ` · ${escapeHtml(city.region)}` : ""}
+                        ${city.isSchengen ? " · Schengen" : ""}
+                    </span>
+                </div>
+
+                <div class="nights-control">
+                    <button type="button" data-action="minus">−</button>
+                    <input type="number" min="1" max="90" value="${city.nights}">
+                    <button type="button" data-action="plus">+</button>
+                </div>
+
+                <div class="route-price">
+                    <strong>${money(stopTotal)}</strong>
+                    <small>${money(dailyCost(city))}/day</small>
+                </div>
+
+                <div class="route-actions">
+                    <button type="button" class="icon-btn" data-action="up" ${index === 0 ? "disabled" : ""}>↑</button>
+                    <button type="button" class="icon-btn" data-action="down" ${index === state.route.length - 1 ? "disabled" : ""}>↓</button>
+                    <button type="button" class="icon-btn remove" data-action="remove">×</button>
+                </div>
+            `;
+
+            const input = row.querySelector("input");
+            input.addEventListener("change", event => setNights(index, event.target.value));
+            row.querySelector('[data-action="minus"]').addEventListener("click", () => setNights(index, city.nights - 1));
+            row.querySelector('[data-action="plus"]').addEventListener("click", () => setNights(index, city.nights + 1));
+            row.querySelector('[data-action="up"]').addEventListener("click", () => moveCity(index, -1));
+            row.querySelector('[data-action="down"]').addEventListener("click", () => moveCity(index, 1));
+            row.querySelector('[data-action="remove"]').addEventListener("click", () => removeCity(index));
+
+            routeList.appendChild(row);
+
+            if (index < state.route.length - 1) {
+                const nextCity = state.route[index + 1];
+                const legEntry = transportLegEntry(city, nextCity);
+
+                routeList.appendChild(
+                    createTransportEditor({
+                        entry: legEntry,
+                        heading: `${city.name} → ${nextCity.name}`,
+                        subheading: "Transport between stops"
+                    })
+                );
+            }
+        });
+
+        routeList.appendChild(
+            createTransportEditor({
+                entry: state.departureTransport,
+                heading: `Getting home from ${state.route[state.route.length - 1].name}`,
+                subheading: "Optional",
+                endpoint: true
+            })
+        );
+    }
+
+    function datesInvalid() {
+        if (!tripStart.value || !tripEnd.value) return false;
+
+        const start = new Date(`${tripStart.value}T00:00:00`);
+        const end = new Date(`${tripEnd.value}T00:00:00`);
+
+        return end < start;
+    }
+
+    function renderSummary() {
+        const multiplier = styleMultiplier();
+
+        let nights = 0;
+        let total = 0;
+        let accommodation = 0;
+        let living = 0;
+        let transportGBP = 0;
+        let schengen = 0;
+        let nonSchengen = 0;
+
+        state.route.forEach(city => {
+            nights += city.nights;
+
+            const baseAccommodation = city.hostelPerNight * city.nights;
+            const baseLiving = ((city.monthlyLivingCost + 100) / 30) * city.nights;
+
+            accommodation += baseAccommodation * multiplier;
+            living += baseLiving * multiplier;
+            total += dailyCost(city) * city.nights;
+
+            if (city.isSchengen) schengen += city.nights;
+            else nonSchengen += city.nights;
+        });
+
+        transportGBP += Number(state.arrivalTransport.cost_gbp) || 0;
+        transportGBP += Number(state.departureTransport.cost_gbp) || 0;
+
+        for (let index = 0; index < state.route.length - 1; index += 1) {
+            const leg = transportLegEntry(state.route[index], state.route[index + 1]);
+            transportGBP += Number(leg.cost_gbp) || 0;
+        }
+
+        const averageStayPerDay = nights
+            ? total / nights
+            : 0;
+
+        // Transport is a one-off trip cost. It increases the final trip
+        // total, but must not inflate the daily stay estimate.
+        total += transportGBP;
+
+        totalNights.textContent = nights;
+        tripTotal.textContent = money(total);
+        averagePerDay.textContent = `${money(averageStayPerDay)} / day`;
+        accommodationTotal.textContent = money(accommodation);
+        livingTotal.textContent = money(living);
+        transportTotal.textContent = money(transportGBP);
+
+        const styleNames = {
+            shoestring: "Shoestring",
+            balanced: "Balanced",
+            comfortable: "Comfortable"
+        };
+
+        styleLabel.textContent = styleNames[state.style];
+        schengenDays.textContent = `${schengen} ${schengen === 1 ? "day" : "days"}`;
+        nonSchengenDays.textContent = `${nonSchengen} ${nonSchengen === 1 ? "day" : "days"}`;
+
+        const schengenPercent = nights ? Math.min(100, (schengen / nights) * 100) : 0;
+        schengenMeter.style.width = `${schengenPercent}%`;
+
+        saveButton.disabled =
+            state.route.length === 0 ||
+            datesInvalid();
+
+        renderDateFit(nights);
+        syncPayload();
+    }
+
+    function renderDateFit(plannedNights) {
+        dateFit.classList.remove("show");
+        dateFit.textContent = "";
+
+        if (!tripStart.value || !tripEnd.value) return;
+
+        const start = new Date(`${tripStart.value}T00:00:00`);
+        const end = new Date(`${tripEnd.value}T00:00:00`);
+        const tripNights = Math.round((end - start) / 86400000);
+
+        if (tripNights < 0) {
+            dateFit.textContent = "Your end date is before your start date.";
+            dateFit.classList.add("show");
+            return;
+        }
+
+        const difference = plannedNights - tripNights;
+
+        if (difference === 0) {
+            dateFit.textContent = `Nice — your route matches the ${tripNights}-night date range.`;
+        } else if (difference > 0) {
+            dateFit.textContent = `Your route is ${difference} ${difference === 1 ? "night" : "nights"} longer than the selected date range.`;
+        } else {
+            const shortBy = Math.abs(difference);
+            dateFit.textContent = `You still have ${shortBy} ${shortBy === 1 ? "night" : "nights"} unassigned in the selected date range.`;
+        }
+
+        dateFit.classList.add("show");
+    }
+
+    function syncPayload() {
+        routeJson.value = JSON.stringify(
+            state.route.map((city, index) => ({
+                position: index + 1,
+                city_id: city.id,
+                nights: city.nights
+            }))
+        );
+
+        transportJson.value = JSON.stringify({
+            arrival: { ...state.arrivalTransport },
+            departure: { ...state.departureTransport },
+            legs: state.route
+                .slice(0, -1)
+                .map((city, index) => {
+                    const nextCity = state.route[index + 1];
+                    const entry = transportLegEntry(city, nextCity);
+
+                    return {
+                        position: index + 1,
+                        from_city_id: city.id,
+                        to_city_id: nextCity.id,
+                        ...entry
+                    };
+                })
+        });
+
+        travelStyleHidden.value = state.style;
+        displayCurrencyHidden.value = state.currency;
+    }
+
+    function render() {
+        renderRoute();
+        renderSummary();
+
+        if (searchInput.value.trim()) {
+            renderSearchResults(searchInput.value);
+        }
+    }
+
+    function escapeHtml(value) {
+        return String(value)
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
+    }
+
+    searchInput.addEventListener("input", event => renderSearchResults(event.target.value));
+
+    searchInput.addEventListener("focus", () => {
+        if (searchInput.value.trim()) renderSearchResults(searchInput.value);
+    });
+
+    document.addEventListener("click", event => {
+        if (!event.target.closest(".city-picker")) closeResults();
+    });
+
+    travelStyle.addEventListener("change", event => {
+        state.style = event.target.value;
+        render();
+    });
+
+    displayCurrency.addEventListener("change", event => {
+        state.currency = event.target.value;
+        render();
+    });
+
+    tripStart.addEventListener("change", renderSummary);
+    tripEnd.addEventListener("change", renderSummary);
+
+    let submitting = false;
+
+    document.getElementById("tripPlannerForm").addEventListener("submit", event => {
+        syncPayload();
+
+        if (!state.route.length || datesInvalid()) {
+            event.preventDefault();
+            renderSummary();
+            return;
+        }
+
+        if (submitting) {
+            event.preventDefault();
+            return;
+        }
+
+        submitting = true;
+        saveButton.disabled = true;
+        saveButton.classList.add("is-submitting");
+        saveButton.textContent = IS_EDITING
+            ? "Updating…"
+            : "Saving…";
+    });
+
+    render();
+})();
+</script>
+{% endblock %}

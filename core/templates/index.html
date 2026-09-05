@@ -1,227 +1,234 @@
 {% extends "components/base.html" %}
+
+{% block head_extra %}
+<link rel="preconnect" href="https://fonts.bunny.net">
+<link href="https://fonts.bunny.net/css?family=dm-sans:400,500,600,700|kalam:400,700" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='leaveprints.css') }}">
+{% endblock %}
+
+{% block body_class %}leaveprints-page{% endblock %}
+
 {% block content %}
-<main class="landing">
-    <section class="landing-hero">
-        <div class="hero-copy">
-            <div class="eyebrow">
-                <span class="eyebrow-dot"></span>
-                Built for backpackers, not package holidays
+<main class="lp-landing">
+    <section class="lp-hero" aria-labelledby="lp-hero-title">
+        <div class="lp-hero-copy">
+            <div class="lp-kicker">
+                <span class="lp-kicker-foot">◦</span>
+                Built for backpackers
             </div>
 
-            <h1 class="hero-title">
-                Travel further.<br>
-                <span class="accent">Guess less.</span>
+            <h1 id="lp-hero-title" class="lp-hero-title">
+                <span>Plan your trip.</span>
+                <span>Know the damage.</span>
+                <span class="lp-terracotta">Leave your print.</span>
             </h1>
 
-            <p class="hero-lead">
-                Plan a multi-city trip, see what each stop will actually cost, and keep your backpacking budget under control before the first hostel check-in.
+            <p class="lp-hero-lead">
+                Build multi-city routes, get realistic backpacker cost estimates,
+                and share the trail so someone else can follow it.
             </p>
 
-            <div class="hero-actions">
+            <div class="lp-actions">
                 {% if current_user.is_authenticated %}
-                    <a class="landing-btn primary" href="#features">
-                        Explore Roamwise <span class="arrow">→</span>
+                    <a class="lp-btn lp-btn-primary" href="{{ url_for('main.plan_trip') }}">
+                        Plan a trip <span aria-hidden="true">→</span>
                     </a>
                 {% else %}
-                    <a class="landing-btn primary" href="{{ url_for('auth.register') }}">
-                        Start planning free <span class="arrow">→</span>
+                    <a class="lp-btn lp-btn-primary" href="{{ url_for('auth.register') }}">
+                        Start planning free <span aria-hidden="true">→</span>
                     </a>
                 {% endif %}
-                <a class="landing-btn secondary" href="#how-it-works">See how it works</a>
+                <a class="lp-btn lp-btn-ghost" href="#how-it-works">See how it works</a>
             </div>
 
-            <div class="hero-note" aria-label="Roamwise benefits">
-                <span>Multi-city budgets</span>
+            <div class="lp-proofline" aria-label="LeavePrints highlights">
+                <span>Multi-city routes</span>
                 <span>Backpacker-first costs</span>
-                <span>No spreadsheet maths</span>
+                <span>Shareable prints</span>
             </div>
         </div>
 
-        <div class="hero-visual" aria-label="Example trip budget">
-            <div class="floating-tag one">🏨 Hostel + food + transport</div>
-            <div class="floating-tag two">✈️ 17 days. One budget.</div>
+        <div class="lp-hero-art" aria-label="Backpacker overlooking a coastal city">
+            <div class="lp-photo-frame">
+                <img src="{{ url_for('static', filename='leaveprints-hero.jpg') }}" alt="A backpacker overlooking a coastal city at sunset">
+                <div class="lp-photo-sticker">Leave prints here ↗</div>
+            </div>
 
-            <div class="trip-shell">
-                <article class="trip-card">
-                    <div class="trip-topbar">
-                        <div class="trip-title-wrap">
-                            <div class="trip-kicker">Your trip</div>
-                            <div class="trip-name">Central Europe → Sofia</div>
-                        </div>
-                        <div class="live-pill">On budget</div>
+            <svg class="lp-foot-trail" viewBox="0 0 440 160" aria-hidden="true">
+                <path d="M18 122 C94 80, 132 136, 202 86 S330 42, 420 28" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 11"/>
+                <g fill="currentColor">
+                    <ellipse cx="66" cy="93" rx="8" ry="14" transform="rotate(-30 66 93)"/>
+                    <circle cx="53" cy="75" r="4"/><circle cx="60" cy="68" r="3.5"/><circle cx="68" cy="65" r="3"/>
+                    <ellipse cx="188" cy="92" rx="8" ry="14" transform="rotate(22 188 92)"/>
+                    <circle cx="198" cy="73" r="4"/><circle cx="193" cy="66" r="3.5"/><circle cx="186" cy="62" r="3"/>
+                    <ellipse cx="320" cy="47" rx="8" ry="14" transform="rotate(-18 320 47)"/>
+                    <circle cx="309" cy="29" r="4"/><circle cx="316" cy="23" r="3.5"/><circle cx="324" cy="21" r="3"/>
+                </g>
+            </svg>
+        </div>
+    </section>
+
+    <section class="lp-product" id="features">
+        <div class="lp-app-preview" aria-label="Example LeavePrints route budget">
+            <div class="lp-app-top">
+                <div class="lp-mini-brand">
+                    <img src="{{ url_for('static', filename='leaveprints-mark.svg') }}" alt="">
+                    <span>LeavePrints</span>
+                </div>
+                <span class="lp-beta-pill">Beta</span>
+            </div>
+
+            <div class="lp-route-heading">
+                <div>
+                    <span class="lp-label">Your print</span>
+                    <h2>Central Europe → Sofia</h2>
+                </div>
+                <div class="lp-total">
+                    <span>Est. trip</span>
+                    <strong>£787</strong>
+                </div>
+            </div>
+
+            <div class="lp-map-card">
+                <svg viewBox="0 0 560 250" role="img" aria-label="Route from Prague to Sofia">
+                    <defs>
+                        <linearGradient id="lpMapBg" x1="0" y1="0" x2="1" y2="1">
+                            <stop offset="0%" stop-color="#e8efe5"/>
+                            <stop offset="100%" stop-color="#f3ecde"/>
+                        </linearGradient>
+                    </defs>
+                    <rect width="560" height="250" rx="22" fill="url(#lpMapBg)"/>
+                    <path d="M70 52 C158 82, 180 108, 235 122 S350 142, 402 172 S470 206, 492 220" fill="none" stroke="#173b2d" stroke-width="5" stroke-linecap="round" stroke-dasharray="2 12"/>
+                    <g fill="#173b2d">
+                        <circle cx="70" cy="52" r="8"/><circle cx="235" cy="122" r="8"/><circle cx="402" cy="172" r="8"/><circle cx="492" cy="220" r="8"/>
+                    </g>
+                    <g font-family="DM Sans, sans-serif" font-size="14" font-weight="700" fill="#173b2d">
+                        <text x="86" y="48">Prague</text>
+                        <text x="250" y="118">Vienna</text>
+                        <text x="416" y="168">Budapest</text>
+                        <text x="432" y="238">Sofia</text>
+                    </g>
+                </svg>
+            </div>
+
+            <div class="lp-stops">
+                <div><span>Prague</span><strong>£57/day</strong></div>
+                <div><span>Vienna</span><strong>£68/day</strong></div>
+                <div><span>Budapest</span><strong>£51/day</strong></div>
+                <div><span>Sofia</span><strong>£40/day</strong></div>
+            </div>
+        </div>
+
+        <div class="lp-product-copy">
+            <div class="lp-hand-note">Real routes. Real budgets.</div>
+            <h2>Plan smarter.<br>Travel further.</h2>
+            <p>
+                LeavePrints keeps the useful bits in one place: where you're going,
+                how long you're staying, what it's likely to cost, and the route you want to share.
+            </p>
+
+            <div class="lp-feature-list">
+                <article>
+                    <div class="lp-feature-icon">⌖</div>
+                    <div>
+                        <h3>Plan your route</h3>
+                        <p>Add cities, nights and transport without juggling six tabs and a spreadsheet.</p>
                     </div>
-
-                    <div class="trip-content">
-                        <div class="budget-overview">
-                            <div>
-                                <div class="budget-label">Estimated trip cost</div>
-                                <div class="budget-number">£787 <small>/ 17 days</small></div>
-                            </div>
-                            <div class="budget-badge">£46 / day</div>
-                        </div>
-
-                        <div class="route-list">
-                            <div class="route-row">
-                                <div class="flag">🇨🇿</div>
-                                <div>
-                                    <div class="route-city">Prague</div>
-                                    <div class="route-days">3 nights</div>
-                                </div>
-                                <div class="route-price">£171</div>
-                            </div>
-
-                            <div class="route-row">
-                                <div class="flag">🇭🇺</div>
-                                <div>
-                                    <div class="route-city">Budapest</div>
-                                    <div class="route-days">4 nights</div>
-                                </div>
-                                <div class="route-price">£204</div>
-                            </div>
-
-                            <div class="route-row">
-                                <div class="flag">🇷🇴</div>
-                                <div>
-                                    <div class="route-city">Brașov</div>
-                                    <div class="route-days">3 nights</div>
-                                </div>
-                                <div class="route-price">£132</div>
-                            </div>
-
-                            <div class="route-row">
-                                <div class="flag">🇧🇬</div>
-                                <div>
-                                    <div class="route-city">Sofia</div>
-                                    <div class="route-days">7 nights</div>
-                                </div>
-                                <div class="route-price">£280</div>
-                            </div>
-                        </div>
-
-                        <div class="breakdown" aria-label="Trip cost breakdown">
-                            <div class="breakdown-item">
-                                <div class="breakdown-label">Hostels</div>
-                                <div class="breakdown-value">£291</div>
-                            </div>
-                            <div class="breakdown-item">
-                                <div class="breakdown-label">Food</div>
-                                <div class="breakdown-value">£238</div>
-                            </div>
-                            <div class="breakdown-item">
-                                <div class="breakdown-label">Transport</div>
-                                <div class="breakdown-value">£106</div>
-                            </div>
-                            <div class="breakdown-item">
-                                <div class="breakdown-label">Other</div>
-                                <div class="breakdown-value">£152</div>
-                            </div>
-                        </div>
-
-                        <div class="trip-insight">
-                            <div class="insight-icon">💡</div>
-                            <div>
-                                <strong>Your budget has room to breathe.</strong>
-                                <p>Swap one expensive stop and you could stretch this route even further.</p>
-                            </div>
-                        </div>
+                </article>
+                <article>
+                    <div class="lp-feature-icon">£</div>
+                    <div>
+                        <h3>Know the damage</h3>
+                        <p>See backpacker-focused accommodation and living estimates before you commit.</p>
+                    </div>
+                </article>
+                <article>
+                    <div class="lp-feature-icon">↗</div>
+                    <div>
+                        <h3>Leave your prints</h3>
+                        <p>Turn a saved trip into a public route other travellers can view and copy.</p>
                     </div>
                 </article>
             </div>
-        </div>
-    </section>
 
-    <section class="value-strip" aria-label="What makes Roamwise different">
-        <div class="value-chip">
-            <strong>Real backpacker logic</strong>
-            <span>Hostels, cheap eats, local transport and the stuff travellers actually spend on.</span>
-        </div>
-        <div class="value-chip">
-            <strong>One route. One budget.</strong>
-            <span>Stop juggling tabs and calculators every time you add another city.</span>
-        </div>
-        <div class="value-chip">
-            <strong>Built to help you go further</strong>
-            <span>See where your money disappears before your bank balance has to tell you.</span>
-        </div>
-    </section>
-
-    <section class="landing-section" id="features">
-        <div class="section-heading">
-            <div class="section-kicker">Made for the way you travel</div>
-            <h2 class="section-title">Less admin.<br>More accidental adventures.</h2>
-            <p class="section-subtitle">
-                Roamwise turns the boring part of backpacking into something you can understand at a glance.
-            </p>
-        </div>
-
-        <div class="feature-grid">
-            <article class="feature-card">
-                <div class="feature-icon">🗺️</div>
-                <h3>Build your route visually</h3>
-                <p>Add cities, change the number of days and instantly see how each stop changes the total trip.</p>
-            </article>
-
-            <article class="feature-card">
-                <div class="feature-icon">💸</div>
-                <h3>Know the real daily cost</h3>
-                <p>Budget around backpacker spending instead of generic cost-of-living numbers that tell you basically nothing.</p>
-            </article>
-
-            <article class="feature-card">
-                <div class="feature-icon">🎒</div>
-                <h3>Stretch the trip, not the maths</h3>
-                <p>Compare stops, spot expensive cities and make smarter trade-offs without turning travel into an Excel internship.</p>
-            </article>
-        </div>
-    </section>
-
-    <section class="landing-section" id="how-it-works">
-        <div class="how-card">
-            <div>
-                <div class="section-kicker">How it works</div>
-                <h2 class="section-title">From “maybe” to a route you can afford.</h2>
-                <p class="section-subtitle">
-                    The whole point is to answer the question every backpacker eventually asks: “Can I actually afford this?”
-                </p>
-            </div>
-
-            <div class="steps">
-                <div class="step">
-                    <div class="step-num">01</div>
-                    <div>
-                        <h3>Pick your stops</h3>
-                        <p>Drop in the cities you want to visit and how long you want to stay.</p>
-                    </div>
-                </div>
-                <div class="step">
-                    <div class="step-num">02</div>
-                    <div>
-                        <h3>Set your travel style</h3>
-                        <p>Keep it shoestring, comfortable, or somewhere in the messy middle.</p>
-                    </div>
-                </div>
-                <div class="step">
-                    <div class="step-num">03</div>
-                    <div>
-                        <h3>See the trip take shape</h3>
-                        <p>Get a clean budget breakdown and tweak the route until the numbers work.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="final-cta">
-        <h2>Spend less time budgeting.<br>Spend more time roaming.</h2>
-        <p>Build the trip, understand the cost, then go do something more interesting than updating a spreadsheet.</p>
-        <div class="hero-actions">
             {% if current_user.is_authenticated %}
-                <a class="landing-btn primary" href="#features">Keep exploring <span class="arrow">→</span></a>
+                <a class="lp-btn lp-btn-primary" href="{{ url_for('main.plan_trip') }}">Build your route →</a>
             {% else %}
-                <a class="landing-btn primary" href="{{ url_for('auth.register') }}">Start planning free <span class="arrow">→</span></a>
-                <a class="landing-btn secondary" href="{{ url_for('auth.login') }}">I already have an account</a>
+                <a class="lp-btn lp-btn-primary" href="{{ url_for('auth.register') }}">Start planning free →</a>
             {% endif %}
         </div>
     </section>
+
+    <section class="lp-how" id="how-it-works">
+        <div class="lp-section-head">
+            <span class="lp-section-kicker">How it works</span>
+            <h2>Three steps. Then go.</h2>
+        </div>
+
+        <div class="lp-step-grid">
+            <article class="lp-step-card">
+                <span class="lp-step-no">01</span>
+                <h3>Add your stops</h3>
+                <p>Search for cities, choose how many nights, then reorder the route until it feels right.</p>
+            </article>
+            <article class="lp-step-card">
+                <span class="lp-step-no">02</span>
+                <h3>Choose your style</h3>
+                <p>Shoestring, balanced or comfortable. LeavePrints recalculates the trip around how you travel.</p>
+            </article>
+            <article class="lp-step-card">
+                <span class="lp-step-no">03</span>
+                <h3>Share your print</h3>
+                <p>Save the trip, make it public and give someone else a route worth following.</p>
+            </article>
+        </div>
+    </section>
+
+    <section class="lp-trail-story" aria-labelledby="trail-story-title">
+        <div class="lp-paper-note">
+            <span class="lp-hand-note">Not just trips. A trail.</span>
+            <h2 id="trail-story-title">Leave footprints others can follow.</h2>
+            <p>
+                A good route doesn't have to disappear into your notes app. Share it,
+                let someone copy it, and turn one trip into the start of another.
+            </p>
+        </div>
+
+        <div class="lp-world-route" aria-hidden="true">
+            <svg viewBox="0 0 760 320">
+                <path class="lp-world-blob" d="M63 97c47-45 106-68 165-56 34 7 62 25 98 22 41-4 70-36 115-31 38 4 60 35 98 43 40 8 85-9 118 17 33 26 24 66 3 88-26 27-65 34-101 31-34-2-67-14-100-5-37 10-67 45-109 41-38-4-59-40-96-52-46-15-99 9-140-17-31-20-35-56-17-81 9-13 20-23 34-34Z"/>
+                <path class="lp-world-trail" d="M112 164 C190 88, 278 220, 350 135 S504 68, 642 160"/>
+                <g class="lp-world-pin">
+                    <circle cx="112" cy="164" r="12"/><circle cx="270" cy="175" r="12"/><circle cx="350" cy="135" r="12"/><circle cx="506" cy="92" r="12"/><circle cx="642" cy="160" r="12"/>
+                </g>
+            </svg>
+            <span class="lp-world-caption">Same footsteps.<br>A bigger world.</span>
+        </div>
+    </section>
+
+    <section class="lp-final-cta">
+        <img src="{{ url_for('static', filename='leaveprints-mark.svg') }}" alt="" aria-hidden="true">
+        <div>
+            <span class="lp-hand-note">Ready to leave your first print?</span>
+            <h2>Build the route. Know the damage.</h2>
+            <p>LeavePrints is in beta. Come break it before everyone else does.</p>
+        </div>
+        {% if current_user.is_authenticated %}
+            <a class="lp-btn lp-btn-light" href="{{ url_for('main.plan_trip') }}">Plan a trip →</a>
+        {% else %}
+            <a class="lp-btn lp-btn-light" href="{{ url_for('auth.register') }}">Join the beta →</a>
+        {% endif %}
+    </section>
+
+    <footer class="lp-footer">
+        <div class="lp-footer-brand">
+            <img src="{{ url_for('static', filename='leaveprints-mark.svg') }}" alt="">
+            <div>
+                <strong>LeavePrints</strong>
+                <span>Plan · price · leave a trail</span>
+            </div>
+        </div>
+        <p>Built for backpackers who'd rather travel than spreadsheet.</p>
+    </footer>
 </main>
 {% endblock %}

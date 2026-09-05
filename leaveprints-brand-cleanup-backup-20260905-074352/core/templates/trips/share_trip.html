@@ -1,0 +1,1206 @@
+{% extends "components/base.html" %}
+
+{% block content %}
+<style>
+    .share-page {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 42px 22px 72px;
+        color: #111c2f;
+    }
+
+    .share-page-header {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 24px;
+        margin-bottom: 26px;
+    }
+
+    .share-eyebrow {
+        display: block;
+        margin-bottom: 8px;
+        color: #0e9384;
+        font-size: .72rem;
+        font-weight: 800;
+        letter-spacing: .13em;
+        text-transform: uppercase;
+    }
+
+    .share-page-header h1 {
+        margin: 0;
+        font-size: clamp(2rem, 4.5vw, 3.5rem);
+        line-height: 1;
+        letter-spacing: -.045em;
+    }
+
+    .share-page-header p {
+        max-width: 620px;
+        margin: 13px 0 0;
+        color: #738096;
+        line-height: 1.6;
+    }
+
+    .back-link {
+        flex: 0 0 auto;
+        color: #08776c;
+        font-weight: 800;
+        text-decoration: none;
+    }
+
+    .share-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1.3fr) minmax(280px, .7fr);
+        gap: 24px;
+        align-items: start;
+    }
+
+    .preview-shell,
+    .share-controls {
+        border: 1px solid #dfe7e4;
+        border-radius: 24px;
+        background: white;
+        box-shadow: 0 18px 50px rgba(17,28,47,.07);
+    }
+
+    .preview-shell {
+        padding: 18px;
+    }
+
+    .preview-label {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 13px;
+        color: #738096;
+        font-size: .76rem;
+        font-weight: 800;
+        letter-spacing: .04em;
+        text-transform: uppercase;
+    }
+
+    .preview-ratio {
+        padding: 5px 9px;
+        border-radius: 999px;
+        background: #e8f6f2;
+        color: #08776c;
+    }
+
+    .canvas-wrap {
+        overflow: hidden;
+        border-radius: 18px;
+        background: #eef2ee;
+        line-height: 0;
+    }
+
+    #shareCanvas {
+        display: block;
+        width: 100%;
+        height: auto;
+        aspect-ratio: 4 / 5;
+        background: #f6f1e7;
+    }
+
+    .share-controls {
+        padding: 22px;
+    }
+
+    .share-controls h2 {
+        margin: 0;
+        font-size: 1.2rem;
+        letter-spacing: -.025em;
+    }
+
+    .share-controls p {
+        margin: 8px 0 20px;
+        color: #738096;
+        font-size: .86rem;
+        line-height: 1.55;
+    }
+
+    .share-button {
+        display: flex;
+        width: 100%;
+        min-height: 48px;
+        align-items: center;
+        justify-content: center;
+        border: 0;
+        border-radius: 13px;
+        padding: 0 17px;
+        background: #0e9384;
+        color: white;
+        font: inherit;
+        font-weight: 850;
+        cursor: pointer;
+    }
+
+    .share-button:hover {
+        background: #08776c;
+    }
+
+    .share-button.secondary {
+        margin-top: 10px;
+        border: 1px solid #d7e2df;
+        background: white;
+        color: #111c2f;
+    }
+
+    .share-button.secondary:hover {
+        background: #f7faf9;
+    }
+
+    .share-button[hidden] {
+        display: none;
+    }
+
+    .share-button:disabled {
+        opacity: .55;
+        cursor: wait;
+    }
+
+    .share-status {
+        min-height: 1.2em;
+        margin: 12px 0 0 !important;
+        color: #738096;
+        font-size: .76rem !important;
+    }
+
+    .share-feedback {
+        display: grid;
+        gap: 9px;
+        margin-bottom: 18px;
+    }
+
+    .share-feedback-message {
+        padding: 11px 13px;
+        border: 1px solid #dfe7e4;
+        border-radius: 11px;
+        background: white;
+        font-size: .8rem;
+        line-height: 1.45;
+    }
+
+    .share-feedback-message.success {
+        border-color: #bfe2d9;
+        background: #edf9f5;
+        color: #08776c;
+    }
+
+    .share-feedback-message.error {
+        border-color: #efcaca;
+        background: #fff3f3;
+        color: #9b3434;
+    }
+
+    .public-share-panel {
+        margin-bottom: 18px;
+        padding: 16px;
+        border: 1px solid #dfe7e4;
+        border-radius: 16px;
+        background: #fbfdfc;
+    }
+
+    .public-share-panel.live {
+        border-color: #bfe2d9;
+        background: #edf9f5;
+    }
+
+    .public-share-status {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 8px;
+        font-size: .76rem;
+        font-weight: 850;
+        text-transform: uppercase;
+        letter-spacing: .05em;
+    }
+
+    .public-share-status span {
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: #94a3b8;
+    }
+
+    .public-share-panel.live .public-share-status {
+        color: #08776c;
+    }
+
+    .public-share-panel.live .public-share-status span {
+        background: #0e9384;
+    }
+
+    .public-link-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 8px;
+        margin: 12px 0 10px;
+    }
+
+    .public-link-row input {
+        min-width: 0;
+        height: 42px;
+        padding: 0 11px;
+        border: 1px solid #d7e2df;
+        border-radius: 10px;
+        background: white;
+        color: #475569;
+        font: inherit;
+        font-size: .77rem;
+    }
+
+    .copy-public-link {
+        min-height: 42px;
+        padding: 0 13px;
+        border: 1px solid #d7e2df;
+        border-radius: 10px;
+        background: white;
+        color: #08776c;
+        font: inherit;
+        font-size: .78rem;
+        font-weight: 850;
+        cursor: pointer;
+    }
+
+    .share-visibility-button {
+        width: 100%;
+        min-height: 42px;
+        border: 0;
+        border-radius: 11px;
+        background: #142136;
+        color: white;
+        font: inherit;
+        font-size: .82rem;
+        font-weight: 850;
+        cursor: pointer;
+    }
+
+    .share-visibility-button.unshare {
+        border: 1px solid #e3caca;
+        background: white;
+        color: #9b3434;
+    }
+
+    @media (max-width: 480px) {
+        .public-link-row {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .share-note {
+        margin-top: 16px !important;
+        margin-bottom: 0 !important;
+        padding-top: 16px;
+        border-top: 1px solid #edf1f0;
+        font-size: .76rem !important;
+    }
+
+    @media (max-width: 820px) {
+        .share-page-header {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .share-layout {
+            grid-template-columns: 1fr;
+        }
+
+        .share-controls {
+            order: -1;
+        }
+    }
+</style>
+
+<main class="share-page">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="share-feedback" aria-live="polite">
+                {% for category, message in messages %}
+                    <div class="share-feedback-message {{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <section class="share-page-header">
+        <div>
+            <span class="share-eyebrow">Share your trip</span>
+            <h1>{{ trip.name }}</h1>
+            <p>
+                Your saved trip snapshot, turned into a feed-ready 4:5 card.
+                Download it as a PNG or share it directly on supported devices.
+            </p>
+        </div>
+
+        <a
+            class="back-link"
+            href="{{ url_for('main.my_trips') }}"
+        >
+            ← My trips
+        </a>
+    </section>
+
+    <section class="share-layout">
+        <div class="preview-shell">
+            <div class="preview-label">
+                <span>Preview</span>
+                <span class="preview-ratio">1080 × 1350 · 4:5</span>
+            </div>
+
+            <div class="canvas-wrap">
+                <canvas
+                    id="shareCanvas"
+                    width="1080"
+                    height="1350"
+                    aria-label="Roamwise trip share card preview"
+                ></canvas>
+            </div>
+        </div>
+
+
+<aside class="share-controls">
+    <h2>Ready to post</h2>
+    <p>
+        The card uses the saved trip prices and saved exchange rate,
+        so it matches the version shown in My Trips.
+    </p>
+
+    {% if share_data.is_public %}
+        <div class="public-share-panel live">
+            <div class="public-share-status">
+                <span></span>
+                Public link live
+            </div>
+
+            <p style="margin:0;">
+                Anyone with this link can view the itinerary and use
+                the route as a starting point for their own trip.
+            </p>
+
+            <div class="public-link-row">
+                <input
+                    id="publicTripUrl"
+                    type="text"
+                    readonly
+                    value="{{ share_data.public_url }}"
+                    aria-label="Public trip URL"
+                >
+                <button
+                    class="copy-public-link"
+                    id="copyPublicLink"
+                    type="button"
+                >
+                    Copy
+                </button>
+            </div>
+
+            <form
+                method="post"
+                action="{{ url_for('main.set_trip_share_visibility', trip_id=trip.id) }}"
+            >
+                {% if csrf_token is defined %}
+                    <input
+                        type="hidden"
+                        name="csrf_token"
+                        value="{{ csrf_token() }}"
+                    >
+                {% endif %}
+                <input
+                    type="hidden"
+                    name="visibility"
+                    value="private"
+                >
+                <button
+                    class="share-visibility-button unshare"
+                    type="submit"
+                >
+                    Disable public link
+                </button>
+            </form>
+        </div>
+    {% else %}
+        <div class="public-share-panel">
+            <div class="public-share-status">
+                <span></span>
+                Private
+            </div>
+
+            <p style="margin:0 0 12px;">
+                Make this trip public to turn the QR code into a link
+                to this exact itinerary. Public trips are unlisted:
+                only people with the link can view them.
+            </p>
+
+            <form
+                method="post"
+                action="{{ url_for('main.set_trip_share_visibility', trip_id=trip.id) }}"
+            >
+                {% if csrf_token is defined %}
+                    <input
+                        type="hidden"
+                        name="csrf_token"
+                        value="{{ csrf_token() }}"
+                    >
+                {% endif %}
+                <input
+                    type="hidden"
+                    name="visibility"
+                    value="public"
+                >
+                <button
+                    class="share-visibility-button"
+                    type="submit"
+                >
+                    Create public trip link
+                </button>
+            </form>
+        </div>
+    {% endif %}
+
+    <button
+        class="share-button"
+        id="downloadCard"
+        type="button"
+        disabled
+    >
+        Download PNG
+    </button>
+
+    <button
+        class="share-button secondary"
+        id="nativeShare"
+        type="button"
+        hidden
+        disabled
+    >
+        Share image
+    </button>
+
+    <p
+        class="share-status"
+        id="shareStatus"
+        aria-live="polite"
+    >
+        Preparing card…
+    </p>
+
+    <p class="share-note">
+        {% if share_data.is_public %}
+            The QR now opens this exact public itinerary.
+            Disable the public link at any time to revoke the URL.
+        {% else %}
+            The QR currently opens Roamwise itself. Create a public trip
+            link above to make the QR open this exact itinerary.
+        {% endif %}
+
+        {% if share_data.qr_is_local %}
+            <br><br>Local preview: the QR currently points to this
+            development server. Set PUBLIC_APP_URL before publishing it.
+        {% endif %}
+    </p>
+</aside>
+    </section>
+</main>
+
+<img
+    id="qrImage"
+    src="{{ url_for('main.share_trip_qr', trip_id=trip.id) }}"
+    alt=""
+    hidden
+>
+
+<script>
+(() => {
+    const data = {{ share_data|tojson }};
+
+    const canvas = document.getElementById("shareCanvas");
+    const ctx = canvas.getContext("2d");
+
+    const downloadButton = document.getElementById("downloadCard");
+    const nativeShareButton = document.getElementById("nativeShare");
+    const shareStatus = document.getElementById("shareStatus");
+    const qrImage = document.getElementById("qrImage");
+    const copyPublicLinkButton = document.getElementById("copyPublicLink");
+    const publicTripUrl = document.getElementById("publicTripUrl");
+
+    if (copyPublicLinkButton && publicTripUrl) {
+        copyPublicLinkButton.addEventListener("click", async () => {
+            try {
+                await navigator.clipboard.writeText(publicTripUrl.value);
+                copyPublicLinkButton.textContent = "Copied";
+            } catch (error) {
+                publicTripUrl.select();
+                document.execCommand("copy");
+                copyPublicLinkButton.textContent = "Copied";
+            }
+
+            setTimeout(() => {
+                copyPublicLinkButton.textContent = "Copy";
+            }, 1600);
+        });
+    }
+
+    const W = canvas.width;
+    const H = canvas.height;
+
+    const palette = {
+        background: "#f6f1e7",
+        paper: "#fffdf8",
+        navy: "#142136",
+        muted: "#6f7c8d",
+        teal: "#0e9384",
+        tealDark: "#08776c",
+        mint: "#dff3ed",
+        line: "#d9e2de",
+        warm: "#f0dfbd"
+    };
+
+    const money = value => {
+        return `${data.symbol}${Number(value).toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        })}`;
+    };
+
+    const nightsLabel = value => {
+        return `${value} ${value === 1 ? "night" : "nights"}`;
+    };
+
+    const roundedRect = (x, y, width, height, radius) => {
+        const r = Math.min(radius, width / 2, height / 2);
+
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.arcTo(x + width, y, x + width, y + height, r);
+        ctx.arcTo(x + width, y + height, x, y + height, r);
+        ctx.arcTo(x, y + height, x, y, r);
+        ctx.arcTo(x, y, x + width, y, r);
+        ctx.closePath();
+    };
+
+    const fillRoundedRect = (x, y, width, height, radius, fill) => {
+        roundedRect(x, y, width, height, radius);
+        ctx.fillStyle = fill;
+        ctx.fill();
+    };
+
+    const drawText = (
+        text,
+        x,
+        y,
+        size,
+        weight = 400,
+        color = palette.navy,
+        align = "left"
+    ) => {
+        ctx.font = `${weight} ${size}px Arial, Helvetica, sans-serif`;
+        ctx.fillStyle = color;
+        ctx.textAlign = align;
+        ctx.textBaseline = "alphabetic";
+        ctx.fillText(String(text), x, y);
+    };
+
+    const fitText = (
+        text,
+        maxWidth,
+        startingSize,
+        weight = 800,
+        minSize = 30
+    ) => {
+        let size = startingSize;
+
+        while (size > minSize) {
+            ctx.font = `${weight} ${size}px Arial, Helvetica, sans-serif`;
+
+            if (ctx.measureText(text).width <= maxWidth) {
+                return size;
+            }
+
+            size -= 2;
+        }
+
+        return minSize;
+    };
+
+    const routeTitle = () => {
+        const stops = data.stops || [];
+
+        if (!stops.length) return data.name || "My trip";
+
+        if (stops.length === 1) {
+            return stops[0].city.toUpperCase();
+        }
+
+        if (stops.length === 2) {
+            return `${stops[0].city} → ${stops[1].city}`.toUpperCase();
+        }
+
+        return (
+            `${stops[0].city} → ${stops[1].city} → ` +
+            `${stops[stops.length - 1].city}`
+        ).toUpperCase();
+    };
+
+    const drawCard = () => {
+        ctx.clearRect(0, 0, W, H);
+        ctx.fillStyle = palette.background;
+        ctx.fillRect(0, 0, W, H);
+
+        // Decorative top-right sun / route motif
+        ctx.save();
+        ctx.globalAlpha = .65;
+        ctx.fillStyle = palette.warm;
+        ctx.beginPath();
+        ctx.arc(958, 112, 145, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+
+        // Brand
+        drawText(
+            "ROAMWISE",
+            80,
+            92,
+            31,
+            900,
+            palette.tealDark
+        );
+
+        drawText(
+            "TRIP PLAN",
+            80,
+            126,
+            18,
+            800,
+            palette.muted
+        );
+
+        // Hero route
+        const title = routeTitle();
+        const titleSize = fitText(
+            title,
+            920,
+            61,
+            900,
+            38
+        );
+
+        drawText(
+            title,
+            80,
+            232,
+            titleSize,
+            900,
+            palette.navy
+        );
+
+        const metaBits = [
+            nightsLabel(data.total_nights),
+            data.travel_style
+        ];
+
+        if (data.date_label) {
+            metaBits.push(data.date_label);
+        }
+
+        drawText(
+            metaBits.join("  ·  "),
+            80,
+            281,
+            22,
+            600,
+            palette.muted
+        );
+
+        // Budget hero
+        fillRoundedRect(
+            80,
+            326,
+            920,
+            190,
+            30,
+            palette.navy
+        );
+
+        drawText(
+            "ESTIMATED TRIP COST",
+            118,
+            377,
+            18,
+            800,
+            "#a9b6c6"
+        );
+
+        drawText(
+            money(data.total_cost),
+            118,
+            462,
+            66,
+            900,
+            "#ffffff"
+        );
+
+        drawText(
+            `${money(data.average_cost)} / stay day`,
+            950,
+            449,
+            28,
+            800,
+            "#a8e6d8",
+            "right"
+        );
+
+        if (Number(data.transport_cost) > 0) {
+            drawText(
+                `incl. ${money(data.transport_cost)} transport`,
+                950,
+                481,
+                17,
+                800,
+                "#a9b6c6",
+                "right"
+            );
+        } else {
+            drawText(
+                data.currency,
+                950,
+                481,
+                18,
+                800,
+                "#a9b6c6",
+                "right"
+            );
+        }
+
+        // Route
+        drawText(
+            "THE ROUTE",
+            80,
+            580,
+            18,
+            900,
+            palette.tealDark
+        );
+
+        const stops = data.stops || [];
+        const visibleStops = stops.slice(0, 6);
+
+        const routeTop = 630;
+        const stopCount = Math.max(visibleStops.length, 1);
+
+        const step = (
+            stopCount <= 3 ? 80 :
+            stopCount === 4 ? 66 :
+            stopCount === 5 ? 56 : 50
+        );
+
+        const cityFontSize = stopCount >= 5 ? 27 : 30;
+        const stopMetaSize = stopCount >= 5 ? 16 : 18;
+
+        visibleStops.forEach((stop, index) => {
+            const y = routeTop + (index * step);
+            const dotX = 104;
+
+            if (index < visibleStops.length - 1) {
+                ctx.strokeStyle = palette.teal;
+                ctx.lineWidth = 4;
+                ctx.beginPath();
+                ctx.moveTo(dotX, y + 16);
+                ctx.lineTo(dotX, y + step - 15);
+                ctx.stroke();
+            }
+
+            ctx.fillStyle = palette.teal;
+            ctx.beginPath();
+            ctx.arc(dotX, y, 12, 0, Math.PI * 2);
+            ctx.fill();
+
+            drawText(
+                String(index + 1).padStart(2, "0"),
+                143,
+                y + 7,
+                17,
+                900,
+                palette.tealDark
+            );
+
+            drawText(
+                stop.city,
+                197,
+                y + 3,
+                cityFontSize,
+                850,
+                palette.navy
+            );
+
+            drawText(
+                `${stop.country} · ${nightsLabel(stop.nights)}`,
+                197,
+                y + 31,
+                stopMetaSize,
+                500,
+                palette.muted
+            );
+
+            drawText(
+                money(stop.cost),
+                958,
+                y + 10,
+                24,
+                850,
+                palette.navy,
+                "right"
+            );
+        });
+
+        const lastStopY = visibleStops.length
+            ? routeTop + ((visibleStops.length - 1) * step)
+            : routeTop;
+
+        let routeEndY = lastStopY + 46;
+
+        if (stops.length > visibleStops.length) {
+            const remaining = stops.length - visibleStops.length;
+
+            drawText(
+                `+ ${remaining} more ${remaining === 1 ? "stop" : "stops"}`,
+                197,
+                routeEndY + 13,
+                19,
+                800,
+                palette.tealDark
+            );
+
+            routeEndY += 42;
+        }
+
+        // Pull the visa split directly under the route instead of pinning it
+        // near the bottom. Short trips now use the card space much better.
+        const schengenY = Math.max(
+            742,
+            routeEndY + 24
+        );
+        const schengenHeight = 96;
+
+        fillRoundedRect(
+            80,
+            schengenY,
+            440,
+            schengenHeight,
+            22,
+            palette.mint
+        );
+
+        fillRoundedRect(
+            540,
+            schengenY,
+            460,
+            schengenHeight,
+            22,
+            palette.paper
+        );
+
+        ctx.strokeStyle = palette.line;
+        ctx.lineWidth = 2;
+        roundedRect(
+            540,
+            schengenY,
+            460,
+            schengenHeight,
+            22
+        );
+        ctx.stroke();
+
+        drawText(
+            "SCHENGEN",
+            112,
+            schengenY + 34,
+            15,
+            900,
+            palette.tealDark
+        );
+
+        drawText(
+            nightsLabel(data.schengen_nights),
+            112,
+            schengenY + 75,
+            29,
+            900,
+            palette.navy
+        );
+
+        drawText(
+            "NON-SCHENGEN",
+            572,
+            schengenY + 34,
+            15,
+            900,
+            palette.muted
+        );
+
+        drawText(
+            nightsLabel(data.non_schengen_nights),
+            572,
+            schengenY + 75,
+            29,
+            900,
+            palette.navy
+        );
+
+        // QR acquisition block. Its height expands automatically on short
+        // routes and compresses on longer ones while keeping the QR scannable.
+        const footerLineY = 1274;
+        const qrY = schengenY + schengenHeight + 22;
+        const qrHeight = Math.max(
+            162,
+            footerLineY - qrY - 24
+        );
+
+        fillRoundedRect(
+            80,
+            qrY,
+            920,
+            qrHeight,
+            24,
+            palette.paper
+        );
+
+        ctx.strokeStyle = palette.line;
+        ctx.lineWidth = 2;
+        roundedRect(
+            80,
+            qrY,
+            920,
+            qrHeight,
+            24
+        );
+        ctx.stroke();
+
+        const qrSize = Math.min(
+            180,
+            Math.max(142, qrHeight - 28)
+        );
+        const qrX = 958 - qrSize;
+        const qrTop = qrY + ((qrHeight - qrSize) / 2);
+
+        drawText(
+            data.qr_points_to_trip
+                ? "SCAN TO VIEW THIS TRIP"
+                : "SCAN TO PLAN YOUR OWN TRIP",
+            118,
+            qrY + 53,
+            16,
+            900,
+            palette.tealDark
+        );
+
+        drawText(
+            data.qr_points_to_trip
+                ? "Open the full route and make it your own."
+                : "Build your own route with Roamwise.",
+            118,
+            qrY + 94,
+            27,
+            850,
+            palette.navy
+        );
+
+        if (qrHeight >= 205) {
+            drawText(
+                data.qr_points_to_trip
+                    ? "Scan to see the itinerary, then use the route in Roamwise."
+                    : "Open your camera and scan the code to start planning.",
+                118,
+                qrY + 128,
+                16,
+                500,
+                palette.muted
+            );
+        }
+
+        if (
+            qrImage.complete &&
+            qrImage.naturalWidth > 0
+        ) {
+            ctx.drawImage(
+                qrImage,
+                qrX,
+                qrTop,
+                qrSize,
+                qrSize
+            );
+        } else {
+            fillRoundedRect(
+                qrX,
+                qrTop,
+                qrSize,
+                qrSize,
+                12,
+                palette.mint
+            );
+
+            drawText(
+                "QR",
+                qrX + (qrSize / 2),
+                qrTop + (qrSize / 2) + 10,
+                28,
+                900,
+                palette.tealDark,
+                "center"
+            );
+        }
+
+        // Footer
+        ctx.strokeStyle = palette.line;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(80, footerLineY);
+        ctx.lineTo(1000, footerLineY);
+        ctx.stroke();
+
+        drawText(
+            "Planned with Roamwise",
+            80,
+            1318,
+            22,
+            850,
+            palette.navy
+        );
+
+        drawText(
+            "Travel costs are planning estimates",
+            1000,
+            1318,
+            16,
+            500,
+            palette.muted,
+            "right"
+        );
+    };
+
+    const canvasBlob = () => {
+        return new Promise(resolve => {
+            canvas.toBlob(
+                blob => resolve(blob),
+                "image/png",
+                1
+            );
+        });
+    };
+
+    const safeFilename = String(data.name || "roamwise-trip")
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-|-$/g, "");
+
+    downloadButton.addEventListener("click", async () => {
+        downloadButton.disabled = true;
+        shareStatus.textContent = "Preparing PNG…";
+
+        try {
+            const blob = await canvasBlob();
+
+            if (!blob) {
+                throw new Error("Canvas export returned no image.");
+            }
+
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+
+            link.href = url;
+            link.download = `${safeFilename || "roamwise-trip"}.png`;
+
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+
+            setTimeout(() => URL.revokeObjectURL(url), 0);
+            shareStatus.textContent = "PNG downloaded.";
+        } catch (error) {
+            console.error("PNG download failed:", error);
+            shareStatus.textContent =
+                "The image could not be exported. Please try again.";
+        } finally {
+            downloadButton.disabled = false;
+        }
+    });
+
+    const canNativeShare =
+        typeof navigator.share === "function" &&
+        typeof navigator.canShare === "function" &&
+        typeof File === "function";
+
+    if (canNativeShare) {
+        nativeShareButton.hidden = false;
+
+        nativeShareButton.addEventListener("click", async () => {
+            const blob = await canvasBlob();
+
+            if (!blob) return;
+
+            const file = new File(
+                [blob],
+                `${safeFilename || "roamwise-trip"}.png`,
+                { type: "image/png" }
+            );
+
+            const payload = {
+                title: `${data.name} · Roamwise`,
+                text: "My trip plan from Roamwise",
+                files: [file]
+            };
+
+            if (!navigator.canShare(payload)) {
+                nativeShareButton.hidden = true;
+                return;
+            }
+
+            try {
+                await navigator.share(payload);
+            } catch (error) {
+                if (error.name !== "AbortError") {
+                    console.error("Share failed:", error);
+                }
+            }
+        });
+    }
+
+    const renderWithQr = () => {
+        drawCard();
+
+        const qrReady =
+            qrImage.naturalWidth > 0 &&
+            qrImage.naturalHeight > 0;
+
+        downloadButton.disabled = false;
+
+        if (canNativeShare) {
+            nativeShareButton.disabled = false;
+        }
+
+        shareStatus.textContent = qrReady
+            ? "Card ready."
+            : "Card ready. QR unavailable, but the image can still be downloaded.";
+    };
+
+    if (qrImage.complete) {
+        renderWithQr();
+    } else {
+        qrImage.addEventListener(
+            "load",
+            renderWithQr,
+            { once: true }
+        );
+
+        qrImage.addEventListener(
+            "error",
+            renderWithQr,
+            { once: true }
+        );
+    }
+})();
+</script>
+{% endblock %}

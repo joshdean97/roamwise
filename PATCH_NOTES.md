@@ -1,6 +1,6 @@
-# Roamwise security pass 1
+# LeavePrints security pass 1
 
-Overlay these files onto the current Roamwise project.
+Overlay these files onto the current LeavePrints project.
 
 Changes:
 - Enables global Flask-WTF CSRF protection.

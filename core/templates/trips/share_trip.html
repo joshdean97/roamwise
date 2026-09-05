@@ -356,7 +356,7 @@
                     id="shareCanvas"
                     width="1080"
                     height="1350"
-                    aria-label="Roamwise trip share card preview"
+                    aria-label="LeavePrints trip share card preview"
                 ></canvas>
             </div>
         </div>
@@ -493,7 +493,7 @@
             The QR now opens this exact public itinerary.
             Disable the public link at any time to revoke the URL.
         {% else %}
-            The QR currently opens Roamwise itself. Create a public trip
+            The QR currently opens LeavePrints itself. Create a public trip
             link above to make the QR open this exact itinerary.
         {% endif %}
 
@@ -661,7 +661,7 @@
 
         // Brand
         drawText(
-            "ROAMWISE",
+            "LEAVEPRINTS",
             80,
             92,
             31,
@@ -1000,7 +1000,7 @@
         drawText(
             data.qr_points_to_trip
                 ? "Open the full route and make it your own."
-                : "Build your own route with Roamwise.",
+                : "Build your own route with LeavePrints.",
             118,
             qrY + 94,
             27,
@@ -1011,7 +1011,7 @@
         if (qrHeight >= 205) {
             drawText(
                 data.qr_points_to_trip
-                    ? "Scan to see the itinerary, then use the route in Roamwise."
+                    ? "Scan to see the itinerary, then use the route in LeavePrints."
                     : "Open your camera and scan the code to start planning.",
                 118,
                 qrY + 128,
@@ -1062,7 +1062,7 @@
         ctx.stroke();
 
         drawText(
-            "Planned with Roamwise",
+            "Planned with LeavePrints",
             80,
             1318,
             22,
@@ -1091,7 +1091,7 @@
         });
     };
 
-    const safeFilename = String(data.name || "roamwise-trip")
+    const safeFilename = String(data.name || "leaveprints-trip")
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, "-")
         .replace(/^-|-$/g, "");
@@ -1111,7 +1111,7 @@
             const link = document.createElement("a");
 
             link.href = url;
-            link.download = `${safeFilename || "roamwise-trip"}.png`;
+            link.download = `${safeFilename || "leaveprints-trip"}.png`;
 
             document.body.appendChild(link);
             link.click();
@@ -1143,13 +1143,13 @@
 
             const file = new File(
                 [blob],
-                `${safeFilename || "roamwise-trip"}.png`,
+                `${safeFilename || "leaveprints-trip"}.png`,
                 { type: "image/png" }
             );
 
             const payload = {
-                title: `${data.name} · Roamwise`,
-                text: "My trip plan from Roamwise",
+                title: `${data.name} · LeavePrints`,
+                text: "My trip plan from LeavePrints",
                 files: [file]
             };
 

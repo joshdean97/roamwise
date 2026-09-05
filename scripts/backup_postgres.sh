@@ -6,7 +6,7 @@ set -eu
 BACKUP_DIR="${1:-./backups}"
 mkdir -p "$BACKUP_DIR"
 STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
-OUT="$BACKUP_DIR/roamwise-$STAMP.dump"
+OUT="$BACKUP_DIR/leaveprints-$STAMP.dump"
 
 case "$DATABASE_URL" in
   postgresql+psycopg://*)

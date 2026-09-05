@@ -3,32 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ title }}</title>
+    <title>{{ title or "LeavePrints" }}</title>
+    <link rel="icon" href="{{ url_for('static', filename='leaveprints-mark.svg') }}" type="image/svg+xml">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='admin.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='leaveprints-brand.css') }}">
+    {% block head_extra %}{% endblock %}
 </head>
-<body>
-    <!-- nav -->
+<body class="{% block body_class %}{% endblock %}">
     <nav>
         <div class="logo">
-            <a href="{{ url_for('main.home') }}">
-                <span class="logo-text">roamwise</span>
+            <a href="{{ url_for('main.home') }}" class="brand-lockup" aria-label="LeavePrints home">
+                <img class="brand-mark" src="{{ url_for('static', filename='leaveprints-mark.svg') }}" alt="" aria-hidden="true">
+                <span class="logo-text">LeavePrints</span>
             </a>
         </div>
         <ul>
             {% if current_user.is_authenticated %}
                 <li><a href="{{ url_for('main.plan_trip') }}">Plan A Trip</a></li>
                 <li><a href="{{ url_for('main.my_trips') }}">My Trips</a></li>
-
                 <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
                 {% if current_user.is_admin %}
                     <li>|</li>
                     <li><a href="{{ url_for('admin.dashboard') }}">Admin</a></li>
                 {% endif %}
             {% else %}
-                <li><a href="{{ url_for('main.home') }}">Home</a></li>
-                <li><a href="{{ url_for('auth.login') }}">Login</a></li>
-                <li><a href="{{ url_for('auth.register') }}">Register</a></li>
+                {% if request.endpoint == 'main.home' %}
+                    <li class="lp-nav-only"><a href="#features">Features</a></li>
+                    <li class="lp-nav-only"><a href="#how-it-works">How it works</a></li>
+                    <li><a href="{{ url_for('auth.login') }}">Login</a></li>
+                    <li><a class="lp-nav-cta" href="{{ url_for('auth.register') }}">Start free</a></li>
+                {% else %}
+                    <li><a href="{{ url_for('main.home') }}">Home</a></li>
+                    <li><a href="{{ url_for('auth.login') }}">Login</a></li>
+                    <li><a href="{{ url_for('auth.register') }}">Register</a></li>
+                {% endif %}
             {% endif %}
         </ul>
     </nav>

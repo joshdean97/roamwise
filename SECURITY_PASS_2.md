@@ -1,4 +1,4 @@
-# Roamwise security pass #2
+# LeavePrints security pass #2
 
 This patch is designed to be applied **after security pass #1**.
 
@@ -47,7 +47,7 @@ export SMTP_USERNAME='YOUR_USERNAME'
 export SMTP_PASSWORD='YOUR_PASSWORD'
 export SMTP_USE_TLS='1'
 export SMTP_USE_SSL='0'
-export MAIL_FROM='Roamwise <no-reply@YOUR-DOMAIN>'
+export MAIL_FROM='LeavePrints <no-reply@YOUR-DOMAIN>'
 ```
 
 Use either TLS/STARTTLS or SSL according to the provider. For SSL (commonly port 465), set `SMTP_USE_SSL=1` and `SMTP_USE_TLS=0`.

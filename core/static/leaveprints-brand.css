@@ -1,0 +1,28 @@
+/* LeavePrints global brand lockup. Kept deliberately small so the existing app UI stays stable. */
+.brand-lockup {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.brand-mark {
+    width: 31px;
+    height: 31px;
+    flex: 0 0 auto;
+}
+
+.logo .brand-lockup .logo-text {
+    background: none;
+    -webkit-background-clip: initial;
+    background-clip: initial;
+    color: #173b2d;
+    font-weight: 800;
+    letter-spacing: -0.055em;
+}
+
+@media (max-width: 480px) {
+    .brand-mark {
+        width: 27px;
+        height: 27px;
+    }
+}

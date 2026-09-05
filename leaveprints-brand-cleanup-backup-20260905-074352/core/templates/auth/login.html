@@ -1,0 +1,87 @@
+{% extends "components/base.html" %}
+
+{% block content %}
+
+<section class="auth-page">
+
+    <div class="auth-card">
+
+        <div class="auth-heading">
+            <span class="auth-eyebrow">Welcome back</span>
+
+            <h1>Ready for the next one?</h1>
+
+            <p>
+                Sign in to plan trips, compare costs and keep your
+                travel budget on track.
+            </p>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, msg in messages %}
+                    <div class="flash {{ category }}">
+                        {{ msg }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form
+            method="post"
+            action="{{ url_for('auth.login') }}"
+            class="auth-form"
+        >
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+            <div class="form-group">
+                <label for="email">Email</label>
+
+                <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    placeholder="you@example.com"
+                    required
+                    maxlength="120"
+                    autocomplete="email"
+                    autofocus
+                >
+            </div>
+
+            <div class="form-group">
+                <div class="auth-label-row">
+                    <label for="password">Password</label>
+                    <a href="{{ url_for('auth.forgot_password') }}">Forgot password?</a>
+                </div>
+
+                <input
+                    id="password"
+                    name="password"
+                    type="password"
+                    placeholder="Your password"
+                    required
+                    maxlength="128"
+                    autocomplete="current-password"
+                >
+            </div>
+
+            <button class="btn auth-submit" type="submit">
+                Log in
+                <span aria-hidden="true">→</span>
+            </button>
+
+        </form>
+
+        <div class="auth-footer">
+            <span>New to Roamwise?</span>
+            <a href="{{ url_for('auth.register') }}">
+                Create an account
+            </a>
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

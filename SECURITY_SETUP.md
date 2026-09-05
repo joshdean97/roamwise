@@ -1,6 +1,6 @@
-# Roamwise security setup
+# LeavePrints security setup
 
-Before starting Roamwise, set a persistent random Flask secret:
+Before starting LeavePrints, set a persistent random Flask secret:
 
 ```bash
 export SECRET_KEY="$(python -c 'import secrets; print(secrets.token_hex(32))')"
@@ -19,7 +19,7 @@ export SESSION_COOKIE_SECURE=1
 ```
 
 You can override the database connection using `DATABASE_URL`. If it is not
-set, Roamwise continues to use the local `instance/site.db` SQLite database.
+set, LeavePrints continues to use the local `instance/site.db` SQLite database.
 
 Install dependencies with:
 
