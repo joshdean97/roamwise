@@ -1,0 +1,127 @@
+{% extends "components/base.html" %}
+
+{% block head_extra %}
+<link rel="stylesheet" href="{{ url_for('static', filename='data_reports.css') }}">
+{% endblock %}
+
+{% block content %}
+<main class="data-reports-page">
+    <header class="data-reports-head">
+        <div>
+            <span class="data-report-eyebrow">LeavePrints admin</span>
+            <h1>Data reports</h1>
+            <p>
+                Traveller flags for city prices and daily estimates. Each report keeps a
+                snapshot of what the traveller saw, so updating a city does not erase the evidence.
+            </p>
+        </div>
+        <a class="data-report-back" href="{{ url_for('admin.dashboard') }}">← Admin dashboard</a>
+    </header>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div style="display:grid;gap:8px;margin-bottom:18px;">
+                {% for category, message in messages %}
+                    <div class="planner-alert {{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <nav class="data-report-tabs" aria-label="Report status">
+        {% for key, label in [('open', 'Open'), ('resolved', 'Resolved'), ('dismissed', 'Dismissed'), ('all', 'All')] %}
+            <a
+                href="{{ url_for('admin.data_reports', status=key) }}"
+                class="{% if active_status == key %}active{% endif %}"
+            >
+                {{ label }} · {{ counts.get(key, 0) if key != 'all' else counts.get('all', 0) }}
+            </a>
+        {% endfor %}
+    </nav>
+
+    {% if reports %}
+        <section class="data-report-list">
+            {% for report in reports %}
+                <article class="data-report-card">
+                    <div class="data-report-card-top">
+                        <div>
+                            <span class="data-report-eyebrow">{{ report.category_label }}</span>
+                            <h2>{{ report.city_name_snapshot }}, {{ report.country_name_snapshot }}</h2>
+                            <div class="data-report-meta">
+                                Report #{{ report.id }} ·
+                                {% if report.reporter %}{{ report.reporter.username }}{% else %}Deleted account{% endif %} ·
+                                {{ report.created_at.strftime('%d %b %Y · %H:%M') if report.created_at else 'Unknown time' }}
+                            </div>
+                        </div>
+                        <span class="data-report-status {{ report.status }}">{{ report.status }}</span>
+                    </div>
+
+                    <div class="data-report-copy">{{ report.message }}</div>
+
+                    {% if report.source_url %}
+                        <div class="data-report-source">
+                            Evidence/source: <a href="{{ report.source_url }}" target="_blank" rel="noopener noreferrer">{{ report.source_url }}</a>
+                        </div>
+                    {% endif %}
+
+                    <div class="data-report-costs">
+                        <div class="data-report-cost-box">
+                            <span>Reported snapshot</span>
+                            <strong>Hostel £{{ "%.2f"|format(report.hostel_per_night_snapshot) }}/night</strong>
+                            <strong>Living £{{ "%.2f"|format(report.monthly_living_cost_snapshot) }}/month</strong>
+                            <strong>Balanced £{{ "%.2f"|format(report.balanced_daily_snapshot) }}/day</strong>
+                        </div>
+
+                        <div class="data-report-cost-box">
+                            <span>Current city data</span>
+                            {% if report.city %}
+                                <strong>Hostel £{{ "%.2f"|format(report.city.hostel_per_night) }}/night</strong>
+                                <strong>Living £{{ "%.2f"|format(report.city.monthly_living_cost) }}/month</strong>
+                                <strong>Balanced £{{ "%.2f"|format(report.city.balanced_cost) }}/day</strong>
+                                <a class="data-report-edit" href="{{ url_for('city.update_city', city_id=report.city.id) }}">Edit city data →</a>
+                            {% else %}
+                                <strong>This city has since been deleted.</strong>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {% if report.resolution_note %}
+                        <div class="data-report-meta" style="margin-bottom:12px;">
+                            Internal note: {{ report.resolution_note }}
+                        </div>
+                    {% endif %}
+
+                    <form
+                        class="data-report-actions"
+                        method="post"
+                        action="{{ url_for('admin.update_data_report_status', report_id=report.id) }}"
+                    >
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <input type="hidden" name="return_status" value="{{ active_status }}">
+                        <input
+                            type="text"
+                            name="resolution_note"
+                            maxlength="500"
+                            placeholder="Internal note (optional)"
+                            value="{{ report.resolution_note or '' }}"
+                        >
+
+                        {% if report.status == 'open' %}
+                            <button type="submit" name="status" value="resolved">Mark resolved</button>
+                            <button class="dismiss" type="submit" name="status" value="dismissed">Dismiss</button>
+                        {% else %}
+                            <button type="submit" name="status" value="open">Reopen</button>
+                            <span></span>
+                        {% endif %}
+                    </form>
+                </article>
+            {% endfor %}
+        </section>
+    {% else %}
+        <div class="data-report-empty">
+            <strong>No {{ active_status if active_status != 'all' else '' }} reports.</strong>
+            <p>Nothing needs your attention here right now.</p>
+        </div>
+    {% endif %}
+</main>
+{% endblock %}

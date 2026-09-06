@@ -8,6 +8,7 @@ from flask import (
     redirect,
     render_template,
     request,
+    session,
     url_for,
 )
 from flask_login import current_user, login_required, login_user, logout_user
@@ -17,7 +18,11 @@ from sqlalchemy.exc import IntegrityError
 
 from core.analytics import capture_event
 from core.extensions import db, limiter
-from core.mail import send_email_confirmation, send_password_reset_email
+from core.mail import (
+    send_account_deleted_email,
+    send_email_confirmation,
+    send_password_reset_email,
+)
 from core.models.user import User
 
 
@@ -196,6 +201,133 @@ def login():
 def logout():
     logout_user()
     flash("You have been logged out.", "info")
+    return redirect(url_for("main.home"))
+
+
+@auth_bp.get("/account")
+@login_required
+def account():
+    return render_template(
+        "auth/account.html",
+        title="Account | LeavePrints",
+    )
+
+
+@auth_bp.post("/account/change-password")
+@login_required
+@limiter.limit("10 per hour")
+def change_password():
+    current_password = request.form.get("current_password") or ""
+    password = request.form.get("password") or ""
+    confirm_password = request.form.get("confirm_password") or ""
+
+    if not current_user.check_password(current_password):
+        flash("Current password is incorrect.", "error")
+        return redirect(url_for("auth.account"))
+
+    password_error = _password_error(password, confirm_password)
+    if password_error:
+        flash(password_error, "error")
+        return redirect(url_for("auth.account"))
+
+    if current_user.check_password(password):
+        flash("Choose a new password that is different from your current one.", "error")
+        return redirect(url_for("auth.account"))
+
+    user = db.session.get(User, current_user.id)
+    user.set_password(password)
+    db.session.commit()
+
+    # Match the password-reset flow: sign this browser out after the credential changes.
+    logout_user()
+    session.clear()
+    flash("Password changed. Log in again with your new password.", "success")
+    return redirect(url_for("auth.login"))
+
+
+@auth_bp.post("/account/delete")
+@login_required
+@limiter.limit("5 per hour")
+def delete_account():
+    current_password = request.form.get("current_password") or ""
+    confirmation = (request.form.get("confirmation") or "").strip()
+
+    if confirmation != "DELETE":
+        flash("Type DELETE exactly to confirm permanent account deletion.", "error")
+        return redirect(url_for("auth.account"))
+
+    if not current_user.check_password(current_password):
+        flash("Current password is incorrect.", "error")
+        return redirect(url_for("auth.account"))
+
+    # Do not let an accidental self-delete remove the only admin route back in.
+    if current_user.is_admin:
+        admin_count = User.query.filter(User.is_admin.is_(True)).count()
+        if admin_count <= 1:
+            flash(
+                "This is the final admin account. Add another admin before deleting it.",
+                "error",
+            )
+            return redirect(url_for("auth.account"))
+
+    from core.analytics import capture_event
+    from core.models.analytics_event import AnalyticsEvent
+    from core.models.city_data_report import CityDataReport
+    from core.models.trip import Trip
+
+    user_id = current_user.id
+    user = db.session.get(User, user_id)
+    email = user.email
+    username = user.username
+
+    try:
+        # Reports may contain free text/source links, so delete them rather than
+        # merely detaching the user id when the reporter requests erasure.
+        CityDataReport.query.filter_by(user_id=user_id).delete(
+            synchronize_session=False
+        )
+
+        # First-party analytics is intentionally linked only by internal user id.
+        # Remove every linked event before recording one anonymous deletion count.
+        AnalyticsEvent.query.filter_by(user_id=user_id).delete(
+            synchronize_session=False
+        )
+
+        # ORM deletion preserves Trip's existing delete-orphan cascades for stops
+        # and legs. Removing a trip also kills any public share token immediately.
+        for trip in Trip.query.filter_by(user_id=user_id).all():
+            db.session.delete(trip)
+
+        db.session.flush()
+        db.session.delete(user)
+        db.session.commit()
+
+    except Exception:
+        db.session.rollback()
+        current_app.logger.exception(
+            "Could not delete account for user id %s",
+            user_id,
+        )
+        flash("We couldn't delete your account just now. Please try again.", "error")
+        return redirect(url_for("auth.account"))
+
+    logout_user()
+    session.clear()
+
+    # Keep only an anonymous product-health count; it cannot be tied back to the
+    # deleted account because the user id is deliberately omitted.
+    capture_event("account_deleted", None)
+
+    # Deletion must never fail just because the transactional email provider does.
+    try:
+        send_account_deleted_email(email, username)
+    except Exception:
+        current_app.logger.exception(
+            "Could not send account deletion confirmation to deleted user id %s",
+            user_id,
+        )
+
+    flash("Your LeavePrints account has been deleted.", "success")
     return redirect(url_for("main.home"))
 
 

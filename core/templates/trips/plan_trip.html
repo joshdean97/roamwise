@@ -182,6 +182,155 @@
             grid-column: auto;
         }
     }
+    .report-data-link {
+        margin-top: 5px;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        color: var(--rw-muted);
+        font: inherit;
+        font-size: .69rem;
+        font-weight: 750;
+        text-decoration: underline;
+        text-underline-offset: 2px;
+        cursor: pointer;
+    }
+
+    .report-data-link:hover {
+        color: var(--rw-teal-dark);
+    }
+
+    .data-report-modal[hidden],
+    .data-report-toast[hidden] {
+        display: none;
+    }
+
+    .data-report-modal {
+        position: fixed;
+        inset: 0;
+        z-index: 1200;
+        display: grid;
+        place-items: center;
+        padding: 20px;
+        background: rgba(10, 21, 34, .55);
+    }
+
+    .data-report-dialog {
+        width: min(520px, 100%);
+        max-height: calc(100vh - 40px);
+        overflow: auto;
+        padding: 22px;
+        border-radius: 20px;
+        background: white;
+        box-shadow: 0 28px 90px rgba(8, 20, 35, .25);
+    }
+
+    .data-report-dialog-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 15px;
+    }
+
+    .data-report-dialog-head h2 {
+        margin: 3px 0 5px;
+        font-size: 1.3rem;
+    }
+
+    .data-report-dialog-head p {
+        margin: 0;
+        color: var(--rw-muted);
+        font-size: .8rem;
+        line-height: 1.5;
+    }
+
+    .data-report-close {
+        width: 34px;
+        height: 34px;
+        border: 1px solid #dbe4e1;
+        border-radius: 999px;
+        background: white;
+        color: var(--rw-ink);
+        font-size: 1.15rem;
+        cursor: pointer;
+    }
+
+    .data-report-form {
+        display: grid;
+        gap: 13px;
+    }
+
+    .data-report-field label {
+        display: block;
+        margin-bottom: 6px;
+        color: var(--rw-ink);
+        font-size: .75rem;
+        font-weight: 800;
+    }
+
+    .data-report-field select,
+    .data-report-field textarea,
+    .data-report-field input {
+        width: 100%;
+        padding: 10px 11px;
+        border: 1px solid #d6e0de;
+        border-radius: 11px;
+        background: white;
+        color: var(--rw-ink);
+        font: inherit;
+        font-size: .85rem;
+    }
+
+    .data-report-field textarea {
+        min-height: 110px;
+        resize: vertical;
+    }
+
+    .data-report-help {
+        margin: 5px 0 0;
+        color: var(--rw-muted);
+        font-size: .7rem;
+        line-height: 1.45;
+    }
+
+    .data-report-error {
+        margin: 0;
+        color: #9b3434;
+        font-size: .76rem;
+    }
+
+    .data-report-submit {
+        min-height: 45px;
+        border: 0;
+        border-radius: 12px;
+        background: var(--rw-teal-dark);
+        color: white;
+        font: inherit;
+        font-weight: 850;
+        cursor: pointer;
+    }
+
+    .data-report-submit:disabled {
+        opacity: .6;
+        cursor: wait;
+    }
+
+    .data-report-toast {
+        position: fixed;
+        right: 20px;
+        bottom: 20px;
+        z-index: 1300;
+        max-width: 360px;
+        padding: 13px 15px;
+        border: 1px solid #bfe2d9;
+        border-radius: 12px;
+        background: #edf9f5;
+        color: #08776c;
+        box-shadow: 0 16px 50px rgba(17, 28, 47, .14);
+        font-size: .8rem;
+        font-weight: 750;
+    }
+
 </style>
 
 <main class="trip-planner">
@@ -392,6 +541,48 @@
     </form>
 </main>
 
+<div class="data-report-modal" id="dataReportModal" hidden>
+    <div class="data-report-dialog" role="dialog" aria-modal="true" aria-labelledby="dataReportTitle">
+        <div class="data-report-dialog-head">
+            <div>
+                <span class="panel-kicker">Help keep LeavePrints accurate</span>
+                <h2 id="dataReportTitle">Report data for <span id="dataReportCityName"></span></h2>
+                <p>Flag something that looks off. Your current route will stay exactly as it is.</p>
+            </div>
+            <button class="data-report-close" id="dataReportClose" type="button" aria-label="Close">×</button>
+        </div>
+
+        <form class="data-report-form" id="dataReportForm">
+            <div class="data-report-field">
+                <label for="dataReportCategory">What looks wrong?</label>
+                <select id="dataReportCategory" required>
+                    <option value="daily_estimate">Daily estimate</option>
+                    <option value="hostel_price">Hostel price</option>
+                    <option value="living_cost">Living costs</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+
+            <div class="data-report-field">
+                <label for="dataReportMessage">What should we know?</label>
+                <textarea id="dataReportMessage" maxlength="1000" required placeholder="e.g. Dorm beds are closer to £12 right now, not £25..."></textarea>
+                <p class="data-report-help">A sentence or two is plenty. Please don't include personal information.</p>
+            </div>
+
+            <div class="data-report-field">
+                <label for="dataReportSource">Evidence or source · optional</label>
+                <input id="dataReportSource" type="url" maxlength="500" placeholder="https://...">
+                <p class="data-report-help">A Hostelworld, Numbeo, booking or other useful link helps us verify it faster.</p>
+            </div>
+
+            <p class="data-report-error" id="dataReportError" aria-live="polite"></p>
+            <button class="data-report-submit" id="dataReportSubmit" type="submit">Send report</button>
+        </form>
+    </div>
+</div>
+
+<div class="data-report-toast" id="dataReportToast" role="status" aria-live="polite" hidden></div>
+
 <script>
 (() => {
     const FX_RATES = {{ fx_rates|tojson }};
@@ -400,6 +591,8 @@
     const IS_EDITING = {{ is_editing|default(false)|tojson }};
     const ANALYTICS_URL = {{ url_for('main.analytics_event')|tojson }};
     const ANALYTICS_CSRF = {{ csrf_token()|tojson }};
+    const DATA_REPORT_URL = {{ url_for('main.report_city_data')|tojson }};
+    const DATA_REPORT_CSRF = {{ csrf_token()|tojson }};
     const analyticsMilestones = new Set();
     const STARTED_WITH_EMPTY_ROUTE = !Array.isArray(INITIAL_TRIP.route) || INITIAL_TRIP.route.length === 0;
 
@@ -519,6 +712,18 @@
     const schengenMeter = document.getElementById("schengenMeter");
     const dateFit = document.getElementById("dateFit");
     const saveButton = document.getElementById("saveTripButton");
+
+    const dataReportModal = document.getElementById("dataReportModal");
+    const dataReportForm = document.getElementById("dataReportForm");
+    const dataReportCityName = document.getElementById("dataReportCityName");
+    const dataReportCategory = document.getElementById("dataReportCategory");
+    const dataReportMessage = document.getElementById("dataReportMessage");
+    const dataReportSource = document.getElementById("dataReportSource");
+    const dataReportError = document.getElementById("dataReportError");
+    const dataReportSubmit = document.getElementById("dataReportSubmit");
+    const dataReportClose = document.getElementById("dataReportClose");
+    const dataReportToast = document.getElementById("dataReportToast");
+    let dataReportCity = null;
 
     const routeJson = document.getElementById("routeJson");
     const transportJson = document.getElementById("transportJson");
@@ -829,6 +1034,79 @@
         return wrapper;
     }
 
+    function openDataReportModal(city) {
+        dataReportCity = city;
+        dataReportCityName.textContent = `${city.name}, ${city.country}`;
+        dataReportCategory.value = "daily_estimate";
+        dataReportMessage.value = "";
+        dataReportSource.value = "";
+        dataReportError.textContent = "";
+        dataReportSubmit.disabled = false;
+        dataReportSubmit.textContent = "Send report";
+        dataReportModal.hidden = false;
+        document.body.style.overflow = "hidden";
+        dataReportMessage.focus();
+    }
+
+    function closeDataReportModal() {
+        dataReportModal.hidden = true;
+        document.body.style.overflow = "";
+        dataReportCity = null;
+    }
+
+    function showDataReportToast(message) {
+        dataReportToast.textContent = message;
+        dataReportToast.hidden = false;
+        window.setTimeout(() => {
+            dataReportToast.hidden = true;
+        }, 4200);
+    }
+
+    async function submitDataReport(event) {
+        event.preventDefault();
+
+        if (!dataReportCity) return;
+
+        const message = dataReportMessage.value.trim();
+        if (message.length < 10) {
+            dataReportError.textContent = "Tell us a little more so we know what to check.";
+            return;
+        }
+
+        dataReportError.textContent = "";
+        dataReportSubmit.disabled = true;
+        dataReportSubmit.textContent = "Sending…";
+
+        try {
+            const response = await fetch(DATA_REPORT_URL, {
+                method: "POST",
+                credentials: "same-origin",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": DATA_REPORT_CSRF
+                },
+                body: JSON.stringify({
+                    city_id: dataReportCity.id,
+                    category: dataReportCategory.value,
+                    message,
+                    source_url: dataReportSource.value.trim()
+                })
+            });
+
+            const payload = await response.json().catch(() => ({}));
+            if (!response.ok) {
+                throw new Error(payload.error || "We couldn't save that report just now.");
+            }
+
+            closeDataReportModal();
+            showDataReportToast(payload.message || "Thanks — we'll check it.");
+        } catch (error) {
+            dataReportError.textContent = error.message || "We couldn't save that report just now.";
+            dataReportSubmit.disabled = false;
+            dataReportSubmit.textContent = "Send report";
+        }
+    }
+
     function renderRoute() {
         routeList.innerHTML = "";
         routeEmpty.style.display = state.route.length ? "none" : "block";
@@ -859,6 +1137,7 @@
                         ${city.region ? ` · ${escapeHtml(city.region)}` : ""}
                         ${city.isSchengen ? " · Schengen" : ""}
                     </span>
+                    <button type="button" class="report-data-link" data-action="report">Report data</button>
                 </div>
 
                 <div class="nights-control">
@@ -886,6 +1165,7 @@
             row.querySelector('[data-action="up"]').addEventListener("click", () => moveCity(index, -1));
             row.querySelector('[data-action="down"]').addEventListener("click", () => moveCity(index, 1));
             row.querySelector('[data-action="remove"]').addEventListener("click", () => removeCity(index));
+            row.querySelector('[data-action="report"]').addEventListener("click", () => openDataReportModal(city));
 
             routeList.appendChild(row);
 
@@ -1069,6 +1349,15 @@
             .replaceAll('"', "&quot;")
             .replaceAll("'", "&#039;");
     }
+
+    dataReportForm.addEventListener("submit", submitDataReport);
+    dataReportClose.addEventListener("click", closeDataReportModal);
+    dataReportModal.addEventListener("click", event => {
+        if (event.target === dataReportModal) closeDataReportModal();
+    });
+    document.addEventListener("keydown", event => {
+        if (event.key === "Escape" && !dataReportModal.hidden) closeDataReportModal();
+    });
 
     searchInput.addEventListener("input", event => renderSearchResults(event.target.value));
 

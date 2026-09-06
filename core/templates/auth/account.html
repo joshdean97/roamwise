@@ -1,0 +1,121 @@
+{% extends "components/base.html" %}
+
+{% block content %}
+<main class="account-page">
+    <section class="account-heading">
+        <span class="account-eyebrow">Your account</span>
+        <h1>Account settings</h1>
+        <p>Keep your LeavePrints login secure, check your account details, or remove your account and data.</p>
+    </section>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="account-alerts" aria-live="polite">
+                {% for category, message in messages %}
+                    <div class="account-alert {{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <section class="account-grid">
+        <div class="account-card">
+            <div class="account-card-head">
+                <div>
+                    <span class="account-kicker">Profile</span>
+                    <h2>Your details</h2>
+                </div>
+                {% if current_user.is_email_confirmed %}
+                    <span class="account-status verified">✓ Email verified</span>
+                {% else %}
+                    <span class="account-status">Email unverified</span>
+                {% endif %}
+            </div>
+
+            <dl class="account-details">
+                <div>
+                    <dt>Username</dt>
+                    <dd>{{ current_user.username }}</dd>
+                </div>
+                <div>
+                    <dt>Email</dt>
+                    <dd>{{ current_user.email }}</dd>
+                </div>
+            </dl>
+
+            <p class="account-muted">
+                Need to change your email address? Contact
+                <a href="mailto:hello@leaveprints.com">hello@leaveprints.com</a> for now.
+            </p>
+        </div>
+
+        <div class="account-card">
+            <div class="account-card-head">
+                <div>
+                    <span class="account-kicker">Security</span>
+                    <h2>Change password</h2>
+                </div>
+            </div>
+
+            <form method="post" action="{{ url_for('auth.change_password') }}" class="account-form">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                <label>
+                    <span>Current password</span>
+                    <input name="current_password" type="password" required maxlength="128" autocomplete="current-password">
+                </label>
+
+                <label>
+                    <span>New password</span>
+                    <input name="password" type="password" required minlength="8" maxlength="128" autocomplete="new-password">
+                </label>
+
+                <label>
+                    <span>Confirm new password</span>
+                    <input name="confirm_password" type="password" required minlength="8" maxlength="128" autocomplete="new-password">
+                </label>
+
+                <button class="account-button" type="submit">Change password</button>
+            </form>
+
+            <p class="account-muted">Changing your password signs this browser out, so you'll log back in with the new one.</p>
+        </div>
+    </section>
+
+    <section class="account-card danger-zone">
+        <div class="account-card-head">
+            <div>
+                <span class="account-kicker danger">Danger zone</span>
+                <h2>Delete your account</h2>
+            </div>
+        </div>
+
+        <p>
+            This permanently deletes your LeavePrints account, saved trips, public trip links,
+            account-linked analytics events and data reports you submitted. This cannot be undone.
+        </p>
+
+        {% if current_user.is_admin %}
+            <p class="account-admin-warning">
+                Admin safeguard: the final LeavePrints admin account cannot delete itself. Add another admin first if you ever need to remove this account.
+            </p>
+        {% endif %}
+
+        <form method="post" action="{{ url_for('auth.delete_account') }}" class="account-form danger-form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+            <label>
+                <span>Current password</span>
+                <input name="current_password" type="password" required maxlength="128" autocomplete="current-password">
+            </label>
+
+            <label>
+                <span>Type <strong>DELETE</strong> to confirm</span>
+                <input name="confirmation" type="text" required maxlength="20" autocomplete="off" placeholder="DELETE">
+            </label>
+
+            <button class="account-button danger-button" type="submit">Permanently delete account</button>
+        </form>
+    </section>
+</main>
+{% endblock %}

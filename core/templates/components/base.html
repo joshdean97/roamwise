@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='leaveprints-brand.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='legal.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='methodology.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='account.css') }}">
     {% block head_extra %}{% endblock %}
 </head>
 <body class="{% block body_class %}{% endblock %}">
@@ -24,6 +25,7 @@
             {% if current_user.is_authenticated %}
                 <li><a href="{{ url_for('main.plan_trip') }}">Plan A Trip</a></li>
                 <li><a href="{{ url_for('main.my_trips') }}">My Trips</a></li>
+                <li><a href="{{ url_for('auth.account') }}">Account</a></li>
                 <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
                 {% if current_user.is_admin %}
                     <li>|</li>

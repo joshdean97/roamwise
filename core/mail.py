@@ -99,3 +99,27 @@ def send_email_confirmation(user, confirmation_url):
     )
 
     _send_message(message)
+
+def send_account_deleted_email(email, username=None):
+    """Best-effort confirmation after a user permanently deletes their account."""
+
+    mail_from = current_app.config.get("MAIL_FROM")
+    if not current_app.config.get("SMTP_HOST") or not mail_from:
+        raise RuntimeError("Account deletion email is not configured.")
+
+    message = EmailMessage()
+    message["Subject"] = "Your LeavePrints account was deleted"
+    message["From"] = mail_from
+    message["To"] = email
+
+    greeting = f"Hey {username},\n\n" if username else ""
+    message.set_content(
+        greeting
+        + "Your LeavePrints account has been permanently deleted.\n\n"
+        + "Saved trips and public trip links tied to the account have been removed, "
+        + "along with account-linked product analytics and data reports you submitted.\n\n"
+        + "If you did not request this, contact hello@leaveprints.com."
+    )
+
+    _send_message(message)
+

@@ -1,7 +1,8 @@
 from datetime import datetime, timedelta
 
-from flask import Blueprint, render_template
+from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import login_required
+from sqlalchemy.orm import joinedload
 
 from core.decorators import admin_required
 from core.extensions import db
@@ -9,6 +10,7 @@ from core.models.user import User
 from core.models.city import City
 from core.models.country import Country
 from core.models.analytics_event import AnalyticsEvent
+from core.models.city_data_report import CityDataReport, REPORT_STATUSES
 
 
 admin_bp = Blueprint(
@@ -54,6 +56,12 @@ def dashboard():
     country_count = Country.query.count()
 
     user_count = User.query.count()
+
+    open_data_report_count = (
+        CityDataReport.query
+        .filter(CityDataReport.status == "open")
+        .count()
+    )
 
     # --------------------------------------------------------
     # Stale cities
@@ -113,6 +121,7 @@ def dashboard():
         "city_count": city_count,
         "country_count": country_count,
         "user_count": user_count,
+        "open_data_report_count": open_data_report_count,
         "stale_city_count": stale_city_count,
         "schengen_country_count": schengen_country_count,
         "currency_count": currency_count,
@@ -174,7 +183,9 @@ def analytics_dashboard():
         ("share_page_viewed", "Share pages"),
         ("public_share_enabled", "Public shares"),
         ("public_trip_viewed", "Public Print views"),
+        ("account_deleted", "Account deletions"),
         ("shared_route_loaded", "Routes reused"),
+        ("data_report_submitted", "Bad-data reports"),
     ]
 
     metric_cards = [
@@ -262,6 +273,91 @@ def analytics_dashboard():
         recent_events=recent_events,
         title="Product Analytics | LeavePrints",
     )
+
+
+# ============================================================
+# Traveller data reports
+# ============================================================
+
+@admin_bp.route("/data-reports")
+@login_required
+@admin_required
+def data_reports():
+    active_status = (request.args.get("status") or "open").strip().lower()
+
+    if active_status not in REPORT_STATUSES | {"all"}:
+        active_status = "open"
+
+    query = (
+        CityDataReport.query
+        .options(
+            joinedload(CityDataReport.city),
+            joinedload(CityDataReport.reporter),
+        )
+        .order_by(CityDataReport.created_at.desc(), CityDataReport.id.desc())
+    )
+
+    if active_status != "all":
+        query = query.filter(CityDataReport.status == active_status)
+
+    reports = query.limit(250).all()
+
+    status_counts = dict(
+        db.session.query(
+            CityDataReport.status,
+            db.func.count(CityDataReport.id),
+        )
+        .group_by(CityDataReport.status)
+        .all()
+    )
+
+    counts = {
+        "open": status_counts.get("open", 0),
+        "resolved": status_counts.get("resolved", 0),
+        "dismissed": status_counts.get("dismissed", 0),
+        "all": sum(status_counts.values()),
+    }
+
+    return render_template(
+        "admin/data_reports.html",
+        reports=reports,
+        counts=counts,
+        active_status=active_status,
+        title="Data Reports | LeavePrints",
+    )
+
+
+@admin_bp.post("/data-reports/<int:report_id>/status")
+@login_required
+@admin_required
+def update_data_report_status(report_id):
+    report = CityDataReport.query.get_or_404(report_id)
+    status = (request.form.get("status") or "").strip().lower()
+    note = (request.form.get("resolution_note") or "").strip()
+    return_status = (request.form.get("return_status") or "open").strip().lower()
+
+    if status not in REPORT_STATUSES:
+        flash("Invalid report status.", "error")
+        return redirect(url_for("admin.data_reports", status=return_status))
+
+    if len(note) > 500:
+        flash("Internal notes must be 500 characters or fewer.", "error")
+        return redirect(url_for("admin.data_reports", status=return_status))
+
+    report.status = status
+    report.resolution_note = note or None
+    report.resolved_at = datetime.utcnow() if status in {"resolved", "dismissed"} else None
+    db.session.commit()
+
+    flash(
+        "Report reopened." if status == "open" else f"Report marked {status}.",
+        "success",
+    )
+
+    if return_status not in REPORT_STATUSES | {"all"}:
+        return_status = "open"
+
+    return redirect(url_for("admin.data_reports", status=return_status))
 
 
 # ============================================================

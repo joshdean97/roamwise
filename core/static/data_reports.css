@@ -1,0 +1,241 @@
+.data-reports-page {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 42px 22px 72px;
+    color: #111c2f;
+}
+
+.data-reports-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+.data-reports-head h1 {
+    margin: 5px 0 8px;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    letter-spacing: -.045em;
+}
+
+.data-reports-head p {
+    max-width: 700px;
+    margin: 0;
+    color: #738096;
+    line-height: 1.6;
+}
+
+.data-report-eyebrow {
+    color: #0e9384;
+    font-size: .72rem;
+    font-weight: 850;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+}
+
+.data-report-back {
+    color: #08776c;
+    font-weight: 800;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.data-report-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 22px;
+}
+
+.data-report-tabs a {
+    padding: 9px 13px;
+    border: 1px solid #dce5e2;
+    border-radius: 999px;
+    background: white;
+    color: #596579;
+    font-size: .8rem;
+    font-weight: 800;
+    text-decoration: none;
+}
+
+.data-report-tabs a.active {
+    border-color: #0e9384;
+    background: #e8f6f2;
+    color: #08776c;
+}
+
+.data-report-list {
+    display: grid;
+    gap: 16px;
+}
+
+.data-report-card {
+    border: 1px solid #dfe7e4;
+    border-radius: 20px;
+    padding: 20px;
+    background: white;
+    box-shadow: 0 14px 40px rgba(17, 28, 47, .055);
+}
+
+.data-report-card-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 18px;
+    align-items: flex-start;
+}
+
+.data-report-card h2 {
+    margin: 3px 0 3px;
+    font-size: 1.2rem;
+}
+
+.data-report-meta {
+    color: #738096;
+    font-size: .78rem;
+}
+
+.data-report-status {
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: #fff4d8;
+    color: #835f10;
+    font-size: .7rem;
+    font-weight: 850;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+}
+
+.data-report-status.resolved {
+    background: #e7f7f0;
+    color: #08776c;
+}
+
+.data-report-status.dismissed {
+    background: #f0f2f4;
+    color: #647184;
+}
+
+.data-report-copy {
+    margin: 17px 0;
+    padding: 14px 15px;
+    border-left: 3px solid #d96f4f;
+    border-radius: 0 12px 12px 0;
+    background: #fff9f5;
+    color: #334155;
+    line-height: 1.6;
+    white-space: pre-wrap;
+}
+
+.data-report-source {
+    margin-top: -5px;
+    margin-bottom: 16px;
+    font-size: .8rem;
+}
+
+.data-report-source a {
+    color: #08776c;
+    font-weight: 750;
+    word-break: break-word;
+}
+
+.data-report-costs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin-bottom: 17px;
+}
+
+.data-report-cost-box {
+    padding: 13px 14px;
+    border: 1px solid #e3e9e7;
+    border-radius: 13px;
+    background: #fafcfb;
+}
+
+.data-report-cost-box span {
+    display: block;
+    margin-bottom: 7px;
+    color: #738096;
+    font-size: .68rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+}
+
+.data-report-cost-box strong {
+    display: block;
+    font-size: .88rem;
+    line-height: 1.55;
+}
+
+.data-report-actions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    gap: 9px;
+    align-items: end;
+    padding-top: 16px;
+    border-top: 1px solid #edf1f0;
+}
+
+.data-report-actions input {
+    width: 100%;
+    min-height: 42px;
+    padding: 0 11px;
+    border: 1px solid #d6e0de;
+    border-radius: 10px;
+    font: inherit;
+    font-size: .8rem;
+}
+
+.data-report-actions button,
+.data-report-edit {
+    min-height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 13px;
+    border: 0;
+    border-radius: 10px;
+    background: #142136;
+    color: white;
+    font: inherit;
+    font-size: .78rem;
+    font-weight: 850;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.data-report-actions button.dismiss {
+    border: 1px solid #d6e0de;
+    background: white;
+    color: #596579;
+}
+
+.data-report-edit {
+    margin-top: 4px;
+    background: #0e9384;
+}
+
+.data-report-empty {
+    padding: 44px 20px;
+    border: 1px dashed #cfdad6;
+    border-radius: 20px;
+    text-align: center;
+    color: #738096;
+}
+
+@media (max-width: 760px) {
+    .data-reports-head {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .data-report-costs {
+        grid-template-columns: 1fr;
+    }
+
+    .data-report-actions {
+        grid-template-columns: 1fr;
+    }
+}

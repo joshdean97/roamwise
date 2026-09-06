@@ -20,6 +20,8 @@ ALLOWED_EVENTS = {
     "public_share_disabled",
     "share_card_downloaded",
     "public_trip_viewed",
+    "data_report_submitted",
+    "account_deleted",
 }
 
 

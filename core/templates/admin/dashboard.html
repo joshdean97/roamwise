@@ -173,6 +173,15 @@
                         </span>
                         <span class="admin-action-arrow">→</span>
                     </a>
+
+                    <a href="{{ url_for('admin.data_reports') }}" class="admin-action">
+                        <span class="admin-action-icon">!</span>
+                        <span>
+                            <strong>Data reports</strong>
+                            <small>{{ dashboard_stats.get('open_data_report_count', 0) }} open traveller flags</small>
+                        </span>
+                        <span class="admin-action-arrow">→</span>
+                    </a>
                 </div>
             </div>
 

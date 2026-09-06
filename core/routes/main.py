@@ -24,6 +24,7 @@ from core.analytics import capture_event
 from core.extensions import db, limiter
 from core.fx import DISPLAY_CURRENCIES, get_exchange_rates
 from core.models.city import City
+from core.models.city_data_report import CityDataReport, REPORT_CATEGORY_LABELS
 from core.models.trip import Trip, TripLeg, TripStop
 
 
@@ -1039,6 +1040,82 @@ def terms():
         title="Terms of Use | LeavePrints",
     )
 
+
+
+@main_bp.post("/data-reports")
+@login_required
+@limiter.limit("10 per hour")
+def report_city_data():
+    payload = request.get_json(silent=True) or {}
+
+    try:
+        city_id = int(payload.get("city_id"))
+    except (TypeError, ValueError):
+        return {"error": "Choose a valid city."}, 400
+
+    category = (payload.get("category") or "").strip()
+    message = (payload.get("message") or "").strip()
+    source_url = (payload.get("source_url") or "").strip()
+
+    if category not in REPORT_CATEGORY_LABELS:
+        return {"error": "Choose what looks wrong."}, 400
+
+    if len(message) < 10:
+        return {"error": "Tell us a little more so we know what to check."}, 400
+
+    if len(message) > 1000:
+        return {"error": "Keep the report to 1,000 characters or fewer."}, 400
+
+    if len(source_url) > 500:
+        return {"error": "That source link is too long."}, 400
+
+    if source_url and not source_url.lower().startswith(("https://", "http://")):
+        return {"error": "Source links must start with http:// or https://."}, 400
+
+    city = (
+        City.query
+        .options(joinedload(City.country))
+        .filter(City.id == city_id)
+        .first()
+    )
+
+    if not city:
+        return {"error": "That city could not be found."}, 404
+
+    report = CityDataReport(
+        city_id=city.id,
+        user_id=current_user.id,
+        city_name_snapshot=city.name,
+        country_name_snapshot=city.country.name,
+        category=category,
+        message=message,
+        source_url=source_url or None,
+        hostel_per_night_snapshot=city.hostel_per_night,
+        monthly_living_cost_snapshot=city.monthly_living_cost,
+        balanced_daily_snapshot=city.balanced_cost,
+    )
+
+    try:
+        db.session.add(report)
+        db.session.commit()
+    except Exception:
+        db.session.rollback()
+        current_app.logger.exception(
+            "Could not save city-data report for city %s",
+            city_id,
+        )
+        return {"error": "We couldn't save that report just now. Try again."}, 500
+
+    capture_event(
+        "data_report_submitted",
+        current_user.id,
+        properties={"city_id": city.id, "category": category},
+    )
+
+    return {
+        "ok": True,
+        "message": "Thanks — we've logged it and will check the city data.",
+    }, 201
 
 
 @main_bp.post("/analytics/event")
