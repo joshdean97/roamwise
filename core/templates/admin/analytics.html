@@ -123,6 +123,29 @@
     <section class="analytics-section">
         <div class="analytics-section-head">
             <div>
+                <span>Discovery loop</span>
+                <h2>Are people actually using shared trips?</h2>
+            </div>
+        </div>
+
+        <div class="analytics-card-grid discovery-grid">
+            <article class="analytics-card"><span>Explore views</span><strong>{{ discovery_loop.explore_views }}</strong><small>Page views since tracking began</small></article>
+            <article class="analytics-card"><span>Prints opened</span><strong>{{ discovery_loop.explore_opens }}</strong><small>Opened from Explore</small></article>
+            <article class="analytics-card"><span>Saved for later</span><strong>{{ discovery_loop.bookmarks }}</strong><small>Bookmark actions</small></article>
+            <article class="analytics-card"><span>Actual route uses</span><strong>{{ discovery_loop.route_uses }}</strong><small>Shared routes saved as new trips</small></article>
+        </div>
+
+        <div class="planner-funnel analytics-discovery-detail">
+            <div><span>Shared routes loaded into planner</span><strong>{{ discovery_loop.route_loads }}</strong></div>
+            <div><span>Travellers who loaded a shared route</span><strong>{{ discovery_loop.reuse_users }}</strong></div>
+            <div><span>Those travellers who actually saved a reused route</span><strong>{{ discovery_loop.converted_users }}</strong></div>
+            <div><span>Loaded → actually used</span><strong>{{ "%.1f"|format(discovery_loop.load_to_saved) }}%</strong></div>
+        </div>
+    </section>
+
+    <section class="analytics-section">
+        <div class="analytics-section-head">
+            <div>
                 <span>Event log</span>
                 <h2>Latest product actions</h2>
             </div>

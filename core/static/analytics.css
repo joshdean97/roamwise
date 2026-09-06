@@ -249,3 +249,6 @@
         grid-template-columns: 1fr;
     }
 }
+
+.analytics-discovery-detail { margin-top: 14px; }
+@media (min-width: 901px) { .discovery-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }

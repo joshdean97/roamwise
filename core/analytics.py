@@ -22,6 +22,11 @@ ALLOWED_EVENTS = {
     "public_trip_viewed",
     "data_report_submitted",
     "account_deleted",
+    "shared_route_saved",
+    "trip_unbookmarked",
+    "trip_bookmarked",
+    "explore_trip_opened",
+    "explore_viewed",
 }
 
 

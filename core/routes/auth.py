@@ -1,4 +1,5 @@
 import hmac
+from urllib.parse import urlsplit
 from datetime import datetime, timezone
 
 from flask import (
@@ -24,6 +25,7 @@ from core.mail import (
     send_password_reset_email,
 )
 from core.models.user import User
+from core.social import creator_impact
 
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
@@ -34,7 +36,19 @@ MAX_USERNAME_LENGTH = 80
 MAX_EMAIL_LENGTH = 120
 RESET_TOKEN_SALT = "roamwise-password-reset-v1"
 EMAIL_CONFIRMATION_TOKEN_SALT = "leaveprints-email-confirmation-v1"
-TERMS_VERSION = "2026-09-05"
+TERMS_VERSION = "2026-09-06"
+
+
+def _safe_next_path(value):
+    value = (value or "").strip()
+    if not value or not value.startswith("/") or value.startswith("//"):
+        return None
+
+    parsed = urlsplit(value)
+    if parsed.scheme or parsed.netloc:
+        return None
+
+    return value
 
 
 def normalise_email(value):
@@ -187,11 +201,21 @@ def login():
             login_user(user)
             capture_event("login_completed", user.id)
             flash("Login successful.", "success")
-            return redirect(url_for("main.home"))
+            next_path = _safe_next_path(
+                request.form.get("next") or request.args.get("next")
+            )
+            return redirect(next_path or url_for("main.home"))
 
         # Deliberately generic: do not reveal whether an email is registered.
         flash("Invalid email or password.", "error")
-        return redirect(url_for("auth.login"))
+        next_path = _safe_next_path(
+            request.form.get("next") or request.args.get("next")
+        )
+        return redirect(
+            url_for("auth.login", next=next_path)
+            if next_path
+            else url_for("auth.login")
+        )
 
     return render_template("auth/login.html", title="Login")
 
@@ -209,6 +233,7 @@ def logout():
 def account():
     return render_template(
         "auth/account.html",
+        impact=creator_impact(current_user.id),
         title="Account | LeavePrints",
     )
 
@@ -274,6 +299,7 @@ def delete_account():
     from core.models.analytics_event import AnalyticsEvent
     from core.models.city_data_report import CityDataReport
     from core.models.trip import Trip
+    from core.models.trip_engagement import TripEngagement
 
     user_id = current_user.id
     user = db.session.get(User, user_id)
@@ -292,6 +318,28 @@ def delete_account():
         AnalyticsEvent.query.filter_by(user_id=user_id).delete(
             synchronize_session=False
         )
+
+        user_trip_ids = [
+            row[0]
+            for row in db.session.query(Trip.id)
+            .filter(Trip.user_id == user_id)
+            .all()
+        ]
+
+        # Remove bookmarks/uses created by this account, plus engagement attached
+        # to Prints that are about to disappear. Detach copied trips first so the
+        # copies remain usable after their source creator leaves.
+        TripEngagement.query.filter(TripEngagement.user_id == user_id).delete(
+            synchronize_session=False
+        )
+        if user_trip_ids:
+            TripEngagement.query.filter(TripEngagement.trip_id.in_(user_trip_ids)).delete(
+                synchronize_session=False
+            )
+            Trip.query.filter(Trip.source_trip_id.in_(user_trip_ids)).update(
+                {Trip.source_trip_id: None},
+                synchronize_session=False,
+            )
 
         # ORM deletion preserves Trip's existing delete-orphan cascades for stops
         # and legs. Removing a trip also kills any public share token immediately.

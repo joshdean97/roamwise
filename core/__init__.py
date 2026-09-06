@@ -7,6 +7,7 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 from core.models.user import User
 from core.models.analytics_event import AnalyticsEvent  # noqa: F401
 from core.models.city_data_report import CityDataReport  # noqa: F401
+from core.models.trip_engagement import TripEngagement  # noqa: F401
 
 
 def _env_bool(name, default="0"):

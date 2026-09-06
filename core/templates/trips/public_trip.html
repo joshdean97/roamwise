@@ -347,6 +347,8 @@
 
         <h1>{{ share_data.name }}</h1>
 
+        <p class="public-trip-sub">Shared by @{{ trip.user.username }}</p>
+
         <p class="public-trip-sub">
             {{ share_data.total_nights }}
             {{ 'night' if share_data.total_nights == 1 else 'nights' }}
@@ -355,6 +357,12 @@
                 · {{ share_data.date_label }}
             {% endif %}
         </p>
+
+        <div class="public-social-strip" aria-label="Print engagement">
+            <span class="public-social-pill">{{ social_stats.points }} points</span>
+            <span class="public-social-pill">♡ {{ social_stats.saves }} saves</span>
+            <span class="public-social-pill">↗ {{ social_stats.uses }} uses</span>
+        </div>
 
         <div class="public-trip-stats">
             <div class="public-stat primary">
@@ -484,7 +492,7 @@
 
             <a
                 class="use-route-button"
-                href="{{ url_for('main.plan_trip', use=trip.share_token) }}"
+                href="{% if current_user.is_authenticated %}{{ url_for('main.plan_trip', use=trip.share_token) }}{% else %}{{ url_for('auth.login', next=url_for('main.plan_trip', use=trip.share_token)) }}{% endif %}"
             >
                 Use this route →
             </a>
@@ -493,6 +501,21 @@
                 Your travel dates start blank rather than copying someone
                 else's dates.
             </p>
+
+            {% if current_user.is_authenticated and current_user.id != trip.user_id %}
+                <form class="public-save-form" method="post" action="{{ url_for('main.toggle_trip_save', share_token=trip.share_token) }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <input type="hidden" name="action" value="{{ 'remove' if is_saved else 'save' }}">
+                    <input type="hidden" name="return_to" value="public">
+                    <button class="public-save-button {% if is_saved %}saved{% endif %}" type="submit">
+                        {{ 'Saved for later ✓' if is_saved else 'Save for later' }}
+                    </button>
+                </form>
+            {% elif current_user.is_authenticated %}
+                <p class="use-note">This is your Print. Share it to earn points when other travellers save or use it.</p>
+            {% else %}
+                <p class="use-note"><a href="{{ url_for('auth.login') }}">Log in</a> to save this Print for later.</p>
+            {% endif %}
         </aside>
     </section>
 </main>

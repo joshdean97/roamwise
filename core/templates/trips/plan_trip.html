@@ -381,6 +381,7 @@
         <input type="hidden" name="transport_json" id="transportJson" value="{}">
         <input type="hidden" name="travel_style" id="travelStyleHidden" value="balanced">
         <input type="hidden" name="display_currency" id="displayCurrencyHidden" value="{{ selected_currency }}">
+        <input type="hidden" name="source_share_token" value="{{ planner_initial.source_share_token|default('') }}">
 
         <section class="planner-controls" aria-label="Trip settings">
             <div class="field">

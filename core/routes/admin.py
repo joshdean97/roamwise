@@ -177,6 +177,10 @@ def analytics_dashboard():
 
     metric_labels = [
         ("landing_viewed", "Landing views"),
+        ("explore_viewed", "Explore views"),
+        ("explore_trip_opened", "Explore Print opens"),
+        ("trip_bookmarked", "Print saves"),
+        ("shared_route_saved", "Actual route uses"),
         ("account_created", "Signups"),
         ("planner_opened", "Planner opens"),
         ("trip_saved", "Trips saved"),
@@ -256,6 +260,43 @@ def analytics_dashboard():
         "first_to_second": (second_city / first_city * 100 if first_city else 0),
     }
 
+    reuse_load_users = {
+        row[0]
+        for row in db.session.query(AnalyticsEvent.user_id)
+        .filter(
+            AnalyticsEvent.name == "shared_route_loaded",
+            AnalyticsEvent.user_id.isnot(None),
+        )
+        .distinct()
+        .all()
+    }
+    reuse_saved_users = {
+        row[0]
+        for row in db.session.query(AnalyticsEvent.user_id)
+        .filter(
+            AnalyticsEvent.name == "shared_route_saved",
+            AnalyticsEvent.user_id.isnot(None),
+        )
+        .distinct()
+        .all()
+    }
+    reuse_converted_users = reuse_load_users & reuse_saved_users
+
+    discovery_loop = {
+        "explore_views": event_counts_all.get("explore_viewed", 0),
+        "explore_opens": event_counts_all.get("explore_trip_opened", 0),
+        "bookmarks": event_counts_all.get("trip_bookmarked", 0),
+        "route_loads": event_counts_all.get("shared_route_loaded", 0),
+        "route_uses": event_counts_all.get("shared_route_saved", 0),
+        "reuse_users": len(reuse_load_users),
+        "converted_users": len(reuse_converted_users),
+        "load_to_saved": (
+            len(reuse_converted_users) / len(reuse_load_users) * 100
+            if reuse_load_users
+            else 0
+        ),
+    }
+
     recent_events = (
         AnalyticsEvent.query
         .order_by(AnalyticsEvent.created_at.desc(), AnalyticsEvent.id.desc())
@@ -270,6 +311,7 @@ def analytics_dashboard():
         event_counts_30=event_counts_30,
         funnel=funnel,
         planner_activation=planner_activation,
+        discovery_loop=discovery_loop,
         recent_events=recent_events,
         title="Product Analytics | LeavePrints",
     )

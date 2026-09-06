@@ -1,0 +1,105 @@
+{% extends "components/base.html" %}
+
+{% block content %}
+<main class="explore-page">
+    <section class="explore-hero">
+        <div>
+            <span class="explore-eyebrow">Explore Prints</span>
+            <h1>Good routes should keep travelling.</h1>
+            <p>
+                Browse public backpacking routes built by other travellers. Save one for later,
+                use it as the starting point for your own trip, and reward the people who shared something useful.
+            </p>
+        </div>
+
+        <aside class="explore-points-explainer">
+            <strong>How points work</strong>
+            Creators earn 1 point when another traveller saves a Print and 3 points when someone actually uses it to save their own trip. Repeat actions from the same person do not stack.
+        </aside>
+    </section>
+
+    <nav class="explore-tabs" aria-label="Explore filters">
+        <a class="explore-tab {% if active_tab == 'popular' %}active{% endif %}" href="{{ url_for('main.explore') }}">Popular</a>
+        {% if current_user.is_authenticated %}
+            <a class="explore-tab {% if active_tab == 'saved' %}active{% endif %}" href="{{ url_for('main.explore', tab='saved') }}">Saved</a>
+        {% endif %}
+    </nav>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="account-alerts" aria-live="polite">
+                {% for category, message in messages %}
+                    <div class="account-alert {{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    {% if explore_rows %}
+        <section class="explore-grid">
+            {% for row in explore_rows %}
+                {% set trip = row.trip %}
+                {% set symbol_map = {'GBP':'£', 'EUR':'€', 'USD':'$', 'AUD':'A$'} %}
+                {% set symbol = symbol_map.get(trip.display_currency, trip.display_currency ~ ' ') %}
+
+                <article class="explore-card">
+                    <a class="explore-card-main" href="{{ url_for('main.public_trip', share_token=trip.share_token, source='explore') }}">
+                        <div class="explore-card-top">
+                            <span class="explore-creator">by @{{ trip.user.username }}</span>
+                            <span class="explore-score">{{ row.points }} pts</span>
+                        </div>
+
+                        <h2>{{ trip.name }}</h2>
+                        <p class="explore-route">{{ row.route_label }}</p>
+
+                        <div class="explore-card-meta">
+                            <span>{{ trip.total_nights }} {{ 'night' if trip.total_nights == 1 else 'nights' }}</span>
+                            <span>{{ trip.travel_style|title }}</span>
+                            <span>{{ trip.stops|length }} {{ 'stop' if trip.stops|length == 1 else 'stops' }}</span>
+                        </div>
+
+                        <div class="explore-price">
+                            <span>Saved estimate</span>
+                            <strong>{{ symbol }}{{ "%.0f"|format(trip.total_cost_display) }}</strong>
+                        </div>
+
+                        <div class="explore-score-row">
+                            <span>♡ {{ row.saves }} saves</span>
+                            <span>↗ {{ row.uses }} uses</span>
+                        </div>
+                    </a>
+
+                    <div class="explore-card-actions">
+                        <a class="explore-action" href="{{ url_for('main.public_trip', share_token=trip.share_token, source='explore') }}">View Print →</a>
+
+                        {% if current_user.is_authenticated and current_user.id != trip.user_id %}
+                            <form method="post" action="{{ url_for('main.toggle_trip_save', share_token=trip.share_token) }}">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <input type="hidden" name="action" value="{{ 'remove' if row.is_saved else 'save' }}">
+                                <input type="hidden" name="return_to" value="{{ 'saved' if active_tab == 'saved' else 'explore' }}">
+                                <button class="explore-save-button {% if row.is_saved %}saved{% endif %}" type="submit">
+                                    {{ 'Saved ✓' if row.is_saved else 'Save for later' }}
+                                </button>
+                            </form>
+                        {% elif current_user.is_authenticated %}
+                            <span class="explore-owner-note">Your Print</span>
+                        {% else %}
+                            <span class="explore-login-save"><a href="{{ url_for('auth.login') }}">Log in</a> to save</span>
+                        {% endif %}
+                    </div>
+                </article>
+            {% endfor %}
+        </section>
+    {% else %}
+        <section class="explore-empty">
+            {% if active_tab == 'saved' %}
+                <h2>Nothing saved yet.</h2>
+                <p>Browse Popular Prints and save the routes you want to come back to.</p>
+            {% else %}
+                <h2>No public Prints yet.</h2>
+                <p>The first public routes will appear here automatically. Somebody has to leave the first footprints.</p>
+            {% endif %}
+        </section>
+    {% endif %}
+</main>
+{% endblock %}

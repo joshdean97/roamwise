@@ -499,6 +499,15 @@
                         </div>
                     </div>
 
+                    {% set impact = trip_social_stats.get(trip.id, {'saves': 0, 'uses': 0, 'points': 0}) %}
+                    {% if trip.is_public or impact.points %}
+                        <div class="trip-impact-line">
+                            <span>{{ impact.points }} pts</span>
+                            <span>♡ {{ impact.saves }} saves</span>
+                            <span>↗ {{ impact.uses }} uses</span>
+                        </div>
+                    {% endif %}
+
                     <div class="stop-list">
                         {% if trip.arrival_transport_mode or trip.arrival_transport_cost_gbp %}
                             <div class="saved-transport">

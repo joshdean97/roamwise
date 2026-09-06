@@ -82,6 +82,22 @@
         </div>
     </section>
 
+    <section class="account-card account-impact-card">
+        <div class="account-card-head">
+            <div>
+                <span class="account-kicker">Your impact</span>
+                <h2>Print points</h2>
+            </div>
+            <a class="account-muted" href="{{ url_for('main.explore') }}">Explore Prints →</a>
+        </div>
+        <p>Share useful public routes and let other travellers do the voting. A unique save earns 1 point; a unique actual use earns 3.</p>
+        <div class="account-impact-grid">
+            <div><span>Points</span><strong>{{ impact.points }}</strong></div>
+            <div><span>Saves received</span><strong>{{ impact.saves }}</strong></div>
+            <div><span>Uses received</span><strong>{{ impact.uses }}</strong></div>
+        </div>
+    </section>
+
     <section class="account-card danger-zone">
         <div class="account-card-head">
             <div>

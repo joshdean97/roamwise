@@ -26,3 +26,246 @@
         height: 27px;
     }
 }
+
+
+/* LeavePrints mobile navigation v2 */
+.mobile-nav-toggle {
+    display: none;
+}
+
+@media (max-width: 900px) {
+    .site-nav {
+        position: sticky;
+        top: 10px;
+        z-index: 1100;
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        width: min(100%, 1480px);
+        padding: 10px 12px 10px 14px;
+        border: 1px solid rgba(23, 59, 45, 0.13);
+        border-radius: 18px;
+        background: rgba(250, 246, 237, 0.96);
+        box-shadow: 0 14px 38px rgba(23, 59, 45, 0.10);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+    }
+
+    .site-nav .logo {
+        width: auto;
+        justify-content: flex-start;
+    }
+
+    .site-nav .brand-lockup {
+        padding: 5px 4px;
+    }
+
+    .mobile-nav-toggle {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        min-height: 44px;
+        padding: 0 12px 0 14px;
+        border: 1px solid rgba(23, 59, 45, 0.16);
+        border-radius: 14px;
+        background: #173b2d;
+        color: #fffaf1;
+        font: inherit;
+        font-size: 0.78rem;
+        font-weight: 800;
+        letter-spacing: 0.01em;
+        cursor: pointer;
+        box-shadow: 0 8px 20px rgba(23, 59, 45, 0.16);
+    }
+
+    .mobile-nav-toggle::before {
+        content: "";
+        position: absolute;
+        width: 7px;
+        height: 7px;
+        right: -3px;
+        top: -3px;
+        border: 2px solid #fffaf1;
+        border-radius: 50%;
+        background: #c96d4b;
+    }
+
+    .mobile-nav-toggle:focus-visible {
+        outline: 3px solid rgba(201, 109, 75, 0.25);
+        outline-offset: 3px;
+    }
+
+    .mobile-nav-icon {
+        display: grid;
+        width: 19px;
+        gap: 4px;
+    }
+
+    .mobile-nav-icon span {
+        display: block;
+        width: 100%;
+        height: 2px;
+        border-radius: 999px;
+        background: currentColor;
+        transform-origin: center;
+        transition: transform 180ms ease, opacity 140ms ease;
+    }
+
+    .site-nav.mobile-open .mobile-nav-icon span:nth-child(1) {
+        transform: translateY(6px) rotate(45deg);
+    }
+
+    .site-nav.mobile-open .mobile-nav-icon span:nth-child(2) {
+        opacity: 0;
+    }
+
+    .site-nav.mobile-open .mobile-nav-icon span:nth-child(3) {
+        transform: translateY(-6px) rotate(-45deg);
+    }
+
+    .site-nav > #siteNavMenu {
+        position: absolute;
+        top: calc(100% + 9px);
+        left: 0;
+        right: 0;
+        display: grid;
+        width: 100%;
+        max-height: min(72vh, 620px);
+        overflow-y: auto;
+        gap: 4px;
+        margin: 0;
+        padding: 12px;
+        border: 1px solid rgba(23, 59, 45, 0.13);
+        border-radius: 20px;
+        background:
+            radial-gradient(circle at 92% 5%, rgba(201, 109, 75, 0.12), transparent 110px),
+            #fffaf1;
+        box-shadow: 0 24px 60px rgba(23, 59, 45, 0.18);
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transform: translateY(-8px) scale(0.985);
+        transform-origin: top center;
+        transition: opacity 160ms ease, transform 180ms ease, visibility 180ms ease;
+    }
+
+    .site-nav > #siteNavMenu::before {
+        content: "Follow the trail";
+        display: block;
+        margin: 2px 4px 7px;
+        padding: 0 10px 10px;
+        border-bottom: 1px dashed rgba(23, 59, 45, 0.16);
+        color: #c96d4b;
+        font-size: 0.68rem;
+        font-weight: 850;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+    }
+
+    .site-nav.mobile-open > #siteNavMenu {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+        transform: translateY(0) scale(1);
+    }
+
+    .site-nav > #siteNavMenu li {
+        width: 100%;
+    }
+
+    .site-nav > #siteNavMenu .nav-divider {
+        display: none;
+    }
+
+    .site-nav > #siteNavMenu a {
+        width: 100%;
+        min-height: 46px;
+        justify-content: flex-start;
+        padding: 11px 13px;
+        border-radius: 13px;
+        color: #173b2d;
+        font-size: 0.94rem;
+        font-weight: 720;
+        text-align: left;
+    }
+
+    .site-nav > #siteNavMenu a::after {
+        left: 13px;
+        right: auto;
+        bottom: 7px;
+        width: 28px;
+        background: #c96d4b;
+        transform-origin: left;
+    }
+
+    .site-nav > #siteNavMenu a:hover,
+    .site-nav > #siteNavMenu a:focus-visible,
+    .site-nav > #siteNavMenu a.active {
+        background: rgba(23, 59, 45, 0.07);
+        color: #173b2d;
+    }
+
+    .site-nav > #siteNavMenu .lp-nav-cta {
+        justify-content: center;
+        margin-top: 5px;
+        background: #c96d4b;
+        color: #fffaf1;
+        box-shadow: 0 9px 20px rgba(201, 109, 75, 0.20);
+    }
+
+    .site-nav > #siteNavMenu .lp-nav-cta::after {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .site-nav {
+        top: 7px;
+        margin-bottom: 14px;
+        padding: 9px 10px 9px 11px;
+        border-radius: 16px;
+    }
+
+    .site-nav .brand-mark {
+        width: 27px;
+        height: 27px;
+    }
+
+    .site-nav .logo .brand-lockup .logo-text {
+        font-size: 1.32rem;
+    }
+
+    .mobile-nav-toggle {
+        min-width: 44px;
+        width: 44px;
+        padding: 0;
+        border-radius: 13px;
+    }
+
+    .mobile-nav-toggle-copy {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        clip-path: inset(50%);
+        white-space: nowrap;
+    }
+
+    .site-nav > #siteNavMenu {
+        top: calc(100% + 7px);
+        padding: 10px;
+        border-radius: 18px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .mobile-nav-icon span,
+    .site-nav > #siteNavMenu {
+        transition: none !important;
+    }
+}

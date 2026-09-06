@@ -194,3 +194,5 @@
     .account-card { padding: 19px; }
     .account-card-head { flex-direction: column; }
 }
+
+.account-impact-card { margin-top: 18px; }

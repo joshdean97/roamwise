@@ -11,34 +11,53 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='legal.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='methodology.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='account.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='explore.css') }}">
     {% block head_extra %}{% endblock %}
 </head>
 <body class="{% block body_class %}{% endblock %}">
-    <nav>
+    <nav class="site-nav">
         <div class="logo">
             <a href="{{ url_for('main.home') }}" class="brand-lockup" aria-label="LeavePrints home">
                 <img class="brand-mark" src="{{ url_for('static', filename='leaveprints-mark.svg') }}" alt="" aria-hidden="true">
                 <span class="logo-text">LeavePrints</span>
             </a>
         </div>
-        <ul>
+        
+        <button
+            class="mobile-nav-toggle"
+            type="button"
+            aria-expanded="false"
+            aria-controls="siteNavMenu"
+            aria-label="Open navigation menu"
+        >
+            <span class="mobile-nav-toggle-copy">Menu</span>
+            <span class="mobile-nav-icon" aria-hidden="true">
+                <span></span>
+                <span></span>
+                <span></span>
+            </span>
+        </button>
+        <ul id="siteNavMenu">
             {% if current_user.is_authenticated %}
+                <li><a href="{{ url_for('main.explore') }}">Explore</a></li>
                 <li><a href="{{ url_for('main.plan_trip') }}">Plan A Trip</a></li>
                 <li><a href="{{ url_for('main.my_trips') }}">My Trips</a></li>
                 <li><a href="{{ url_for('auth.account') }}">Account</a></li>
                 <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
                 {% if current_user.is_admin %}
-                    <li>|</li>
+                    <li class="nav-divider" aria-hidden="true">|</li>
                     <li><a href="{{ url_for('admin.dashboard') }}">Admin</a></li>
                 {% endif %}
             {% else %}
                 {% if request.endpoint == 'main.home' %}
+                    <li class="lp-nav-only"><a href="{{ url_for('main.explore') }}">Explore</a></li>
                     <li class="lp-nav-only"><a href="#features">Features</a></li>
                     <li class="lp-nav-only"><a href="#how-it-works">How it works</a></li>
                     <li><a href="{{ url_for('auth.login') }}">Login</a></li>
                     <li><a class="lp-nav-cta" href="{{ url_for('auth.register') }}">Start free</a></li>
                 {% else %}
                     <li><a href="{{ url_for('main.home') }}">Home</a></li>
+                    <li><a href="{{ url_for('main.explore') }}">Explore</a></li>
                     <li><a href="{{ url_for('auth.login') }}">Login</a></li>
                     <li><a href="{{ url_for('auth.register') }}">Register</a></li>
                 {% endif %}
@@ -55,5 +74,6 @@
             <a href="mailto:hello@leaveprints.com">Contact</a>
         </footer>
     {% endif %}
+    <script src="{{ url_for('static', filename='mobile-nav.js') }}" defer></script>
 </body>
 </html>

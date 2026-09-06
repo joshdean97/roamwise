@@ -33,6 +33,10 @@
             class="auth-form"
         >
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            {% set login_next = request.args.get('next') or request.form.get('next') %}
+            {% if login_next %}
+                <input type="hidden" name="next" value="{{ login_next }}">
+            {% endif %}
 
             <div class="form-group">
                 <label for="email">Email</label>

@@ -26,6 +26,16 @@ from core.fx import DISPLAY_CURRENCIES, get_exchange_rates
 from core.models.city import City
 from core.models.city_data_report import CityDataReport, REPORT_CATEGORY_LABELS
 from core.models.trip import Trip, TripLeg, TripStop
+from core.models.trip_engagement import (
+    ENGAGEMENT_SAVE,
+    ENGAGEMENT_USE,
+    TripEngagement,
+)
+from core.social import (
+    ensure_engagement,
+    saved_trip_ids_for_user,
+    social_stats_for_trip_ids,
+)
 
 
 main_bp = Blueprint("main", __name__)
@@ -157,6 +167,7 @@ def get_public_trip_or_404(share_token):
             .joinedload(TripStop.city)
             .joinedload(City.country),
             joinedload(Trip.legs),
+            joinedload(Trip.user),
         )
         .filter(
             Trip.share_token == token,
@@ -223,6 +234,7 @@ def trip_copy_state(trip):
         "start_date": "",
         "end_date": "",
         "transport": trip_transport_state(trip),
+        "source_share_token": trip.share_token or "",
     }
 
 
@@ -248,6 +260,7 @@ def trip_initial_state(trip):
             else ""
         ),
         "transport": trip_transport_state(trip),
+        "source_share_token": "",
     }
 
 
@@ -259,6 +272,7 @@ def empty_initial_state():
         "start_date": "",
         "end_date": "",
         "transport": empty_transport_state(),
+        "source_share_token": "",
     }
 
 
@@ -491,6 +505,7 @@ def planner_state_from_request():
         "start_date": request.form.get("start_date", ""),
         "end_date": request.form.get("end_date", ""),
         "transport": serialise_transport_state(transport),
+        "source_share_token": (request.form.get("source_share_token") or "").strip()[:64],
     }
 
 
@@ -1138,6 +1153,132 @@ def analytics_event():
     return {"ok": True}, 200
 
 
+
+@main_bp.get("/explore")
+def explore():
+    active_tab = (request.args.get("tab") or "popular").strip().lower()
+    if active_tab not in {"popular", "saved"}:
+        active_tab = "popular"
+
+    if active_tab == "saved" and not current_user.is_authenticated:
+        flash("Log in to see the Prints you've saved.", "info")
+        return redirect(url_for("auth.login"))
+
+    user_id = current_user.id if current_user.is_authenticated else None
+    saved_ids = saved_trip_ids_for_user(user_id)
+
+    trips = (
+        Trip.query
+        .options(
+            joinedload(Trip.user),
+            joinedload(Trip.stops)
+            .joinedload(TripStop.city)
+            .joinedload(City.country),
+            joinedload(Trip.legs),
+        )
+        .filter(
+            Trip.is_public.is_(True),
+            Trip.share_token.isnot(None),
+        )
+        .order_by(Trip.created_at.desc())
+        .limit(250)
+        .all()
+    )
+
+    if active_tab == "saved":
+        trips = [trip for trip in trips if trip.id in saved_ids]
+
+    stats = social_stats_for_trip_ids([trip.id for trip in trips])
+
+    trips.sort(
+        key=lambda trip: (
+            stats.get(trip.id, {}).get("points", 0),
+            stats.get(trip.id, {}).get("uses", 0),
+            stats.get(trip.id, {}).get("saves", 0),
+            trip.created_at.timestamp() if trip.created_at else 0,
+        ),
+        reverse=True,
+    )
+
+    explore_rows = []
+    for trip in trips:
+        city_names = [clean_share_city_name(stop.city.name) for stop in trip.stops]
+        if len(city_names) <= 4:
+            route_label = " → ".join(city_names)
+        else:
+            route_label = " → ".join(city_names[:3]) + f" → +{len(city_names) - 3} more"
+
+        values = stats.get(trip.id, {"saves": 0, "uses": 0, "points": 0})
+        explore_rows.append({
+            "trip": trip,
+            "route_label": route_label,
+            "saves": values["saves"],
+            "uses": values["uses"],
+            "points": values["points"],
+            "is_saved": trip.id in saved_ids,
+        })
+
+    capture_event(
+        "explore_viewed",
+        user_id,
+        properties={"tab": active_tab, "result_count": len(explore_rows)},
+    )
+
+    return render_template(
+        "explore.html",
+        explore_rows=explore_rows,
+        active_tab=active_tab,
+        title="Explore Prints | LeavePrints",
+    )
+
+
+@main_bp.post("/share/<share_token>/save")
+@login_required
+def toggle_trip_save(share_token):
+    trip = get_public_trip_or_404(share_token)
+    action = (request.form.get("action") or "save").strip().lower()
+    return_to = (request.form.get("return_to") or "public").strip().lower()
+
+    if trip.user_id == current_user.id:
+        flash("Your own Print is already yours — points only come from other travellers.", "info")
+    elif action == "save":
+        created = ensure_engagement(current_user.id, trip, ENGAGEMENT_SAVE)
+        if created:
+            db.session.commit()
+            capture_event(
+                "trip_bookmarked",
+                current_user.id,
+                properties={"trip_id": trip.id, "creator_id": trip.user_id},
+            )
+            flash("Saved for later.", "success")
+        else:
+            db.session.rollback()
+            flash("That Print is already saved.", "info")
+    elif action == "remove":
+        engagement = TripEngagement.query.filter_by(
+            user_id=current_user.id,
+            trip_id=trip.id,
+            kind=ENGAGEMENT_SAVE,
+        ).first()
+        if engagement:
+            db.session.delete(engagement)
+            db.session.commit()
+            capture_event(
+                "trip_unbookmarked",
+                current_user.id,
+                properties={"trip_id": trip.id, "creator_id": trip.user_id},
+            )
+        flash("Removed from saved Prints.", "info")
+    else:
+        abort(400)
+
+    if return_to == "explore":
+        return redirect(url_for("main.explore"))
+    if return_to == "saved":
+        return redirect(url_for("main.explore", tab="saved"))
+    return redirect(url_for("main.public_trip", share_token=trip.share_token))
+
+
 @main_bp.route(
     "/plan-trip",
     methods=["GET", "POST"],
@@ -1195,10 +1336,25 @@ def plan_trip():
     if request.method == "POST":
         initial_state = planner_state_from_request()
 
+        source_share_token = initial_state.get("source_share_token", "")
+        source_trip = None
+        if source_share_token:
+            source_trip = (
+                Trip.query
+                .filter(
+                    Trip.share_token == source_share_token,
+                    Trip.is_public.is_(True),
+                )
+                .first()
+            )
+            if source_trip and source_trip.user_id == current_user.id:
+                source_trip = None
+
         try:
             trip = Trip(
                 user_id=current_user.id,
                 name="New trip",
+                source_trip_id=source_trip.id if source_trip else None,
             )
 
             save_trip_form(
@@ -1206,7 +1362,27 @@ def plan_trip():
                 exchange_rates,
             )
 
+            first_use_for_source = False
+            if source_trip:
+                first_use_for_source = ensure_engagement(
+                    current_user.id,
+                    source_trip,
+                    ENGAGEMENT_USE,
+                )
+
             db.session.commit()
+
+            if source_trip:
+                capture_event(
+                    "shared_route_saved",
+                    current_user.id,
+                    properties={
+                        "source_trip_id": source_trip.id,
+                        "copied_trip_id": trip.id,
+                        "first_use_for_source": first_use_for_source,
+                    },
+                )
+
             capture_event(
                 "trip_saved",
                 current_user.id,
@@ -1215,6 +1391,7 @@ def plan_trip():
                     "total_nights": trip.total_nights,
                     "travel_style": trip.travel_style,
                     "display_currency": trip.display_currency,
+                    "source": "shared" if source_trip else "direct",
                 },
             )
 
@@ -1362,6 +1539,13 @@ def delete_trip(trip_id):
     )
 
     try:
+        Trip.query.filter(Trip.source_trip_id == trip.id).update(
+            {Trip.source_trip_id: None},
+            synchronize_session=False,
+        )
+        TripEngagement.query.filter_by(trip_id=trip.id).delete(
+            synchronize_session=False
+        )
         db.session.delete(trip)
         db.session.commit()
 
@@ -1428,6 +1612,10 @@ def set_trip_share_visibility(trip_id):
             )
 
         elif visibility == "private":
+            TripEngagement.query.filter_by(
+                trip_id=trip.id,
+                kind=ENGAGEMENT_SAVE,
+            ).delete(synchronize_session=False)
             trip.is_public = False
             trip.share_token = None
 
@@ -1476,15 +1664,35 @@ def public_trip(share_token):
         share_token
     )
     share_data = build_share_payload(trip)
+    user_id = current_user.id if current_user.is_authenticated else None
+    social_stats = social_stats_for_trip_ids([trip.id]).get(
+        trip.id,
+        {"saves": 0, "uses": 0, "points": 0},
+    )
+    is_saved = (
+        current_user.is_authenticated
+        and trip.id in saved_trip_ids_for_user(current_user.id)
+    )
+
     capture_event(
         "public_trip_viewed",
+        user_id,
         properties={"stop_count": len(trip.stops)},
     )
+
+    if (request.args.get("source") or "").strip().lower() == "explore":
+        capture_event(
+            "explore_trip_opened",
+            user_id,
+            properties={"trip_id": trip.id, "creator_id": trip.user_id},
+        )
 
     return render_template(
         "trips/public_trip.html",
         trip=trip,
         share_data=share_data,
+        social_stats=social_stats,
+        is_saved=is_saved,
     )
 
 @main_bp.route(
@@ -1582,7 +1790,10 @@ def my_trips():
         .all()
     )
 
+    trip_social_stats = social_stats_for_trip_ids([trip.id for trip in trips])
+
     return render_template(
         "trips/my_trips.html",
         trips=trips,
+        trip_social_stats=trip_social_stats,
     )

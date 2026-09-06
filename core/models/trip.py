@@ -64,6 +64,16 @@ class Trip(db.Model):
         server_default=db.false(),
     )
 
+    # Attribution for routes that started from somebody else's public Print.
+    # If the source is later deleted, the copied trip remains but the link back
+    # to the original disappears.
+    source_trip_id = db.Column(
+        db.Integer,
+        db.ForeignKey("trip.id", ondelete="SET NULL"),
+        nullable=True,
+        index=True,
+    )
+
     # Optional manual transport into the first stop.
     arrival_transport_mode = db.Column(
         db.String(20),
@@ -119,6 +129,12 @@ class Trip(db.Model):
             "trips",
             lazy=True,
         ),
+    )
+
+    source_trip = db.relationship(
+        "Trip",
+        remote_side=[id],
+        foreign_keys=[source_trip_id],
     )
 
     stops = db.relationship(
