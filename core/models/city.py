@@ -1,6 +1,11 @@
 from core.extensions import db
 
 
+# Small planning buffer used by the original LeavePrints city-cost model.
+# Kept explicit here so the methodology page and app use one formula.
+BACKPACKER_MONTHLY_BUFFER_GBP = 100
+
+
 class City(db.Model):
     __tablename__ = "city"
 
@@ -58,8 +63,9 @@ class City(db.Model):
         return round(
             float(
                 (
-                    (self.hostel_per_night * 30
-                    + self.monthly_living_cost )
+                    self.hostel_per_night * 30
+                    + self.monthly_living_cost
+                    + BACKPACKER_MONTHLY_BUFFER_GBP
                 ) / 30
             ),
             2

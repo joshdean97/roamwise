@@ -20,7 +20,8 @@ from flask import (
 from flask_login import current_user, login_required
 from sqlalchemy.orm import joinedload
 
-from core.extensions import db
+from core.analytics import capture_event
+from core.extensions import db, limiter
 from core.fx import DISPLAY_CURRENCIES, get_exchange_rates
 from core.models.city import City
 from core.models.trip import Trip, TripLeg, TripStop
@@ -1007,9 +1008,57 @@ def build_share_payload(trip):
 
 @main_bp.route("/")
 def home():
+    capture_event(
+        "landing_viewed",
+        current_user.id if current_user.is_authenticated else None,
+        properties={"authenticated": bool(current_user.is_authenticated)},
+    )
     return render_template("index.html")
 
 
+@main_bp.get("/how-costs-work")
+def how_costs_work():
+    return render_template(
+        "info/how_costs_work.html",
+        title="How costs work | LeavePrints",
+    )
+
+
+@main_bp.get("/privacy")
+def privacy():
+    return render_template(
+        "legal/privacy.html",
+        title="Privacy Policy | LeavePrints",
+    )
+
+
+@main_bp.get("/terms")
+def terms():
+    return render_template(
+        "legal/terms.html",
+        title="Terms of Use | LeavePrints",
+    )
+
+
+
+@main_bp.post("/analytics/event")
+@login_required
+@limiter.limit("90 per minute")
+def analytics_event():
+    payload = request.get_json(silent=True) or {}
+    event_name = (payload.get("event") or "").strip()
+
+    allowed_client_events = {
+        "first_city_added",
+        "second_city_added",
+        "share_card_downloaded",
+    }
+
+    if event_name not in allowed_client_events:
+        abort(400)
+
+    capture_event(event_name, current_user.id)
+    return {"ok": True}, 200
 
 
 @main_bp.route(
@@ -1048,11 +1097,23 @@ def plan_trip():
                     source_trip.fx_rate
                 )
 
+            capture_event(
+                "shared_route_loaded",
+                current_user.id,
+                properties={"stop_count": len(source_trip.stops)},
+            )
+
             flash(
                 "Shared route loaded. Choose your dates or make any "
                 "changes, then save it as your own trip.",
                 "success",
             )
+
+        capture_event(
+            "planner_opened",
+            current_user.id,
+            properties={"source": "shared" if use_token else "direct"},
+        )
 
     if request.method == "POST":
         initial_state = planner_state_from_request()
@@ -1069,6 +1130,16 @@ def plan_trip():
             )
 
             db.session.commit()
+            capture_event(
+                "trip_saved",
+                current_user.id,
+                properties={
+                    "stop_count": len(trip.stops),
+                    "total_nights": trip.total_nights,
+                    "travel_style": trip.travel_style,
+                    "display_currency": trip.display_currency,
+                },
+            )
 
             flash(
                 "Trip saved.",
@@ -1147,6 +1218,16 @@ def edit_trip(trip_id):
             )
 
             db.session.commit()
+            capture_event(
+                "trip_edited",
+                current_user.id,
+                properties={
+                    "stop_count": len(trip.stops),
+                    "total_nights": trip.total_nights,
+                    "travel_style": trip.travel_style,
+                    "display_currency": trip.display_currency,
+                },
+            )
 
             flash(
                 "Trip updated.",
@@ -1279,6 +1360,11 @@ def set_trip_share_visibility(trip_id):
             )
 
         db.session.commit()
+        capture_event(
+            "public_share_enabled" if visibility == "public" else "public_share_disabled",
+            current_user.id,
+            properties={"stop_count": len(trip.stops)},
+        )
 
     except Exception:
         db.session.rollback()
@@ -1312,13 +1398,16 @@ def public_trip(share_token):
     trip = get_public_trip_or_404(
         share_token
     )
+    share_data = build_share_payload(trip)
+    capture_event(
+        "public_trip_viewed",
+        properties={"stop_count": len(trip.stops)},
+    )
 
     return render_template(
         "trips/public_trip.html",
         trip=trip,
-        share_data=build_share_payload(
-            trip
-        ),
+        share_data=share_data,
     )
 
 @main_bp.route(
@@ -1330,13 +1419,17 @@ def share_trip(trip_id):
     trip = get_owned_trip_or_404(
         trip_id
     )
+    share_data = build_share_payload(trip)
+    capture_event(
+        "share_page_viewed",
+        current_user.id,
+        properties={"is_public": bool(trip.is_public)},
+    )
 
     return render_template(
         "trips/share_trip.html",
         trip=trip,
-        share_data=build_share_payload(
-            trip
-        ),
+        share_data=share_data,
     )
 
 @main_bp.route(

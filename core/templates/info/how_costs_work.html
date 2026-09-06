@@ -1,0 +1,177 @@
+{% extends "components/base.html" %}
+
+{% block head_extra %}
+<link rel="preconnect" href="https://fonts.bunny.net">
+<link href="https://fonts.bunny.net/css?family=dm-sans:400,500,600,700|kalam:400,700" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='methodology.css') }}">
+{% endblock %}
+
+{% block body_class %}methodology-page{% endblock %}
+
+{% block content %}
+<main class="methodology-shell">
+    <header class="methodology-hero">
+        <span class="methodology-kicker">How costs work</span>
+        <h1>Useful estimates.<br><span>Not fake precision.</span></h1>
+        <p>
+            LeavePrints is built to answer the backpacker question that actually matters:
+            “roughly what will this route cost me?” Here is exactly how we get there.
+        </p>
+        <div class="methodology-meta">
+            <span>Source currency: GBP</span>
+            <span>Database version: August 2026</span>
+            <span>Not live booking prices</span>
+        </div>
+    </header>
+
+    <section class="methodology-grid">
+        <article class="methodology-card methodology-card-wide">
+            <span class="methodology-step">01</span>
+            <h2>Start with two city-level inputs</h2>
+            <div class="methodology-source-grid">
+                <div>
+                    <strong>Hostel dorm price</strong>
+                    <p>
+                        A representative budget dorm-bed price for the city, based on Hostelworld
+                        research in the LeavePrints source dataset. It is a planning benchmark,
+                        not the price of a particular hostel on a particular night.
+                    </p>
+                </div>
+                <div>
+                    <strong>Living cost</strong>
+                    <p>
+                        A monthly non-accommodation cost-of-living baseline drawn from Numbeo-style
+                        city data, then adapted for short-term backpacking rather than treated as a
+                        live quote.
+                    </p>
+                </div>
+            </div>
+            <p class="methodology-note">
+                Our source sheet is maintained manually. Prices can move with season, events,
+                exchange rates and how far ahead you book, so LeavePrints deliberately presents
+                these as estimates.
+            </p>
+        </article>
+
+        <article class="methodology-card">
+            <span class="methodology-step">02</span>
+            <h2>Build the balanced daily estimate</h2>
+            <p>
+                We take the nightly hostel benchmark, convert the monthly living figure into a
+                daily amount, and add a small LeavePrints backpacker buffer of £100 per month.
+            </p>
+            <div class="methodology-formula">
+                <span>Balanced / day</span>
+                <strong>Hostel/night + (monthly living + £100) ÷ 30</strong>
+            </div>
+            <p class="methodology-muted">
+                The buffer keeps the estimate from pretending a bare local-living baseline captures
+                every small cost that crops up while travelling.
+            </p>
+        </article>
+
+        <article class="methodology-card">
+            <span class="methodology-step">03</span>
+            <h2>Adjust for how you travel</h2>
+            <p>Balanced is the baseline. The other two styles are simple multipliers:</p>
+            <div class="methodology-style-list">
+                <div><span>Shoestring</span><strong>Balanced × 0.72</strong></div>
+                <div><span>Balanced</span><strong>Balanced × 1.00</strong></div>
+                <div><span>Comfortable</span><strong>Balanced × 1.55</strong></div>
+            </div>
+            <p class="methodology-muted">
+                These are planning profiles, not promises. Two travellers with the same style can
+                still spend very differently.
+            </p>
+        </article>
+
+        <article class="methodology-card methodology-card-wide">
+            <span class="methodology-step">04</span>
+            <h2>Multiply by nights, then add transport</h2>
+            <p>
+                Each stop's daily estimate is multiplied by the number of nights you choose. Those
+                stay costs are added together across your route. Transport is different: you enter
+                it manually because LeavePrints does not pretend to know which bus, train, ferry or
+                flight you will actually book.
+            </p>
+            <div class="methodology-equation-row">
+                <div>
+                    <span>Stay cost</span>
+                    <strong>Daily estimate × nights</strong>
+                </div>
+                <div class="methodology-plus">+</div>
+                <div>
+                    <span>Transport</span>
+                    <strong>Your manual entries</strong>
+                </div>
+                <div class="methodology-plus">=</div>
+                <div>
+                    <span>Trip total</span>
+                    <strong>Your route estimate</strong>
+                </div>
+            </div>
+            <p class="methodology-note">
+                Transport increases the trip total, but it is excluded from the “per day” stay
+                figure because a one-off flight or train ticket is not a daily living cost.
+            </p>
+        </article>
+
+        <article class="methodology-card">
+            <span class="methodology-step">05</span>
+            <h2>Convert currency for display</h2>
+            <p>
+                LeavePrints stores source costs in GBP. If you choose EUR, USD or AUD, the planner
+                converts the estimate using current GBP-based exchange rates from Frankfurter.
+                Rates are cached for up to six hours.
+            </p>
+            <p class="methodology-muted">
+                Saved trips keep the exchange-rate snapshot used when you saved them, so an old trip
+                does not suddenly change just because FX moved overnight.
+            </p>
+        </article>
+
+        <article class="methodology-card">
+            <span class="methodology-step">06</span>
+            <h2>Know what the number is — and isn't</h2>
+            <p>
+                LeavePrints is a planning tool. It does not separately price every meal, attraction,
+                night out, insurance policy, visa fee, seasonal event, local tax or booking surge.
+                It also does not guarantee hostel availability or a specific final spend.
+            </p>
+            <p class="methodology-muted">
+                Use the estimate to compare routes and set a realistic starting budget, then keep a
+                contingency for the trip you actually end up having.
+            </p>
+        </article>
+    </section>
+
+    <section class="methodology-example">
+        <div>
+            <span class="methodology-kicker">Worked example</span>
+            <h2>Say a city has a £20 dorm and £600/month living baseline.</h2>
+        </div>
+        <div class="methodology-example-math">
+            <div><span>Balanced</span><strong>£20 + (£600 + £100) ÷ 30 = £43.33/day</strong></div>
+            <div><span>Shoestring</span><strong>£43.33 × 0.72 = £31.20/day</strong></div>
+            <div><span>Comfortable</span><strong>£43.33 × 1.55 = £67.16/day</strong></div>
+        </div>
+    </section>
+
+    <section class="methodology-report">
+        <div>
+            <span class="methodology-kicker">Seen a bad estimate?</span>
+            <h2>Tell us. The database gets better when travellers call out nonsense.</h2>
+            <p>
+                If a city looks wildly off, email the city, the estimate you saw and any useful
+                context or current price evidence.
+            </p>
+        </div>
+        <a class="methodology-contact" href="mailto:hello@leaveprints.com">hello@leaveprints.com →</a>
+    </section>
+
+    <p class="methodology-legal-note">
+        Cost figures are estimates only. For the wider rules around using LeavePrints, see our
+        <a href="{{ url_for('main.terms') }}">Terms of Use</a>.
+    </p>
+</main>
+{% endblock %}

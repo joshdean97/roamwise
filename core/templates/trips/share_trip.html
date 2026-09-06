@@ -517,6 +517,20 @@
 (() => {
     const data = {{ share_data|tojson }};
 
+    const ANALYTICS_URL = {{ url_for('main.analytics_event')|tojson }};
+    const ANALYTICS_CSRF = {{ csrf_token()|tojson }};
+    const trackAnalyticsEvent = eventName => {
+        fetch(ANALYTICS_URL, {
+            method: "POST",
+            credentials: "same-origin",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": ANALYTICS_CSRF
+            },
+            body: JSON.stringify({ event: eventName })
+        }).catch(() => {});
+    };
+
     const canvas = document.getElementById("shareCanvas");
     const ctx = canvas.getContext("2d");
 
@@ -1119,6 +1133,7 @@
 
             setTimeout(() => URL.revokeObjectURL(url), 0);
             shareStatus.textContent = "PNG downloaded.";
+            trackAnalyticsEvent("share_card_downloaded");
         } catch (error) {
             console.error("PNG download failed:", error);
             shareStatus.textContent =

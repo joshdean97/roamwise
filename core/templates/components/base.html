@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='admin.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='leaveprints-brand.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='legal.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='methodology.css') }}">
     {% block head_extra %}{% endblock %}
 </head>
 <body class="{% block body_class %}{% endblock %}">
@@ -42,5 +44,14 @@
         </ul>
     </nav>
     {% block content %}{% endblock %}
+    {% if request.endpoint != 'main.home' %}
+        <footer class="site-legal-footer">
+            <span>© 2026 LeavePrints</span>
+            <a href="{{ url_for('main.privacy') }}">Privacy</a>
+            <a href="{{ url_for('main.terms') }}">Terms</a>
+            <a href="{{ url_for('main.how_costs_work') }}">How costs work</a>
+            <a href="mailto:hello@leaveprints.com">Contact</a>
+        </footer>
+    {% endif %}
 </body>
 </html>

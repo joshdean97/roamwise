@@ -5,6 +5,7 @@ from sqlalchemy import text
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from core.models.user import User
+from core.models.analytics_event import AnalyticsEvent  # noqa: F401
 
 
 def _env_bool(name, default="0"):
@@ -129,6 +130,7 @@ def create_app(test_config=None):
             "ENABLE_HSTS",
             "1" if is_production else "0",
         ),
+        ANALYTICS_ENABLED=_env_bool("ANALYTICS_ENABLED", "1"),
     )
 
     if test_config:

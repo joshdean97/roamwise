@@ -1,0 +1,294 @@
+{% extends "components/base.html" %}
+
+{% block content %}
+<main class="legal-page">
+    <header class="legal-hero">
+        <span class="legal-kicker">Legal, but readable</span>
+        <h1>Privacy Policy</h1>
+        <p class="legal-updated">Last updated: 5 September 2026</p>
+        <p>
+            This notice explains how LeavePrints uses personal data when you visit the site,
+            create an account, plan a trip or share a public Print.
+        </p>
+    </header>
+
+    <div class="legal-layout">
+        <aside class="legal-nav" aria-label="Privacy policy contents">
+            <strong>On this page</strong>
+            <a href="#who-we-are">Who we are</a>
+            <a href="#what-we-collect">What we collect</a>
+            <a href="#why-we-use-it">Why we use it</a>
+            <a href="#sharing">Who we share it with</a>
+            <a href="#public-prints">Public Prints</a>
+            <a href="#cookies">Cookies</a>
+            <a href="#retention">How long we keep it</a>
+            <a href="#transfers">International transfers</a>
+            <a href="#security">Security</a>
+            <a href="#rights">Your rights</a>
+            <a href="#contact">Contact</a>
+        </aside>
+
+        <article class="legal-card">
+            <section id="who-we-are">
+                <h2>1. Who we are</h2>
+                <p>
+                    LeavePrints is operated by <strong>Josh Dean trading as LeavePrints</strong>.
+                    For UK data protection law, Josh Dean is the controller of the personal data
+                    described in this notice.
+                </p>
+                <p>
+                    Email: <a href="mailto:hello@leaveprints.com">hello@leaveprints.com</a>
+                </p>
+            </section>
+
+            <section id="what-we-collect">
+                <h2>2. What personal data we collect</h2>
+                <h3>Account data</h3>
+                <p>
+                    When you register, we collect your username and email address. We store a
+                    secure hash of your password rather than the password itself. We also record
+                    whether your email has been confirmed and, for new accounts, when and under
+                    which version of the Terms you agreed to use LeavePrints.
+                </p>
+
+                <h3>Trip and planner data</h3>
+                <p>
+                    We store the trips you choose to save, which can include route stops, nights,
+                    dates, travel style, display currency, estimated costs, transport choices,
+                    transport costs and transport notes.
+                </p>
+
+                <h3>Public sharing data</h3>
+                <p>
+                    If you explicitly make a trip public, LeavePrints creates an opaque sharing
+                    link so other people can view that Print. Public sharing is off by default.
+                </p>
+
+                <h3>Technical and security data</h3>
+                <p>
+                    When you use LeavePrints, technical data such as IP address, request details,
+                    timestamps, browser information and security events may be processed by
+                    LeavePrints and its hosting providers. We use this to operate the service,
+                    prevent abuse, investigate errors and protect accounts.
+                </p>
+
+                <h3>First-party product analytics</h3>
+                <p>
+                    LeavePrints records a small set of product events in its own database so we can
+                    understand whether the beta is useful — for example, opening the planner, adding
+                    the first or second city, saving a trip, enabling a public Print or loading a
+                    shared route. Authenticated events can be associated with your internal user id.
+                    Anonymous landing-page and public-Print views are counted without a persistent
+                    visitor identifier. The analytics event store does not record your email,
+                    username, IP address, browser fingerprint or free-form trip notes.
+                </p>
+
+                <h3>Emails and support</h3>
+                <p>
+                    We process your email address to send transactional messages such as email
+                    confirmation and password-reset links. If you contact us, we also process the
+                    information you include in that message.
+                </p>
+            </section>
+
+            <section id="why-we-use-it">
+                <h2>3. Why we use your data and our lawful bases</h2>
+                <div class="legal-table-wrap">
+                    <table class="legal-table">
+                        <thead>
+                            <tr>
+                                <th>Purpose</th>
+                                <th>Typical data</th>
+                                <th>Lawful basis</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Create and operate your account</td>
+                                <td>Username, email, password hash, confirmation status</td>
+                                <td>Contract</td>
+                            </tr>
+                            <tr>
+                                <td>Save, calculate and display your trips</td>
+                                <td>Trip, route, cost and transport data</td>
+                                <td>Contract</td>
+                            </tr>
+                            <tr>
+                                <td>Create and serve a public Print when you choose to share one</td>
+                                <td>Selected trip and sharing data</td>
+                                <td>Contract</td>
+                            </tr>
+                            <tr>
+                                <td>Email confirmation, password reset and essential service messages</td>
+                                <td>Email address and account identifiers</td>
+                                <td>Contract and legitimate interests in account security</td>
+                            </tr>
+                            <tr>
+                                <td>Protect the service, prevent abuse and diagnose faults</td>
+                                <td>IP address, request and security data</td>
+                                <td>Legitimate interests in security, reliability and fraud prevention</td>
+                            </tr>
+                            <tr>
+                                <td>Measure whether core beta features are useful and improve the product</td>
+                                <td>Limited product events, timestamps and internal user id where logged in</td>
+                                <td>Legitimate interests in understanding and improving LeavePrints</td>
+                            </tr>
+                            <tr>
+                                <td>Meet legal obligations and respond to valid requests</td>
+                                <td>Relevant account, communications or transaction records</td>
+                                <td>Legal obligation</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p>
+                    We do not currently use your LeavePrints account data for behavioural advertising,
+                    sell your personal data, or make legal or similarly significant decisions about you
+                    using automated profiling.
+                </p>
+            </section>
+
+            <section id="sharing">
+                <h2>4. Who we share personal data with</h2>
+                <p>
+                    We use a small number of service providers to run LeavePrints. They may process
+                    personal data only as needed to provide their services to us.
+                </p>
+                <ul>
+                    <li><strong>Render</strong> — application and database hosting, networking and operational logs.</li>
+                    <li><strong>Resend</strong> — transactional email delivery, including confirmation and password-reset emails.</li>
+                    <li><strong>Bunny Fonts</strong> — the landing page currently loads web fonts from Bunny's font service, which can receive technical request data such as your IP address.</li>
+                </ul>
+                <p>
+                    We may also disclose information where required by law, to protect users or the
+                    service, or in connection with a legitimate business reorganisation. If the
+                    providers we use change materially, we will update this notice.
+                </p>
+            </section>
+
+            <section id="public-prints">
+                <h2>5. Public Prints</h2>
+                <p>
+                    A trip is private unless you choose to make it public. Once enabled, anyone who
+                    obtains the public link may be able to view the trip information included on that
+                    public page and copy the route into their own planner.
+                </p>
+                <p>
+                    Do not put sensitive or identifying information into content that you intend to
+                    share publicly. You can revoke a public share from LeavePrints, but we cannot
+                    control copies, screenshots or information already saved by someone else.
+                </p>
+            </section>
+
+            <section id="cookies">
+                <h2>6. Cookies and similar technologies</h2>
+                <p>
+                    LeavePrints currently uses first-party session and security storage needed for
+                    functions such as login state, form security and delivering the service you ask
+                    for. We do not currently use advertising or behavioural-tracking cookies.
+                </p>
+                <p>
+                    Product analytics is recorded server-side in the LeavePrints database and does not
+                    add an analytics cookie, browser-storage identifier or third-party analytics script.
+                    Because the current browser storage remains limited to essential service/security
+                    functions, LeavePrints does not currently show a cookie-consent banner. If we later
+                    add non-essential tracking technologies, we will update this notice and introduce
+                    any consent controls required at that time.
+                </p>
+            </section>
+
+            <section id="retention">
+                <h2>7. How long we keep personal data</h2>
+                <p>
+                    Account and saved-trip data is generally kept while your account remains active
+                    because it is needed to provide LeavePrints. If you ask us to delete your account,
+                    we will remove personal data from the active service when it is no longer needed,
+                    subject to information we must retain for legal, security or dispute-resolution
+                    reasons.
+                </p>
+                <p>
+                    Limited copies may remain temporarily in routine backups, email-delivery records
+                    or operational logs until those systems rotate or expire them. Security and
+                    diagnostic information is kept only for as long as reasonably necessary for the
+                    security and reliability purpose for which it was collected.
+                </p>
+                <p>
+                    Until self-service account deletion is available, you can request deletion at
+                    <a href="mailto:hello@leaveprints.com">hello@leaveprints.com</a>.
+                </p>
+            </section>
+
+            <section id="transfers">
+                <h2>8. International transfers</h2>
+                <p>
+                    Some providers that support LeavePrints may process data in countries outside the
+                    UK. Where UK data-protection law requires safeguards for a transfer, we rely on
+                    legally recognised mechanisms used by the relevant provider, such as adequacy
+                    regulations or approved contractual safeguards.
+                </p>
+            </section>
+
+            <section id="security">
+                <h2>9. Security</h2>
+                <p>
+                    We use measures intended to protect personal data, including HTTPS, password
+                    hashing, email confirmation, access controls, CSRF protection, rate limiting and
+                    security headers. No internet service can guarantee absolute security, so please
+                    use a strong, unique password and contact us if you believe your account has been
+                    compromised.
+                </p>
+            </section>
+
+            <section id="rights">
+                <h2>10. Your data-protection rights</h2>
+                <p>Depending on the circumstances, UK data-protection law can give you rights to:</p>
+                <ul>
+                    <li>be informed about how your personal data is used;</li>
+                    <li>access a copy of your personal data;</li>
+                    <li>correct inaccurate or incomplete data;</li>
+                    <li>ask for erasure of personal data;</li>
+                    <li>restrict certain processing;</li>
+                    <li>object to certain processing based on legitimate interests;</li>
+                    <li>receive certain data in a portable format; and</li>
+                    <li>complain to the Information Commissioner's Office (ICO).</li>
+                </ul>
+                <p>
+                    To exercise a right, email
+                    <a href="mailto:hello@leaveprints.com">hello@leaveprints.com</a>.
+                    We may need to verify your identity before acting on a request.
+                </p>
+                <p>
+                    You can also contact the UK Information Commissioner's Office at
+                    <a href="https://ico.org.uk/" rel="noopener noreferrer">ico.org.uk</a>.
+                </p>
+            </section>
+
+            <section>
+                <h2>11. Children</h2>
+                <p>
+                    LeavePrints is designed for independent travellers and is not directed at children.
+                    If you believe a child has provided personal data to LeavePrints inappropriately,
+                    please contact us so we can review it.
+                </p>
+            </section>
+
+            <section>
+                <h2>12. Changes to this notice</h2>
+                <p>
+                    We may update this Privacy Policy as LeavePrints changes or legal requirements
+                    develop. The date at the top shows the latest version. Material changes will be
+                    communicated in a reasonable way where appropriate.
+                </p>
+            </section>
+
+            <section id="contact">
+                <h2>13. Contact</h2>
+                <p>
+                    Josh Dean trading as LeavePrints<br>
+                    Email: <a href="mailto:hello@leaveprints.com">hello@leaveprints.com</a>
+                </p>
+            </section>
+        </article>
+    </div>
+</main>
+{% endblock %}

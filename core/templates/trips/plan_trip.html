@@ -217,6 +217,9 @@
         <div class="planner-hero-badge">
             <span>GBP source data</span>
             <small>Converted only for display</small>
+            <a class="planner-method-link" href="{{ url_for('main.how_costs_work') }}">
+                How we calculate costs →
+            </a>
         </div>
     </section>
 
@@ -395,6 +398,22 @@
     const CITY_OPTIONS = {{ city_options|tojson }};
     const INITIAL_TRIP = {{ planner_initial|tojson }};
     const IS_EDITING = {{ is_editing|default(false)|tojson }};
+    const ANALYTICS_URL = {{ url_for('main.analytics_event')|tojson }};
+    const ANALYTICS_CSRF = {{ csrf_token()|tojson }};
+    const analyticsMilestones = new Set();
+    const STARTED_WITH_EMPTY_ROUTE = !Array.isArray(INITIAL_TRIP.route) || INITIAL_TRIP.route.length === 0;
+
+    const trackAnalyticsEvent = eventName => {
+        fetch(ANALYTICS_URL, {
+            method: "POST",
+            credentials: "same-origin",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": ANALYTICS_CSRF
+            },
+            body: JSON.stringify({ event: eventName })
+        }).catch(() => {});
+    };
 
     const cityById = new Map(
         CITY_OPTIONS.map(city => [
@@ -631,6 +650,18 @@
             nights: 2,
             routeUid: makeRouteUid()
         });
+
+        if (!IS_EDITING && STARTED_WITH_EMPTY_ROUTE) {
+            if (state.route.length === 1 && !analyticsMilestones.has("first_city_added")) {
+                analyticsMilestones.add("first_city_added");
+                trackAnalyticsEvent("first_city_added");
+            }
+
+            if (state.route.length === 2 && !analyticsMilestones.has("second_city_added")) {
+                analyticsMilestones.add("second_city_added");
+                trackAnalyticsEvent("second_city_added");
+            }
+        }
 
         resetChangedEndpointTransport(previous);
         pruneTransportLegs();

@@ -40,6 +40,16 @@ class User(UserMixin, db.Model):
         nullable=True
     )
 
+    terms_accepted_at = db.Column(
+        db.DateTime(timezone=True),
+        nullable=True
+    )
+
+    terms_version = db.Column(
+        db.String(20),
+        nullable=True
+    )
+
     @property
     def is_email_confirmed(self):
         return self.email_confirmed_at is not None

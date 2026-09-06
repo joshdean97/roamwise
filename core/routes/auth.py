@@ -15,6 +15,7 @@ from itsdangerous import BadSignature, SignatureExpired, URLSafeTimedSerializer
 from sqlalchemy import func
 from sqlalchemy.exc import IntegrityError
 
+from core.analytics import capture_event
 from core.extensions import db, limiter
 from core.mail import send_email_confirmation, send_password_reset_email
 from core.models.user import User
@@ -28,6 +29,7 @@ MAX_USERNAME_LENGTH = 80
 MAX_EMAIL_LENGTH = 120
 RESET_TOKEN_SALT = "roamwise-password-reset-v1"
 EMAIL_CONFIRMATION_TOKEN_SALT = "leaveprints-email-confirmation-v1"
+TERMS_VERSION = "2026-09-05"
 
 
 def normalise_email(value):
@@ -178,6 +180,7 @@ def login():
                 return redirect(url_for("auth.resend_confirmation", email=email))
 
             login_user(user)
+            capture_event("login_completed", user.id)
             flash("Login successful.", "success")
             return redirect(url_for("main.home"))
 
@@ -208,9 +211,17 @@ def register():
         email = normalise_email(request.form.get("email"))
         password = request.form.get("password") or ""
         confirm_password = request.form.get("confirm_password") or ""
+        terms_accepted = request.form.get("terms_accepted") == "yes"
 
         if not username or not email or not password or not confirm_password:
             flash("Please fill out all fields.", "error")
+            return redirect(url_for("auth.register"))
+
+        if not terms_accepted:
+            flash(
+                "Please agree to the Terms of Use and acknowledge the Privacy Policy to create an account.",
+                "error",
+            )
             return redirect(url_for("auth.register"))
 
         if len(username) > MAX_USERNAME_LENGTH:
@@ -240,6 +251,8 @@ def register():
             email=email,
         )
         new_user.set_password(password)
+        new_user.terms_accepted_at = datetime.now(timezone.utc)
+        new_user.terms_version = TERMS_VERSION
 
         try:
             db.session.add(new_user)
@@ -248,6 +261,8 @@ def register():
             db.session.rollback()
             flash("Username or email already exists.", "error")
             return redirect(url_for("auth.register"))
+
+        capture_event("account_created", new_user.id)
 
         try:
             _send_confirmation_for(new_user)
@@ -288,6 +303,7 @@ def confirm_email(token):
 
     user.email_confirmed_at = datetime.now(timezone.utc)
     db.session.commit()
+    capture_event("email_confirmed", user.id)
 
     flash("Email confirmed. Welcome to LeavePrints — you can log in now.", "success")
     return redirect(url_for("auth.login"))

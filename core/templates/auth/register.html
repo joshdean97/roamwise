@@ -100,6 +100,20 @@
                 >
             </div>
 
+            <label class="auth-legal-consent" for="terms_accepted">
+                <input
+                    id="terms_accepted"
+                    name="terms_accepted"
+                    type="checkbox"
+                    value="yes"
+                    required
+                >
+                <span>
+                    I agree to the <a href="{{ url_for('main.terms') }}" target="_blank" rel="noopener">Terms of Use</a>
+                    and acknowledge the <a href="{{ url_for('main.privacy') }}" target="_blank" rel="noopener">Privacy Policy</a>.
+                </span>
+            </label>
+
             <button class="btn auth-submit" type="submit">
                 Create my account
                 <span aria-hidden="true">→</span>

@@ -141,6 +141,7 @@ def test_registration_creates_unconfirmed_account(app, client):
             "email": "fresh@example.com",
             "password": "test-password",
             "confirm_password": "test-password",
+            "terms_accepted": "yes",
         },
         follow_redirects=True,
     )
@@ -151,6 +152,8 @@ def test_registration_creates_unconfirmed_account(app, client):
     with app.app_context():
         user = User.query.filter_by(email="fresh@example.com").one()
         assert not user.is_email_confirmed
+        assert user.terms_accepted_at is not None
+        assert user.terms_version == "2026-09-05"
 
 
 def test_login_limit_returns_429_when_enabled():

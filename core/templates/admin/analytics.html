@@ -1,0 +1,167 @@
+{% extends "components/base.html" %}
+
+{% block head_extra %}
+<link rel="stylesheet" href="{{ url_for('static', filename='analytics.css') }}">
+{% endblock %}
+
+{% block content %}
+<main class="analytics-dashboard">
+    <section class="analytics-hero">
+        <div>
+            <span class="analytics-eyebrow">LeavePrints analytics</span>
+            <h1>Are people actually using it?</h1>
+            <p>
+                First-party product analytics for the beta. No ad pixels, no third-party
+                analytics cookies and no anonymous cross-page identifiers.
+            </p>
+        </div>
+        <a class="analytics-back" href="{{ url_for('admin.dashboard') }}">← Admin dashboard</a>
+    </section>
+
+    <section class="analytics-note">
+        <strong>Tracking starts from the day this feature is deployed.</strong>
+        Historical actions from before analytics was enabled are not reconstructed.
+        Anonymous landing/public views are page-view counts rather than unique visitors.
+    </section>
+
+    <section class="analytics-section">
+        <div class="analytics-section-head">
+            <div>
+                <span>Last 30 days</span>
+                <h2>Core activity</h2>
+            </div>
+        </div>
+
+        <div class="analytics-card-grid">
+            {% for card in metric_cards %}
+                <article class="analytics-card">
+                    <span>{{ card.label }}</span>
+                    <strong>{{ card.last_30 }}</strong>
+                    <small>{{ card.all_time }} since tracking began</small>
+                </article>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="analytics-section analytics-funnel-section">
+        <div class="analytics-section-head">
+            <div>
+                <span>Activation funnel</span>
+                <h2>Signup → saved trip → public share</h2>
+            </div>
+        </div>
+
+        <div class="funnel-grid">
+            <article>
+                <span>01</span>
+                <strong>{{ funnel.signup_users }}</strong>
+                <p>People who created an account since tracking began</p>
+            </article>
+            <article>
+                <span>02</span>
+                <strong>{{ funnel.saved_users }}</strong>
+                <p>Signup users who went on to save at least one trip</p>
+                <em>{{ "%.1f"|format(funnel.signup_to_saved) }}% of signups</em>
+            </article>
+            <article>
+                <span>03</span>
+                <strong>{{ funnel.shared_users }}</strong>
+                <p>Those activated users who enabled a public Print</p>
+                <em>{{ "%.1f"|format(funnel.saved_to_shared) }}% of savers</em>
+            </article>
+        </div>
+    </section>
+
+    <section class="analytics-split">
+        <div class="analytics-section">
+            <div class="analytics-section-head">
+                <div>
+                    <span>Planner activation</span>
+                    <h2>Do they start building?</h2>
+                </div>
+            </div>
+            <div class="planner-funnel">
+                <div>
+                    <span>First city added</span>
+                    <strong>{{ planner_activation.first_city }}</strong>
+                </div>
+                <div>
+                    <span>Second city added</span>
+                    <strong>{{ planner_activation.second_city }}</strong>
+                </div>
+                <div>
+                    <span>First → second city</span>
+                    <strong>{{ "%.1f"|format(planner_activation.first_to_second) }}%</strong>
+                </div>
+            </div>
+        </div>
+
+        <div class="analytics-section">
+            <div class="analytics-section-head">
+                <div>
+                    <span>Sharing loop</span>
+                    <h2>Do Prints travel?</h2>
+                </div>
+            </div>
+            <div class="planner-funnel">
+                <div>
+                    <span>Public trip views</span>
+                    <strong>{{ event_counts_all.get('public_trip_viewed', 0) }}</strong>
+                </div>
+                <div>
+                    <span>Shared routes loaded</span>
+                    <strong>{{ event_counts_all.get('shared_route_loaded', 0) }}</strong>
+                </div>
+                <div>
+                    <span>PNG downloads</span>
+                    <strong>{{ event_counts_all.get('share_card_downloaded', 0) }}</strong>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="analytics-section">
+        <div class="analytics-section-head">
+            <div>
+                <span>Event log</span>
+                <h2>Latest product actions</h2>
+            </div>
+        </div>
+
+        {% if recent_events %}
+            <div class="analytics-table-wrap">
+                <table class="analytics-table">
+                    <thead>
+                        <tr>
+                            <th>When</th>
+                            <th>Event</th>
+                            <th>User</th>
+                            <th>Properties</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for event in recent_events %}
+                            <tr>
+                                <td>{{ event.created_at.strftime('%d %b %H:%M') if event.created_at else '—' }}</td>
+                                <td><code>{{ event.name }}</code></td>
+                                <td>{{ event.user_id if event.user_id is not none else 'anonymous' }}</td>
+                                <td>
+                                    {% if event.properties %}
+                                        <code>{{ event.properties|tojson }}</code>
+                                    {% else %}
+                                        —
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="analytics-empty">
+                No analytics events yet. Open the live site and use it normally — this page will start filling itself in.
+            </div>
+        {% endif %}
+    </section>
+</main>
+{% endblock %}

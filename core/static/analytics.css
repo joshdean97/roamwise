@@ -1,0 +1,251 @@
+.analytics-dashboard {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 44px 22px 80px;
+    color: #173b2d;
+}
+
+.analytics-hero {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 22px;
+}
+
+.analytics-eyebrow,
+.analytics-section-head span {
+    display: block;
+    margin-bottom: 8px;
+    color: #b95d43;
+    font-size: .72rem;
+    font-weight: 800;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+}
+
+.analytics-hero h1 {
+    margin: 0;
+    font-size: clamp(2rem, 5vw, 3.4rem);
+    letter-spacing: -.045em;
+    line-height: 1;
+}
+
+.analytics-hero p {
+    max-width: 690px;
+    margin: 13px 0 0;
+    color: #66736d;
+    line-height: 1.6;
+}
+
+.analytics-back {
+    flex: 0 0 auto;
+    color: #173b2d;
+    font-weight: 800;
+    text-decoration: none;
+}
+
+.analytics-note {
+    margin-bottom: 26px;
+    padding: 14px 16px;
+    border: 1px solid #d9dfd5;
+    border-radius: 14px;
+    background: #f6f0e4;
+    color: #5d665f;
+    font-size: .84rem;
+    line-height: 1.55;
+}
+
+.analytics-note strong {
+    color: #173b2d;
+}
+
+.analytics-section {
+    margin-top: 24px;
+    padding: 22px;
+    border: 1px solid #dfe4da;
+    border-radius: 22px;
+    background: #fffdf8;
+    box-shadow: 0 16px 42px rgba(23, 59, 45, .05);
+}
+
+.analytics-section-head {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 18px;
+}
+
+.analytics-section-head h2 {
+    margin: 0;
+    font-size: 1.35rem;
+    letter-spacing: -.025em;
+}
+
+.analytics-card-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.analytics-card {
+    min-width: 0;
+    padding: 17px;
+    border: 1px solid #e3e7df;
+    border-radius: 16px;
+    background: #f9f6ee;
+}
+
+.analytics-card span,
+.planner-funnel span {
+    display: block;
+    color: #6d766f;
+    font-size: .75rem;
+    font-weight: 700;
+}
+
+.analytics-card strong {
+    display: block;
+    margin: 5px 0 2px;
+    font-size: 2rem;
+    letter-spacing: -.04em;
+}
+
+.analytics-card small {
+    color: #879087;
+    font-size: .7rem;
+}
+
+.funnel-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.funnel-grid article {
+    padding: 20px;
+    border-radius: 18px;
+    background: #173b2d;
+    color: white;
+}
+
+.funnel-grid article > span {
+    color: #d9c5a2;
+    font-size: .72rem;
+    font-weight: 900;
+}
+
+.funnel-grid strong {
+    display: block;
+    margin: 8px 0;
+    font-size: 2.5rem;
+    letter-spacing: -.05em;
+}
+
+.funnel-grid p {
+    min-height: 44px;
+    margin: 0;
+    color: #dfe8e2;
+    font-size: .78rem;
+    line-height: 1.45;
+}
+
+.funnel-grid em {
+    display: block;
+    margin-top: 13px;
+    color: #f1b39e;
+    font-size: .76rem;
+    font-style: normal;
+    font-weight: 800;
+}
+
+.analytics-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+
+.planner-funnel {
+    display: grid;
+    gap: 10px;
+}
+
+.planner-funnel > div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 13px 14px;
+    border-radius: 13px;
+    background: #f7f4ec;
+}
+
+.planner-funnel strong {
+    font-size: 1.15rem;
+}
+
+.analytics-table-wrap {
+    overflow-x: auto;
+}
+
+.analytics-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: .78rem;
+}
+
+.analytics-table th,
+.analytics-table td {
+    padding: 11px 10px;
+    border-bottom: 1px solid #e8ebe4;
+    text-align: left;
+    vertical-align: top;
+}
+
+.analytics-table th {
+    color: #788078;
+    font-size: .68rem;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+}
+
+.analytics-table code {
+    white-space: nowrap;
+    font-size: .72rem;
+}
+
+.analytics-empty {
+    padding: 22px;
+    border-radius: 14px;
+    background: #f7f4ec;
+    color: #6d766f;
+    line-height: 1.55;
+}
+
+@media (max-width: 900px) {
+    .analytics-card-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .analytics-split {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+}
+
+@media (max-width: 640px) {
+    .analytics-dashboard {
+        padding: 28px 14px 64px;
+    }
+
+    .analytics-hero {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .analytics-card-grid,
+    .funnel-grid {
+        grid-template-columns: 1fr;
+    }
+}
