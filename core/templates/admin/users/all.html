@@ -1,3 +1,508 @@
 {% extends "components/base.html" %}
+
+{% block head_extra %}
+<style>
+    .users-admin {
+        width: min(100%, 1380px);
+        margin: 0 auto;
+        padding: 10px 0 70px;
+    }
+
+    .users-hero {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 24px;
+        margin-bottom: 28px;
+    }
+
+    .users-eyebrow {
+        display: inline-block;
+        margin-bottom: 7px;
+        color: #a95537;
+        font-size: 0.76rem;
+        font-weight: 850;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+    }
+
+    .users-hero h1 {
+        margin: 0;
+        color: #173b2d;
+        font-size: clamp(2rem, 5vw, 3.2rem);
+        line-height: 1.05;
+        letter-spacing: -0.045em;
+    }
+
+    .users-hero p {
+        max-width: 620px;
+        margin: 10px 0 0;
+        color: #66736d;
+        font-size: 0.98rem;
+    }
+
+    .users-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        flex: 0 0 auto;
+        padding: 10px 14px;
+        border: 1px solid rgba(23, 59, 45, 0.12);
+        border-radius: 11px;
+        background: rgba(255, 255, 255, 0.68);
+        color: #173b2d;
+        text-decoration: none;
+        font-size: 0.88rem;
+        font-weight: 750;
+    }
+
+    .users-back:hover {
+        background: #fff;
+    }
+
+    .users-stats {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 14px;
+        margin-bottom: 22px;
+    }
+
+    .users-stat {
+        padding: 18px 20px;
+        border: 1px solid rgba(23, 59, 45, 0.09);
+        border-radius: 16px;
+        background: rgba(255, 253, 247, 0.82);
+        box-shadow: 0 10px 32px rgba(23, 59, 45, 0.055);
+    }
+
+    .users-stat span {
+        display: block;
+        color: #77827d;
+        font-size: 0.78rem;
+        font-weight: 750;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+    }
+
+    .users-stat strong {
+        display: block;
+        margin-top: 5px;
+        color: #173b2d;
+        font-size: 1.85rem;
+        line-height: 1;
+    }
+
+    .users-panel {
+        overflow: hidden;
+        border: 1px solid rgba(23, 59, 45, 0.10);
+        border-radius: 20px;
+        background: rgba(255, 253, 247, 0.90);
+        box-shadow: 0 14px 42px rgba(23, 59, 45, 0.07);
+    }
+
+    .users-toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        padding: 18px 20px;
+        border-bottom: 1px solid rgba(23, 59, 45, 0.08);
+    }
+
+    .users-toolbar-copy strong {
+        display: block;
+        color: #173b2d;
+        font-size: 1rem;
+    }
+
+    .users-toolbar-copy span {
+        display: block;
+        margin-top: 2px;
+        color: #7b8580;
+        font-size: 0.83rem;
+    }
+
+    .users-search {
+        width: min(100%, 320px);
+        padding: 10px 13px;
+        border: 1px solid rgba(23, 59, 45, 0.14);
+        border-radius: 11px;
+        background: #fff;
+        color: #173b2d;
+        font: inherit;
+        font-size: 0.9rem;
+        outline: none;
+    }
+
+    .users-search:focus {
+        border-color: #a95537;
+        box-shadow: 0 0 0 3px rgba(169, 85, 55, 0.10);
+    }
+
+    .users-table-wrap {
+        overflow-x: auto;
+    }
+
+    .users-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 760px;
+    }
+
+    .users-table th,
+    .users-table td {
+        padding: 14px 18px;
+        text-align: left;
+        border-bottom: 1px solid rgba(23, 59, 45, 0.07);
+    }
+
+    .users-table th {
+        color: #78837e;
+        background: rgba(237, 235, 221, 0.35);
+        font-size: 0.72rem;
+        font-weight: 850;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+    }
+
+    .users-table tbody tr:last-child td {
+        border-bottom: 0;
+    }
+
+    .users-table tbody tr:hover {
+        background: rgba(23, 59, 45, 0.025);
+    }
+
+    .users-table tbody tr.current-user {
+        background: rgba(169, 85, 55, 0.045);
+    }
+
+    .user-identity strong {
+        display: block;
+        color: #173b2d;
+        font-size: 0.94rem;
+    }
+
+    .user-identity small {
+        display: block;
+        margin-top: 2px;
+        color: #8b938f;
+        font-size: 0.75rem;
+    }
+
+    .user-email {
+        color: #52615b;
+        font-size: 0.88rem;
+    }
+
+    .user-id {
+        color: #8b938f;
+        font-size: 0.8rem;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .user-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 5px 9px;
+        border-radius: 999px;
+        font-size: 0.72rem;
+        font-weight: 800;
+        white-space: nowrap;
+    }
+
+    .user-badge::before {
+        content: "";
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: currentColor;
+    }
+
+    .user-badge.success {
+        background: rgba(42, 117, 83, 0.09);
+        color: #2a7553;
+    }
+
+    .user-badge.warning {
+        background: rgba(169, 85, 55, 0.09);
+        color: #a95537;
+    }
+
+    .user-badge.admin {
+        background: rgba(23, 59, 45, 0.09);
+        color: #173b2d;
+    }
+
+    .user-badge.neutral {
+        background: rgba(100, 116, 139, 0.09);
+        color: #64748b;
+    }
+
+    .users-empty {
+        padding: 60px 20px;
+        text-align: center;
+        color: #75807b;
+    }
+
+    .users-empty strong {
+        display: block;
+        margin-bottom: 5px;
+        color: #173b2d;
+        font-size: 1.05rem;
+    }
+
+    @media (max-width: 850px) {
+        .users-stats {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .users-hero {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .users-admin {
+            padding-top: 2px;
+        }
+
+        .users-stats {
+            gap: 9px;
+        }
+
+        .users-stat {
+            padding: 15px;
+        }
+
+        .users-stat strong {
+            font-size: 1.55rem;
+        }
+
+        .users-toolbar {
+            align-items: stretch;
+            flex-direction: column;
+        }
+
+        .users-search {
+            width: 100%;
+            max-width: none;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
+
+{% set ns = namespace(
+    verified=0,
+    unverified=0,
+    admins=0,
+    terms=0
+) %}
+
+{% for user in users %}
+    {% if user.is_email_confirmed %}
+        {% set ns.verified = ns.verified + 1 %}
+    {% else %}
+        {% set ns.unverified = ns.unverified + 1 %}
+    {% endif %}
+
+    {% if user.is_admin %}
+        {% set ns.admins = ns.admins + 1 %}
+    {% endif %}
+
+    {% if user.terms_accepted_at %}
+        {% set ns.terms = ns.terms + 1 %}
+    {% endif %}
+{% endfor %}
+
+<main class="users-admin">
+
+    <section class="users-hero">
+        <div>
+            <span class="users-eyebrow">LeavePrints admin</span>
+            <h1>Users</h1>
+            <p>
+                Review registered accounts, verification status and beta adoption.
+            </p>
+        </div>
+
+        <a href="{{ url_for('admin.dashboard') }}" class="users-back">
+            ← Dashboard
+        </a>
+    </section>
+
+    <section class="users-stats">
+
+        <article class="users-stat">
+            <span>Total users</span>
+            <strong>{{ users|length }}</strong>
+        </article>
+
+        <article class="users-stat">
+            <span>Verified</span>
+            <strong>{{ ns.verified }}</strong>
+        </article>
+
+        <article class="users-stat">
+            <span>Unverified</span>
+            <strong>{{ ns.unverified }}</strong>
+        </article>
+
+        <article class="users-stat">
+            <span>Admins</span>
+            <strong>{{ ns.admins }}</strong>
+        </article>
+
+    </section>
+
+    <section class="users-panel">
+
+        <div class="users-toolbar">
+            <div class="users-toolbar-copy">
+                <strong>Registered travellers</strong>
+                <span>
+                    {{ ns.terms }} account{{ '' if ns.terms == 1 else 's' }}
+                    accepted the current recorded terms.
+                </span>
+            </div>
+
+            <input
+                type="search"
+                id="userSearch"
+                class="users-search"
+                placeholder="Search username or email…"
+                autocomplete="off"
+                aria-label="Search users"
+            >
+        </div>
+
+        {% if users %}
+
+            <div class="users-table-wrap">
+                <table class="users-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>User</th>
+                            <th>Email</th>
+                            <th>Email status</th>
+                            <th>Terms</th>
+                            <th>Role</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="usersTableBody">
+                        {% for user in users %}
+                            <tr
+                                data-user-row
+                                data-search="{{ (user.username ~ ' ' ~ user.email)|lower }}"
+                                {% if user.id == current_user.id %}
+                                    class="current-user"
+                                {% endif %}
+                            >
+                                <td class="user-id">
+                                    #{{ user.id }}
+                                </td>
+
+                                <td class="user-identity">
+                                    <strong>{{ user.username }}</strong>
+
+                                    {% if user.id == current_user.id %}
+                                        <small>You</small>
+                                    {% endif %}
+                                </td>
+
+                                <td class="user-email">
+                                    {{ user.email }}
+                                </td>
+
+                                <td>
+                                    {% if user.is_email_confirmed %}
+                                        <span class="user-badge success">
+                                            Verified
+                                        </span>
+                                    {% else %}
+                                        <span class="user-badge warning">
+                                            Unverified
+                                        </span>
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    {% if user.terms_accepted_at %}
+                                        <span class="user-badge success">
+                                            Accepted
+                                        </span>
+                                    {% else %}
+                                        <span class="user-badge neutral">
+                                            Not recorded
+                                        </span>
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    {% if user.is_admin %}
+                                        <span class="user-badge admin">
+                                            Admin
+                                        </span>
+                                    {% else %}
+                                        <span class="user-badge neutral">
+                                            Traveller
+                                        </span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="usersNoResults" class="users-empty" hidden>
+                <strong>No matching users</strong>
+                Try a different username or email.
+            </div>
+
+        {% else %}
+
+            <div class="users-empty">
+                <strong>No users yet</strong>
+                Registered beta users will appear here.
+            </div>
+
+        {% endif %}
+
+    </section>
+
+</main>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const search = document.getElementById("userSearch");
+    const rows = Array.from(document.querySelectorAll("[data-user-row]"));
+    const noResults = document.getElementById("usersNoResults");
+
+    if (!search || !rows.length) return;
+
+    search.addEventListener("input", () => {
+        const query = search.value.trim().toLowerCase();
+        let visible = 0;
+
+        rows.forEach((row) => {
+            const matches = row.dataset.search.includes(query);
+            row.hidden = !matches;
+
+            if (matches) visible += 1;
+        });
+
+        if (noResults) {
+            noResults.hidden = visible !== 0;
+        }
+    });
+});
+</script>
+
 {% endblock %}
