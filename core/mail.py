@@ -1,5 +1,6 @@
 import smtplib
 from email.message import EmailMessage
+from html import escape
 
 from flask import current_app
 
@@ -100,6 +101,84 @@ def send_email_confirmation(user, confirmation_url):
 
     _send_message(message)
 
+
+def send_onboarding_email(user, planner_url):
+    """Send the one-off product guide three days after signup."""
+
+    mail_from = current_app.config.get("MAIL_FROM")
+    if not current_app.config.get("SMTP_HOST") or not mail_from:
+        raise RuntimeError("Onboarding email is not configured.")
+
+    message = EmailMessage()
+    message["Subject"] = "Getting the most out of LeavePrints"
+    message["From"] = mail_from
+    message["To"] = user.email
+
+    reply_to = current_app.config.get("MAIL_REPLY_TO")
+    if reply_to:
+        message["Reply-To"] = reply_to
+
+    message.set_content(
+        "Hey!\n\n"
+        "You’ve had a few days to play around with LeavePrints, so I wanted "
+        "to share a few ways to get the most out of it.\n\n"
+        "Start with a trip, not individual cities.\n"
+        "LeavePrints works best when you use it to compare the overall cost "
+        "of different routes rather than trying to plan everything perfectly "
+        "from the start.\n\n"
+        "Play around with the route.\n"
+        "Swap cities in and out, change how long you're staying, and see what "
+        "it does to your overall budget. Sometimes one small change can make "
+        "a surprisingly big difference.\n\n"
+        "Use the costs as a starting point.\n"
+        "Travel prices obviously change, but the idea is to give you a realistic "
+        "baseline before you book anything — especially when you're comparing "
+        "different destinations.\n\n"
+        f"Plan a trip: {planner_url}\n\n"
+        "And this is still a very early version of LeavePrints.\n\n"
+        "I'm actively building it based on how people actually use it, so if "
+        "there's something you expected it to do, something that confused you, "
+        "or something you'd love me to add, just reply to this email.\n\n"
+        "I read all of them.\n\n"
+        "Josh\n"
+        "LeavePrints"
+    )
+
+    safe_planner_url = escape(planner_url, quote=True)
+    message.add_alternative(
+        f"""\
+<!doctype html>
+<html lang="en">
+  <body style="margin:0;background:#f6f1e7;color:#173b2d;font-family:Arial,sans-serif;">
+    <div style="display:none;max-height:0;overflow:hidden;opacity:0;">
+      Three simple ways to plan a better route with LeavePrints.
+    </div>
+    <div style="max-width:620px;margin:0 auto;padding:32px 18px;">
+      <div style="background:#fffdf7;border:1px solid #e4dccb;border-radius:18px;padding:32px;">
+        <div style="font-size:23px;font-weight:800;margin-bottom:28px;">LeavePrints</div>
+        <p style="font-size:16px;line-height:1.65;margin:0 0 18px;">Hey!</p>
+        <p style="font-size:16px;line-height:1.65;margin:0 0 24px;">You’ve had a few days to play around with LeavePrints, so I wanted to share a few ways to get the most out of it.</p>
+
+        <p style="font-size:16px;line-height:1.65;margin:0 0 22px;"><strong>Start with a trip, not individual cities.</strong><br>LeavePrints works best when you use it to compare the overall cost of different routes rather than trying to plan everything perfectly from the start.</p>
+        <p style="font-size:16px;line-height:1.65;margin:0 0 22px;"><strong>Play around with the route.</strong><br>Swap cities in and out, change how long you're staying, and see what it does to your overall budget. Sometimes one small change can make a surprisingly big difference.</p>
+        <p style="font-size:16px;line-height:1.65;margin:0 0 26px;"><strong>Use the costs as a starting point.</strong><br>Travel prices obviously change, but the idea is to give you a realistic baseline before you book anything &mdash; especially when you're comparing different destinations.</p>
+
+        <p style="margin:0 0 28px;"><a href="{safe_planner_url}" style="display:inline-block;background:#173b2d;color:#fffdf7;text-decoration:none;font-weight:700;padding:13px 20px;border-radius:10px;">Plan a trip</a></p>
+
+        <p style="font-size:16px;line-height:1.65;margin:0 0 18px;">And this is still a very early version of LeavePrints.</p>
+        <p style="font-size:16px;line-height:1.65;margin:0 0 18px;">I'm actively building it based on how people actually use it, so if there's something you expected it to do, something that confused you, or something you'd love me to add, just reply to this email.</p>
+        <p style="font-size:16px;line-height:1.65;margin:0 0 24px;">I read all of them.</p>
+        <p style="font-size:16px;line-height:1.55;margin:0;">Josh<br>LeavePrints</p>
+      </div>
+    </div>
+  </body>
+</html>
+""",
+        subtype="html",
+    )
+
+    _send_message(message)
+
 def send_account_deleted_email(email, username=None):
     """Best-effort confirmation after a user permanently deletes their account."""
 
@@ -122,4 +201,3 @@ def send_account_deleted_email(email, username=None):
     )
 
     _send_message(message)
-

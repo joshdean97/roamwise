@@ -123,6 +123,21 @@ def create_app(test_config=None):
         SMTP_USE_TLS=_env_bool("SMTP_USE_TLS", "1"),
         SMTP_USE_SSL=_env_bool("SMTP_USE_SSL"),
         MAIL_FROM=os.environ.get("MAIL_FROM", ""),
+        MAIL_REPLY_TO=os.environ.get(
+            "MAIL_REPLY_TO",
+            "hello@leaveprints.com",
+        ),
+        ONBOARDING_EMAILS_ENABLED=_env_bool(
+            "ONBOARDING_EMAILS_ENABLED",
+            "1" if is_production else "0",
+        ),
+        ONBOARDING_EMAIL_DELAY_HOURS=int(
+            os.environ.get("ONBOARDING_EMAIL_DELAY_HOURS", "72")
+        ),
+        ONBOARDING_EMAIL_INTERVAL_SECONDS=max(
+            60,
+            int(os.environ.get("ONBOARDING_EMAIL_INTERVAL_SECONDS", "3600")),
+        ),
         RATELIMIT_STORAGE_URI=os.environ.get(
             "RATELIMIT_STORAGE_URI",
             "memory://",
@@ -185,6 +200,9 @@ def create_app(test_config=None):
     app.register_blueprint(auth_bp)
     app.register_blueprint(admin_bp)
     app.register_blueprint(country_bp)
+
+    from core.onboarding import register_onboarding_commands
+    register_onboarding_commands(app)
 
     @app.get("/healthz")
     def healthz():

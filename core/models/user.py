@@ -1,3 +1,5 @@
+from datetime import datetime, timezone
+
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -48,6 +50,24 @@ class User(UserMixin, db.Model):
     terms_version = db.Column(
         db.String(20),
         nullable=True
+    )
+
+    created_at = db.Column(
+        db.DateTime(timezone=True),
+        nullable=False,
+        default=lambda: datetime.now(timezone.utc),
+        index=True,
+    )
+
+    onboarding_email_claimed_at = db.Column(
+        db.DateTime(timezone=True),
+        nullable=True,
+    )
+
+    onboarding_email_sent_at = db.Column(
+        db.DateTime(timezone=True),
+        nullable=True,
+        index=True,
     )
 
     @property
