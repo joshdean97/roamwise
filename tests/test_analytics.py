@@ -6,6 +6,9 @@ from core import create_app
 from core.analytics import capture_event
 from core.extensions import db
 from core.models.analytics_event import AnalyticsEvent
+from core.models.city import City
+from core.models.city_price_snapshot import CityPriceSnapshot
+from core.models.country import Country
 from core.models.user import User
 
 
@@ -30,6 +33,33 @@ def app():
         )
         user.set_password("test-password")
         db.session.add(user)
+
+        traveller = User(
+            username="analytics-traveller",
+            email="traveller@example.com",
+            email_confirmed_at=datetime.now(timezone.utc),
+            is_admin=False,
+        )
+        traveller.set_password("test-password")
+        db.session.add(traveller)
+
+        country = Country(
+            name="Bulgaria",
+            code="BG",
+            currency_code="GBP",
+            region="Balkans",
+            is_schengen=True,
+            visa_buffer=False,
+        )
+        db.session.add(country)
+        db.session.flush()
+        db.session.add(City(
+            name="Sofia",
+            region="Balkans",
+            country_id=country.id,
+            hostel_per_night=15,
+            monthly_living_cost=500,
+        ))
         db.session.commit()
 
     yield app
@@ -101,3 +131,51 @@ def test_admin_analytics_page_is_available(app, client):
     response = client.get("/admin/analytics")
     assert response.status_code == 200
     assert b"LeavePrints analytics" in response.data
+
+
+def test_non_admin_cannot_open_analytics_dashboard(app, client):
+    with app.app_context():
+        user = User.query.filter_by(email="traveller@example.com").one()
+        user_id = user.id
+
+    with client.session_transaction() as session:
+        session["_user_id"] = str(user_id)
+        session["_fresh"] = True
+
+    response = client.get("/admin/analytics")
+    assert response.status_code == 403
+
+
+def test_admin_price_change_creates_immutable_history(app, client):
+    login_test_user(client, app)
+    with app.app_context():
+        city = City.query.filter_by(name="Sofia").one()
+        city_id = city.id
+        country_id = city.country_id
+
+    response = client.post(
+        f"/city/{city_id}/update",
+        data={
+            "name": "Sofia",
+            "region": "Balkans",
+            "country_id": country_id,
+            "hostel_per_night": "18.00",
+            "monthly_living_cost": "520.00",
+        },
+    )
+    assert response.status_code == 302
+
+    with app.app_context():
+        snapshot = CityPriceSnapshot.query.one()
+        assert snapshot.city_id == city_id
+        assert float(snapshot.hostel_per_night) == 18
+        assert float(snapshot.monthly_living_cost) == 520
+        assert snapshot.source == "admin_update"
+
+
+def test_admin_analytics_renders_trip_and_price_sections(app, client):
+    login_test_user(client, app)
+    response = client.get("/admin/analytics")
+    assert response.status_code == 200
+    assert b"Content intelligence" in response.data
+    assert b"Historical cost data" in response.data
