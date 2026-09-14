@@ -3,6 +3,7 @@ from flask_login import login_required
 
 from core.extensions import db
 from core.models.city import City
+from core.models.city_price_snapshot import CityPriceSnapshot
 from core.models.country import Country
 from ..decorators import admin_required
 
@@ -58,6 +59,8 @@ def add_city():
         )
 
         db.session.add(city)
+        db.session.flush()
+        CityPriceSnapshot.record(city, source="admin_create")
         db.session.commit()
 
         flash("City added.", "success")
@@ -96,9 +99,21 @@ def update_city(city_id):
             request.form["hostel_per_night"]
         )
 
+        old_prices = (
+            float(city.hostel_per_night),
+            float(city.monthly_living_cost),
+        )
+
         city.monthly_living_cost = (
             request.form["monthly_living_cost"]
         )
+
+        new_prices = (
+            float(city.hostel_per_night),
+            float(city.monthly_living_cost),
+        )
+        if new_prices != old_prices:
+            CityPriceSnapshot.record(city)
 
         db.session.commit()
 
