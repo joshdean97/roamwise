@@ -91,17 +91,17 @@ def update_city(city_id):
 
     if request.method == "POST":
 
+        old_prices = (
+            float(city.hostel_per_night),
+            float(city.monthly_living_cost),
+        )
+
         city.name = request.form["name"]
         city.region = request.form.get("region")
         city.country_id = request.form["country_id"]
 
         city.hostel_per_night = (
             request.form["hostel_per_night"]
-        )
-
-        old_prices = (
-            float(city.hostel_per_night),
-            float(city.monthly_living_cost),
         )
 
         city.monthly_living_cost = (
