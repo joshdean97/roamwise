@@ -204,44 +204,40 @@ def analytics_dashboard():
         for name, label in metric_labels
     ]
 
-    signup_users = {
-        row[0]
-        for row in db.session.query(AnalyticsEvent.user_id)
-        .filter(
-            AnalyticsEvent.name == "account_created",
-            AnalyticsEvent.user_id.isnot(None),
-        )
-        .distinct()
-        .all()
-    }
-    saved_users_raw = {
-        row[0]
-        for row in db.session.query(AnalyticsEvent.user_id)
-        .filter(
-            AnalyticsEvent.name == "trip_saved",
-            AnalyticsEvent.user_id.isnot(None),
-        )
-        .distinct()
-        .all()
-    }
-    shared_users_raw = {
-        row[0]
-        for row in db.session.query(AnalyticsEvent.user_id)
-        .filter(
-            AnalyticsEvent.name == "public_share_enabled",
-            AnalyticsEvent.user_id.isnot(None),
-        )
-        .distinct()
-        .all()
-    }
-    saved_users = signup_users & saved_users_raw
-    shared_users = saved_users & shared_users_raw
+    def users_for_event(event_name):
+        return {
+            row[0]
+            for row in db.session.query(AnalyticsEvent.user_id)
+            .filter(
+                AnalyticsEvent.name == event_name,
+                AnalyticsEvent.user_id.isnot(None),
+            )
+            .distinct()
+            .all()
+        }
+
+    signup_users = users_for_event("account_created")
+    viewed_users = signup_users & users_for_event("public_trip_viewed")
+    started_users = signup_users & users_for_event("planner_opened")
+    first_leg_users = signup_users & users_for_event("second_city_added")
+    saved_users = signup_users & users_for_event("trip_saved")
+    shared_users = signup_users & users_for_event("public_share_enabled")
+
+    def signup_rate(users):
+        return len(users) / len(signup_users) * 100 if signup_users else 0
+
     funnel = {
         "signup_users": len(signup_users),
+        "viewed_users": len(viewed_users),
+        "started_users": len(started_users),
+        "first_leg_users": len(first_leg_users),
         "saved_users": len(saved_users),
         "shared_users": len(shared_users),
-        "signup_to_saved": len(saved_users) / len(signup_users) * 100 if signup_users else 0,
-        "saved_to_shared": len(shared_users) / len(saved_users) * 100 if saved_users else 0,
+        "signup_to_viewed": signup_rate(viewed_users),
+        "signup_to_started": signup_rate(started_users),
+        "signup_to_first_leg": signup_rate(first_leg_users),
+        "signup_to_saved": signup_rate(saved_users),
+        "signup_to_shared": signup_rate(shared_users),
     }
 
     first_city = event_counts_all.get("first_city_added", 0)
