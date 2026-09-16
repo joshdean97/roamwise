@@ -43,6 +43,21 @@
         </div>
     </section>
 
+    <section class="analytics-section analytics-funnel-section">
+        <div class="analytics-section-head">
+            <div><span>Activation funnel</span><h2>Signup → view → build → save → share</h2></div>
+            <small>Unique users from the tracked signup cohort</small>
+        </div>
+        <div class="funnel-grid">
+            <article><span>01</span><strong>{{ funnel.signup_users }}</strong><p>Signed up</p></article>
+            <article><span>02</span><strong>{{ funnel.viewed_users }}</strong><p>Viewed a public Print</p><em>{{ "%.1f"|format(funnel.signup_to_viewed) }}% of signups</em></article>
+            <article><span>03</span><strong>{{ funnel.started_users }}</strong><p>Opened the trip planner</p><em>{{ "%.1f"|format(funnel.signup_to_started) }}% of signups</em></article>
+            <article><span>04</span><strong>{{ funnel.first_leg_users }}</strong><p>Added a first route leg</p><em>{{ "%.1f"|format(funnel.signup_to_first_leg) }}% of signups</em></article>
+            <article><span>05</span><strong>{{ funnel.saved_users }}</strong><p>Saved a trip</p><em>{{ "%.1f"|format(funnel.signup_to_saved) }}% of signups</em></article>
+            <article><span>06</span><strong>{{ funnel.shared_users }}</strong><p>Made a Print public</p><em>{{ "%.1f"|format(funnel.signup_to_shared) }}% of signups</em></article>
+        </div>
+    </section>
+
     <section class="analytics-split">
         <div class="analytics-section">
             <div class="analytics-section-head"><div><span>Destinations</span><h2>Most planned</h2></div></div>
@@ -160,15 +175,6 @@
             <div class="planner-funnel">
                 {% for label, count in currency_counts %}<div><span>{{ label }}</span><strong>{{ count }}</strong></div>{% else %}<div><span>No data yet</span><strong>—</strong></div>{% endfor %}
             </div>
-        </div>
-    </section>
-
-    <section class="analytics-section analytics-funnel-section">
-        <div class="analytics-section-head"><div><span>Activation funnel</span><h2>Signup → saved trip → public share</h2></div></div>
-        <div class="funnel-grid">
-            <article><span>01</span><strong>{{ funnel.signup_users }}</strong><p>Tracked account signups</p></article>
-            <article><span>02</span><strong>{{ funnel.saved_users }}</strong><p>Signup users who saved a trip</p><em>{{ "%.1f"|format(funnel.signup_to_saved) }}% of signups</em></article>
-            <article><span>03</span><strong>{{ funnel.shared_users }}</strong><p>Activated users who made a Print public</p><em>{{ "%.1f"|format(funnel.saved_to_shared) }}% of savers</em></article>
         </div>
     </section>
 
