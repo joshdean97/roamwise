@@ -8,6 +8,7 @@ from core.models.user import User
 from core.models.analytics_event import AnalyticsEvent  # noqa: F401
 from core.models.city_data_report import CityDataReport  # noqa: F401
 from core.models.city_price_snapshot import CityPriceSnapshot  # noqa: F401
+from core.models.content_post import ContentPost  # noqa: F401
 from core.models.trip_engagement import TripEngagement  # noqa: F401
 
 
@@ -149,6 +150,7 @@ def create_app(test_config=None):
             "1" if is_production else "0",
         ),
         ANALYTICS_ENABLED=_env_bool("ANALYTICS_ENABLED", "1"),
+        CONTENT_API_KEY=os.environ.get("CONTENT_API_KEY", ""),
     )
 
     if test_config:
@@ -194,6 +196,7 @@ def create_app(test_config=None):
     from core.routes.auth import auth_bp
     from core.routes.city import city_bp
     from core.routes.country import country_bp
+    from core.routes.content_api import content_api_bp
     from core.routes.main import main_bp
 
     app.register_blueprint(main_bp)
@@ -201,6 +204,8 @@ def create_app(test_config=None):
     app.register_blueprint(auth_bp)
     app.register_blueprint(admin_bp)
     app.register_blueprint(country_bp)
+    csrf.exempt(content_api_bp)
+    app.register_blueprint(content_api_bp)
 
     from core.onboarding import register_onboarding_commands
     register_onboarding_commands(app)
