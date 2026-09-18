@@ -163,7 +163,19 @@ def test_lists_reel_ready_public_trips(client):
     assert trip["days"] == 3
     assert trip["currency_symbol"] == "£"
     assert trip["destination_names"] == ["Alpha", "Beta"]
+    assert trip["destinations"][0]["country_code"] == "TT"
+    assert trip["legs"] == [{
+        "from_city": "Alpha",
+        "to_city": "Beta",
+        "mode": "train",
+        "cost": 20.0,
+    }]
     assert trip["reel"]["headline"] == "3 days across Alpha → Beta for £160"
+    assert trip["reel"]["status"] == "draft"
+    assert "Alpha — 2 days: £80" in trip["reel"]["overlay_text"]
+    assert "🚆 Alpha → Beta: £20" in trip["reel"]["overlay_text"]
+    assert "3 days · 1 country · £160 total" in trip["reel"]["overlay_text"]
+    assert "Accommodation: £65" in trip["reel"]["caption"]
     assert trip["costs"] == {
         "accommodation": 65.0,
         "living": 65.0,

@@ -8,7 +8,7 @@ from sqlalchemy.orm import selectinload
 from core.extensions import db, limiter
 from core.models.city import City
 from core.models.content_post import ContentPost
-from core.models.trip import Trip, TripStop
+from core.models.trip import Trip, TripLeg, TripStop
 
 
 content_api_bp = Blueprint(
@@ -111,6 +111,26 @@ def _currency_symbol(currency):
     }.get(currency, f"{currency} ")
 
 
+def _country_flag(code):
+    normalised = (code or "").strip().upper()
+    if len(normalised) != 2 or not normalised.isalpha():
+        return "📍"
+    return "".join(chr(127397 + ord(character)) for character in normalised)
+
+
+def _transport_emoji(mode):
+    return {
+        "bus": "🚌",
+        "coach": "🚌",
+        "train": "🚆",
+        "rail": "🚆",
+        "flight": "✈️",
+        "plane": "✈️",
+        "ferry": "⛴️",
+        "car": "🚗",
+    }.get((mode or "").strip().lower(), "🚌")
+
+
 def _serialize_trip(trip):
     destinations = []
 
@@ -118,10 +138,21 @@ def _serialize_trip(trip):
         destinations.append({
             "city": stop.city.name.split(" / ", 1)[0].strip(),
             "country": stop.city.country.name,
+            "country_code": stop.city.country.code,
             "nights": stop.nights,
             "accommodation": _money(trip, stop.accommodation_cost_gbp),
             "living": _money(trip, stop.living_cost_gbp),
             "total": _money(trip, stop.total_cost_gbp),
+        })
+
+    legs = []
+
+    for leg in trip.legs:
+        legs.append({
+            "from_city": leg.from_city.name.split(" / ", 1)[0].strip(),
+            "to_city": leg.to_city.name.split(" / ", 1)[0].strip(),
+            "mode": leg.mode or "transport",
+            "cost": _money(trip, leg.cost_gbp),
         })
 
     destination_names = [item["city"] for item in destinations]
@@ -129,6 +160,47 @@ def _serialize_trip(trip):
     nights = trip.total_nights
     total = trip.total_cost_display
     symbol = _currency_symbol(trip.display_currency)
+    country_count = len({item["country_code"] for item in destinations})
+    country_word = "country" if country_count == 1 else "countries"
+
+    breakdown_lines = []
+    for index, destination in enumerate(destinations):
+        day_word = "day" if destination["nights"] == 1 else "days"
+        breakdown_lines.append(
+            f"{_country_flag(destination['country_code'])} "
+            f"{destination['city']} — {destination['nights']} {day_word}: "
+            f"{symbol}{destination['total']:.0f}"
+        )
+        if index < len(legs):
+            leg = legs[index]
+            breakdown_lines.append(
+                f"{_transport_emoji(leg['mode'])} "
+                f"{leg['from_city']} → {leg['to_city']}: "
+                f"{symbol}{leg['cost']:.0f}"
+            )
+
+    overlay_text = "\n".join([
+        "I planned my travel costs with this website…",
+        "",
+        *breakdown_lines,
+        "",
+        f"{nights} days · {country_count} {country_word} · {symbol}{total:.0f} total",
+        "",
+        "Hostels + food + daily spending",
+        "",
+        "Budget your next trip with LeavePrints",
+        "Link in bio",
+    ])
+    caption = "\n".join([
+        f"I planned {nights} days across {route} for {symbol}{total:.0f} "
+        f"— {symbol}{(total / nights):.0f} per day.",
+        "",
+        f"Accommodation: {symbol}{_money(trip, trip.accommodation_cost_gbp):.0f}",
+        f"Daily spending: {symbol}{_money(trip, trip.living_cost_gbp):.0f}",
+        f"Transport: {symbol}{trip.transport_cost_display:.0f}",
+        "",
+        f"Build your own budget: {_public_trip_url(trip)}",
+    ])
 
     return {
         "id": trip.id,
@@ -136,6 +208,7 @@ def _serialize_trip(trip):
         "route": route,
         "destination_names": destination_names,
         "destinations": destinations,
+        "legs": legs,
         "days": nights,
         "nights": nights,
         "travel_style": trip.travel_style,
@@ -159,6 +232,9 @@ def _serialize_trip(trip):
                 if nights
                 else ""
             ),
+            "overlay_text": overlay_text,
+            "caption": caption,
+            "status": "draft",
         },
         "created_at": trip.created_at.isoformat() if trip.created_at else None,
     }
@@ -188,7 +264,8 @@ def list_content_trips():
             selectinload(Trip.stops)
             .selectinload(TripStop.city)
             .selectinload(City.country),
-            selectinload(Trip.legs),
+            selectinload(Trip.legs).selectinload(TripLeg.from_city),
+            selectinload(Trip.legs).selectinload(TripLeg.to_city),
         )
         .filter(
             Trip.is_public.is_(True),
