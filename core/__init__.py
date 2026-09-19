@@ -8,6 +8,7 @@ from core.models.user import User
 from core.models.analytics_event import AnalyticsEvent  # noqa: F401
 from core.models.city_data_report import CityDataReport  # noqa: F401
 from core.models.city_price_snapshot import CityPriceSnapshot  # noqa: F401
+from core.models.content_draft import ContentDraft  # noqa: F401
 from core.models.content_post import ContentPost  # noqa: F401
 from core.models.trip_engagement import TripEngagement  # noqa: F401
 

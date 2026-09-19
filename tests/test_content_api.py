@@ -1,10 +1,12 @@
 from datetime import datetime, timezone
+import re
 
 import pytest
 
 from core import create_app
 from core.extensions import db
 from core.models.city import City
+from core.models.content_draft import ContentDraft
 from core.models.content_post import ContentPost
 from core.models.country import Country
 from core.models.trip import Trip, TripLeg, TripStop
@@ -62,6 +64,7 @@ def app():
             username="creator",
             email="creator@example.com",
             email_confirmed_at=datetime.now(timezone.utc),
+            is_admin=True,
         )
         creator.set_password("password123")
         db.session.add(creator)
@@ -127,6 +130,46 @@ def app():
 @pytest.fixture()
 def client(app):
     return app.test_client()
+
+
+def _draft_payload():
+    return {
+        "trip_id": 1,
+        "platform": "instagram",
+        "format": "trial_reel",
+        "headline": "Three days for £160",
+        "caption": "Real API caption",
+        "overlay_text": "Real API overlay",
+        "renders": [
+            {
+                "city": "Alpha" if index < 3 else "Beta",
+                "pexels_video_id": f"pexels-{index}",
+                "pexels_page_url": f"https://pexels.example/video/{index}",
+                "pexels_attribution": f"Video {index} by Test Creator",
+                "render_id": f"render-{index}",
+                "render_status": "succeeded",
+                "render_url": f"https://cdn.example/reel-{index}.mp4",
+                "snapshot_url": f"https://cdn.example/reel-{index}.jpg",
+            }
+            for index in range(1, 7)
+        ],
+    }
+
+
+def _login_admin(client, app):
+    with app.app_context():
+        user = User.query.filter_by(email="creator@example.com").one()
+        user_id = user.id
+
+    with client.session_transaction() as session:
+        session["_user_id"] = str(user_id)
+        session["_fresh"] = True
+
+
+def _csrf_token(response):
+    match = re.search(rb'name="csrf_token" value="([^"]+)"', response.data)
+    assert match
+    return match.group(1).decode()
 
 
 def test_requires_bearer_token(client):
@@ -267,3 +310,129 @@ def test_post_is_csrf_exempt_but_still_requires_api_key(client):
         json={},
     )
     assert response.status_code == 201
+
+
+def test_creates_six_review_drafts_and_reserves_trip(app, client):
+    response = client.post(
+        "/api/admin/content/reel-drafts",
+        headers=AUTH_HEADERS,
+        json=_draft_payload(),
+    )
+    assert response.status_code == 201
+    batch = response.get_json()["draft_batch"]
+    assert batch["created"] is True
+    assert batch["count"] == 6
+    assert [draft["position"] for draft in batch["drafts"]] == list(range(1, 7))
+    assert all(draft["status"] == "ready" for draft in batch["drafts"])
+
+    with app.app_context():
+        assert ContentDraft.query.count() == 6
+        assert ContentPost.query.count() == 0
+
+    unused = client.get(
+        "/api/admin/content/trips?unused=true",
+        headers=AUTH_HEADERS,
+    )
+    assert unused.get_json()["trips"] == []
+
+
+def test_draft_creation_is_idempotent(app, client):
+    first = client.post(
+        "/api/admin/content/reel-drafts",
+        headers=AUTH_HEADERS,
+        json=_draft_payload(),
+    )
+    second = client.post(
+        "/api/admin/content/reel-drafts",
+        headers=AUTH_HEADERS,
+        json=_draft_payload(),
+    )
+
+    assert first.status_code == 201
+    assert second.status_code == 200
+    assert second.get_json()["draft_batch"]["created"] is False
+    with app.app_context():
+        assert ContentDraft.query.count() == 6
+
+
+def test_rejects_incomplete_or_failed_render_batches(client):
+    incomplete = _draft_payload()
+    incomplete["renders"] = incomplete["renders"][:5]
+    response = client.post(
+        "/api/admin/content/reel-drafts",
+        headers=AUTH_HEADERS,
+        json=incomplete,
+    )
+    assert response.status_code == 400
+
+    failed = _draft_payload()
+    failed["renders"][0]["render_status"] = "failed"
+    response = client.post(
+        "/api/admin/content/reel-drafts",
+        headers=AUTH_HEADERS,
+        json=failed,
+    )
+    assert response.status_code == 400
+
+
+def test_rejected_drafts_release_trip_for_future_generation(app, client):
+    client.post(
+        "/api/admin/content/reel-drafts",
+        headers=AUTH_HEADERS,
+        json=_draft_payload(),
+    )
+    with app.app_context():
+        for draft in ContentDraft.query.all():
+            draft.status = "rejected"
+        db.session.commit()
+
+    unused = client.get(
+        "/api/admin/content/trips?unused=true",
+        headers=AUTH_HEADERS,
+    )
+    assert len(unused.get_json()["trips"]) == 1
+
+
+def test_admin_can_review_approve_and_mark_reel_posted(app, client):
+    client.post(
+        "/api/admin/content/reel-drafts",
+        headers=AUTH_HEADERS,
+        json=_draft_payload(),
+    )
+    _login_admin(client, app)
+
+    queue = client.get("/admin/reels")
+    assert queue.status_code == 200
+    assert b"Reel review queue" in queue.data
+    assert queue.data.count(b"Download video") == 6
+    token = _csrf_token(queue)
+
+    approve = client.post(
+        "/admin/reels/1/status",
+        data={
+            "csrf_token": token,
+            "status": "approved",
+            "return_status": "ready",
+        },
+    )
+    assert approve.status_code == 302
+
+    approved_queue = client.get("/admin/reels?status=approved")
+    token = _csrf_token(approved_queue)
+    posted = client.post(
+        "/admin/reels/1/status",
+        data={
+            "csrf_token": token,
+            "status": "posted",
+            "return_status": "approved",
+            "external_media_id": "instagram-123",
+        },
+    )
+    assert posted.status_code == 302
+
+    with app.app_context():
+        draft = db.session.get(ContentDraft, 1)
+        assert draft.status == "posted"
+        assert draft.posted_at is not None
+        post = ContentPost.query.one()
+        assert post.external_media_id == "instagram-123"

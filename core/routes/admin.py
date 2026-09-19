@@ -1,5 +1,5 @@
 from collections import Counter, defaultdict
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import login_required
@@ -13,6 +13,8 @@ from core.models.country import Country
 from core.models.analytics_event import AnalyticsEvent
 from core.models.city_data_report import CityDataReport, REPORT_STATUSES
 from core.models.city_price_snapshot import CityPriceSnapshot
+from core.models.content_draft import DRAFT_STATUSES, ContentDraft
+from core.models.content_post import ContentPost
 from core.models.trip import Trip, TripStop
 
 
@@ -63,6 +65,12 @@ def dashboard():
     open_data_report_count = (
         CityDataReport.query
         .filter(CityDataReport.status == "open")
+        .count()
+    )
+
+    ready_reel_count = (
+        ContentDraft.query
+        .filter(ContentDraft.status.in_({"ready", "approved"}))
         .count()
     )
 
@@ -125,6 +133,7 @@ def dashboard():
         "country_count": country_count,
         "user_count": user_count,
         "open_data_report_count": open_data_report_count,
+        "ready_reel_count": ready_reel_count,
         "stale_city_count": stale_city_count,
         "schengen_country_count": schengen_country_count,
         "currency_count": currency_count,
@@ -462,6 +471,102 @@ def analytics_dashboard():
         recent_events=recent_events,
         title="Content & Product Analytics | LeavePrints",
     )
+
+
+# ============================================================
+# Reel review queue
+# ============================================================
+
+@admin_bp.route("/reels")
+@login_required
+@admin_required
+def reel_review_queue():
+    active_status = (request.args.get("status") or "ready").strip().lower()
+    if active_status not in DRAFT_STATUSES | {"all"}:
+        active_status = "ready"
+
+    query = (
+        ContentDraft.query
+        .options(joinedload(ContentDraft.trip))
+        .order_by(ContentDraft.created_at.desc(), ContentDraft.position.asc())
+    )
+    if active_status != "all":
+        query = query.filter(ContentDraft.status == active_status)
+
+    drafts = query.limit(250).all()
+    raw_counts = dict(
+        db.session.query(ContentDraft.status, db.func.count(ContentDraft.id))
+        .group_by(ContentDraft.status)
+        .all()
+    )
+    counts = {
+        status: raw_counts.get(status, 0)
+        for status in sorted(DRAFT_STATUSES)
+    }
+    counts["all"] = sum(raw_counts.values())
+
+    return render_template(
+        "admin/reels.html",
+        drafts=drafts,
+        counts=counts,
+        active_status=active_status,
+        title="Reel Review Queue | LeavePrints",
+    )
+
+
+@admin_bp.post("/reels/<int:draft_id>/status")
+@login_required
+@admin_required
+def update_reel_status(draft_id):
+    draft = db.get_or_404(ContentDraft, draft_id)
+    new_status = (request.form.get("status") or "").strip().lower()
+    return_status = (request.form.get("return_status") or "ready").strip().lower()
+
+    allowed_transitions = {
+        "ready": {"approved", "rejected"},
+        "approved": {"ready", "rejected", "posted"},
+        "rejected": {"ready"},
+        "posted": set(),
+    }
+    if new_status not in allowed_transitions.get(draft.status, set()):
+        flash(
+            f"Cannot move a {draft.status} reel directly to {new_status or 'nothing'}.",
+            "error",
+        )
+        return redirect(url_for("admin.reel_review_queue", status=return_status))
+
+    if new_status == "posted":
+        external_media_id = (
+            request.form.get("external_media_id") or draft.render_id
+        ).strip()
+        if len(external_media_id) > 255:
+            flash("Instagram media ID must be 255 characters or fewer.", "error")
+            return redirect(url_for("admin.reel_review_queue", status=return_status))
+
+        posted_at = datetime.now(timezone.utc)
+        post = ContentPost(
+            trip_id=draft.trip_id,
+            platform=draft.platform,
+            format=draft.format,
+            hook=draft.headline,
+            external_media_id=external_media_id,
+            posted_at=posted_at,
+        )
+        db.session.add(post)
+        draft.posted_at = posted_at
+
+    draft.status = new_status
+    db.session.commit()
+
+    flash(
+        "Reel marked as posted." if new_status == "posted"
+        else f"Reel marked {new_status}.",
+        "success",
+    )
+
+    if return_status not in DRAFT_STATUSES | {"all"}:
+        return_status = "ready"
+    return redirect(url_for("admin.reel_review_queue", status=return_status))
 
 
 # ============================================================

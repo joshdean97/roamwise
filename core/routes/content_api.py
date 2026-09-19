@@ -1,12 +1,15 @@
 import hmac
+import hashlib
 from datetime import datetime, timezone
 from functools import wraps
+from urllib.parse import urlparse
 
 from flask import Blueprint, current_app, jsonify, request
 from sqlalchemy.orm import selectinload
 
 from core.extensions import db, limiter
 from core.models.city import City
+from core.models.content_draft import ACTIVE_DRAFT_STATUSES, ContentDraft
 from core.models.content_post import ContentPost
 from core.models.trip import Trip, TripLeg, TripStop
 
@@ -23,6 +26,12 @@ MAX_TRIPS_PER_REQUEST = 20
 MAX_HOOK_LENGTH = 500
 MAX_EXTERNAL_MEDIA_ID_LENGTH = 255
 MAX_CLASSIFIER_LENGTH = 32
+EXPECTED_REELS_PER_BATCH = 6
+MAX_CAPTION_LENGTH = 2200
+MAX_OVERLAY_LENGTH = 5000
+MAX_URL_LENGTH = 1000
+MAX_CITY_LENGTH = 120
+MAX_ATTRIBUTION_LENGTH = 255
 
 
 def _json_error(message, status):
@@ -91,6 +100,64 @@ def _parse_posted_at(value):
         parsed = parsed.replace(tzinfo=timezone.utc)
 
     return parsed.astimezone(timezone.utc)
+
+
+def _payload_classifier(payload, name, default):
+    value = str(payload.get(name) or default).strip().lower()
+    if not value or len(value) > MAX_CLASSIFIER_LENGTH:
+        raise ValueError(
+            f"{name} must be between 1 and {MAX_CLASSIFIER_LENGTH} characters"
+        )
+    return value
+
+
+def _text_value(payload, name, max_length, required=False):
+    value = payload.get(name)
+    if value is None:
+        value = ""
+    value = str(value).strip()
+
+    if required and not value:
+        raise ValueError(f"{name} is required")
+    if len(value) > max_length:
+        raise ValueError(f"{name} must be at most {max_length} characters")
+
+    return value or None
+
+
+def _public_http_url(payload, name, required=False):
+    value = _text_value(payload, name, MAX_URL_LENGTH, required=required)
+    if value is None:
+        return None
+
+    parsed = urlparse(value)
+    if parsed.scheme not in {"http", "https"} or not parsed.netloc:
+        raise ValueError(f"{name} must be a public HTTP(S) URL")
+    return value
+
+
+def _serialize_draft(draft):
+    return {
+        "id": draft.id,
+        "trip_id": draft.trip_id,
+        "batch_key": draft.batch_key,
+        "position": draft.position,
+        "platform": draft.platform,
+        "format": draft.format,
+        "status": draft.status,
+        "headline": draft.headline,
+        "caption": draft.caption,
+        "overlay_text": draft.overlay_text,
+        "city": draft.city,
+        "pexels_video_id": draft.pexels_video_id,
+        "pexels_page_url": draft.pexels_page_url,
+        "pexels_attribution": draft.pexels_attribution,
+        "render_id": draft.render_id,
+        "render_url": draft.render_url,
+        "snapshot_url": draft.snapshot_url,
+        "posted_at": draft.posted_at.isoformat() if draft.posted_at else None,
+        "created_at": draft.created_at.isoformat() if draft.created_at else None,
+    }
 
 
 def _public_trip_url(trip):
@@ -279,7 +346,12 @@ def list_content_trips():
             ~Trip.content_posts.any(
                 (ContentPost.platform == platform)
                 & (ContentPost.format == content_format)
-            )
+            ),
+            ~Trip.content_drafts.any(
+                (ContentDraft.platform == platform)
+                & (ContentDraft.format == content_format)
+                & (ContentDraft.status.in_(ACTIVE_DRAFT_STATUSES))
+            ),
         )
 
     trips = query.order_by(Trip.created_at.desc(), Trip.id.desc()).limit(limit).all()
@@ -294,6 +366,156 @@ def list_content_trips():
             "format": content_format,
         },
     })
+
+
+@content_api_bp.post("/reel-drafts")
+@limiter.limit("30 per minute")
+@_require_content_api_key
+def create_reel_drafts():
+    payload = request.get_json(silent=True)
+    if not isinstance(payload, dict):
+        return _json_error("JSON body must be an object", 400)
+
+    try:
+        trip_id = int(payload.get("trip_id"))
+    except (TypeError, ValueError):
+        return _json_error("trip_id must be an integer", 400)
+
+    trip = Trip.query.filter(
+        Trip.id == trip_id,
+        Trip.is_public.is_(True),
+        Trip.share_token.isnot(None),
+    ).first()
+    if not trip:
+        return _json_error("Public trip not found", 404)
+
+    renders = payload.get("renders")
+    if not isinstance(renders, list) or len(renders) != EXPECTED_REELS_PER_BATCH:
+        return _json_error(
+            f"renders must contain exactly {EXPECTED_REELS_PER_BATCH} items",
+            400,
+        )
+
+    try:
+        platform = _payload_classifier(payload, "platform", DEFAULT_PLATFORM)
+        content_format = _payload_classifier(payload, "format", DEFAULT_FORMAT)
+        headline = _text_value(payload, "headline", MAX_HOOK_LENGTH)
+        caption = _text_value(
+            payload,
+            "caption",
+            MAX_CAPTION_LENGTH,
+            required=True,
+        )
+        overlay_text = _text_value(payload, "overlay_text", MAX_OVERLAY_LENGTH)
+
+        normalised_renders = []
+        for index, render in enumerate(renders, start=1):
+            if not isinstance(render, dict):
+                raise ValueError(f"renders[{index - 1}] must be an object")
+
+            render_status = str(render.get("render_status") or "").strip().lower()
+            if render_status != "succeeded":
+                raise ValueError(
+                    f"renders[{index - 1}].render_status must be succeeded"
+                )
+
+            normalised_renders.append({
+                "position": index,
+                "city": _text_value(render, "city", MAX_CITY_LENGTH),
+                "pexels_video_id": _text_value(render, "pexels_video_id", 64),
+                "pexels_page_url": _public_http_url(render, "pexels_page_url"),
+                "pexels_attribution": _text_value(
+                    render,
+                    "pexels_attribution",
+                    MAX_ATTRIBUTION_LENGTH,
+                ),
+                "render_id": _text_value(
+                    render,
+                    "render_id",
+                    MAX_EXTERNAL_MEDIA_ID_LENGTH,
+                    required=True,
+                ),
+                "render_url": _public_http_url(
+                    render,
+                    "render_url",
+                    required=True,
+                ),
+                "snapshot_url": _public_http_url(render, "snapshot_url"),
+            })
+    except ValueError as error:
+        return _json_error(str(error), 400)
+
+    render_ids = [render["render_id"] for render in normalised_renders]
+    if len(set(render_ids)) != EXPECTED_REELS_PER_BATCH:
+        return _json_error("render_id values must be unique", 400)
+
+    batch_key = hashlib.sha256("|".join(render_ids).encode("utf-8")).hexdigest()
+    existing_batch = (
+        ContentDraft.query
+        .filter_by(batch_key=batch_key)
+        .order_by(ContentDraft.position)
+        .all()
+    )
+    if existing_batch:
+        if len(existing_batch) != EXPECTED_REELS_PER_BATCH:
+            return _json_error("Existing draft batch is incomplete", 409)
+        if any(
+            draft.trip_id != trip.id
+            or draft.platform != platform
+            or draft.format != content_format
+            for draft in existing_batch
+        ):
+            return _json_error("Draft batch belongs to different content", 409)
+        return jsonify({
+            "draft_batch": {
+                "batch_key": batch_key,
+                "trip_id": trip.id,
+                "count": len(existing_batch),
+                "created": False,
+                "drafts": [_serialize_draft(draft) for draft in existing_batch],
+            }
+        }), 200
+
+    conflicting_render = ContentDraft.query.filter(
+        ContentDraft.render_id.in_(render_ids)
+    ).first()
+    if conflicting_render:
+        return _json_error("A render_id already belongs to another batch", 409)
+
+    drafts = []
+    for render in normalised_renders:
+        draft = ContentDraft(
+            trip_id=trip.id,
+            batch_key=batch_key,
+            position=render["position"],
+            platform=platform,
+            format=content_format,
+            status="ready",
+            headline=headline,
+            caption=caption,
+            overlay_text=overlay_text,
+            city=render["city"],
+            pexels_video_id=render["pexels_video_id"],
+            pexels_page_url=render["pexels_page_url"],
+            pexels_attribution=render["pexels_attribution"],
+            render_id=render["render_id"],
+            render_url=render["render_url"],
+            snapshot_url=render["snapshot_url"],
+        )
+        db.session.add(draft)
+        drafts.append(draft)
+
+    db.session.commit()
+
+    return jsonify({
+        "draft_batch": {
+            "batch_key": batch_key,
+            "trip_id": trip.id,
+            "count": len(drafts),
+            "created": True,
+            "drafts": [_serialize_draft(draft) for draft in drafts],
+        }
+    }), 201
 
 
 @content_api_bp.post("/trips/<int:trip_id>/used")

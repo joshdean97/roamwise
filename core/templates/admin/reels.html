@@ -1,0 +1,111 @@
+{% extends "components/base.html" %}
+
+{% block head_extra %}
+<link rel="stylesheet" href="{{ url_for('static', filename='reels.css') }}">
+{% endblock %}
+
+{% block content %}
+<main class="reel-review-page">
+    <header class="reel-review-head">
+        <div>
+            <span class="reel-eyebrow">LeavePrints content</span>
+            <h1>Reel review queue</h1>
+            <p>Six separate drafts arrive here. Nothing reaches Instagram until you approve and upload it yourself.</p>
+        </div>
+        <a class="reel-back" href="{{ url_for('admin.dashboard') }}">← Admin dashboard</a>
+    </header>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="reel-alerts">
+                {% for category, message in messages %}
+                    <div class="planner-alert {{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <nav class="reel-tabs" aria-label="Reel status">
+        {% for key, label in [('ready', 'Ready'), ('approved', 'Approved'), ('rejected', 'Rejected'), ('posted', 'Posted'), ('all', 'All')] %}
+            <a href="{{ url_for('admin.reel_review_queue', status=key) }}" class="{% if active_status == key %}active{% endif %}">
+                {{ label }} · {{ counts.get(key, 0) }}
+            </a>
+        {% endfor %}
+    </nav>
+
+    {% if drafts %}
+        <section class="reel-grid">
+            {% for draft in drafts %}
+                <article class="reel-card">
+                    <div class="reel-video-wrap">
+                        <video controls preload="metadata" playsinline poster="{{ draft.snapshot_url or '' }}">
+                            <source src="{{ draft.render_url }}" type="video/mp4">
+                        </video>
+                        <span class="reel-status {{ draft.status }}">{{ draft.status }}</span>
+                    </div>
+
+                    <div class="reel-card-copy">
+                        <span class="reel-eyebrow">{{ draft.city or 'Travel' }} · Draft #{{ draft.id }}</span>
+                        <h2>{{ draft.headline or draft.trip.name }}</h2>
+                        <div class="reel-meta">
+                            Trip #{{ draft.trip_id }} · Reel {{ draft.position }} of 6 ·
+                            {{ draft.created_at.strftime('%d %b %Y · %H:%M') if draft.created_at else 'Unknown time' }}
+                        </div>
+
+                        <label for="caption-{{ draft.id }}">Caption</label>
+                        <textarea id="caption-{{ draft.id }}" readonly>{{ draft.caption }}</textarea>
+
+                        <div class="reel-links">
+                            <a href="{{ draft.render_url }}" target="_blank" rel="noopener noreferrer" download>Download video</a>
+                            {% if draft.pexels_page_url %}
+                                <a href="{{ draft.pexels_page_url }}" target="_blank" rel="noopener noreferrer">Pexels source</a>
+                            {% endif %}
+                            <button type="button" data-copy-target="caption-{{ draft.id }}">Copy caption</button>
+                        </div>
+
+                        {% if draft.pexels_attribution %}
+                            <small class="reel-attribution">{{ draft.pexels_attribution }}</small>
+                        {% endif %}
+
+                        <form method="post" action="{{ url_for('admin.update_reel_status', draft_id=draft.id) }}" class="reel-actions">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <input type="hidden" name="return_status" value="{{ active_status }}">
+
+                            {% if draft.status == 'ready' %}
+                                <button type="submit" name="status" value="approved">Approve</button>
+                                <button class="danger" type="submit" name="status" value="rejected">Reject</button>
+                            {% elif draft.status == 'approved' %}
+                                <input name="external_media_id" maxlength="255" placeholder="Instagram media ID (optional)">
+                                <button type="submit" name="status" value="posted">Mark posted</button>
+                                <button class="secondary" type="submit" name="status" value="ready">Return to review</button>
+                                <button class="danger" type="submit" name="status" value="rejected">Reject</button>
+                            {% elif draft.status == 'rejected' %}
+                                <button class="secondary" type="submit" name="status" value="ready">Restore to review</button>
+                            {% else %}
+                                <span class="reel-posted-copy">Posted {{ draft.posted_at.strftime('%d %b %Y · %H:%M') if draft.posted_at else '' }}</span>
+                            {% endif %}
+                        </form>
+                    </div>
+                </article>
+            {% endfor %}
+        </section>
+    {% else %}
+        <div class="reel-empty">
+            <strong>No {{ active_status if active_status != 'all' else '' }} reels.</strong>
+            <p>The queue is clear. Suspiciously peaceful.</p>
+        </div>
+    {% endif %}
+</main>
+
+<script>
+document.querySelectorAll('[data-copy-target]').forEach((button) => {
+    button.addEventListener('click', async () => {
+        const field = document.getElementById(button.dataset.copyTarget);
+        await navigator.clipboard.writeText(field.value);
+        const original = button.textContent;
+        button.textContent = 'Copied';
+        window.setTimeout(() => { button.textContent = original; }, 1200);
+    });
+});
+</script>
+{% endblock %}

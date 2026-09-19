@@ -160,6 +160,13 @@ class Trip(db.Model):
         lazy=True,
     )
 
+    content_drafts = db.relationship(
+        "ContentDraft",
+        back_populates="trip",
+        cascade="all, delete-orphan",
+        lazy=True,
+    )
+
     @property
     def total_nights(self):
         return sum(stop.nights for stop in self.stops)
