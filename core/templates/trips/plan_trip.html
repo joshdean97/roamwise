@@ -56,6 +56,10 @@
         cursor: wait;
     }
 
+    .mobile-save-bar {
+        display: none;
+    }
+
     .transport-help {
         margin: 11px 0 0;
         color: var(--rw-muted);
@@ -164,6 +168,32 @@
 
         .transport-field.note {
             grid-column: 1 / -1;
+        }
+
+        .mobile-save-bar {
+            position: sticky;
+            z-index: 20;
+            bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 18px 10px 8px;
+            padding: 10px;
+            border: 1px solid #d8e4e1;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, .96);
+            box-shadow: 0 12px 35px rgba(24, 55, 49, .18);
+            backdrop-filter: blur(10px);
+        }
+
+        .mobile-save-bar .save-button {
+            flex: 1;
+        }
+
+        .mobile-save-status {
+            color: var(--rw-muted);
+            font-size: .72rem;
+            line-height: 1.25;
         }
     }
 
@@ -539,6 +569,11 @@
                 </div>
             </aside>
         </section>
+
+        <div class="mobile-save-bar" aria-label="Save trip">
+            <span class="mobile-save-status" id="mobileSaveStatus">Add a city to save</span>
+            <button class="save-button" id="mobileSaveTripButton" type="submit" disabled>{{ submit_label|default('Save trip') }}</button>
+        </div>
     </form>
 </main>
 
@@ -607,6 +642,12 @@
             },
             body: JSON.stringify({ event: eventName })
         }).catch(() => {});
+    };
+
+    const trackAnalyticsMilestone = eventName => {
+        if (IS_EDITING || analyticsMilestones.has(eventName)) return;
+        analyticsMilestones.add(eventName);
+        trackAnalyticsEvent(eventName);
     };
 
     const cityById = new Map(
@@ -713,6 +754,8 @@
     const schengenMeter = document.getElementById("schengenMeter");
     const dateFit = document.getElementById("dateFit");
     const saveButton = document.getElementById("saveTripButton");
+    const mobileSaveButton = document.getElementById("mobileSaveTripButton");
+    const mobileSaveStatus = document.getElementById("mobileSaveStatus");
 
     const dataReportModal = document.getElementById("dataReportModal");
     const dataReportForm = document.getElementById("dataReportForm");
@@ -858,15 +901,8 @@
         });
 
         if (!IS_EDITING && STARTED_WITH_EMPTY_ROUTE) {
-            if (state.route.length === 1 && !analyticsMilestones.has("first_city_added")) {
-                analyticsMilestones.add("first_city_added");
-                trackAnalyticsEvent("first_city_added");
-            }
-
-            if (state.route.length === 2 && !analyticsMilestones.has("second_city_added")) {
-                analyticsMilestones.add("second_city_added");
-                trackAnalyticsEvent("second_city_added");
-            }
+            if (state.route.length === 1) trackAnalyticsMilestone("first_city_added");
+            if (state.route.length === 2) trackAnalyticsMilestone("second_city_added");
         }
 
         resetChangedEndpointTransport(previous);
@@ -1019,11 +1055,13 @@
 
         wrapper.querySelector('[data-transport="mode"]').addEventListener("change", event => {
             entry.mode = event.target.value;
+            if (entry.mode) trackAnalyticsMilestone("transport_started");
             syncPayload();
         });
 
         wrapper.querySelector('[data-transport="cost"]').addEventListener("input", event => {
             entry.cost_gbp = convertToGBP(event.target.value);
+            if (entry.cost_gbp > 0) trackAnalyticsMilestone("transport_started");
             renderSummary();
         });
 
@@ -1264,9 +1302,14 @@
         const schengenPercent = nights ? Math.min(100, (schengen / nights) * 100) : 0;
         schengenMeter.style.width = `${schengenPercent}%`;
 
-        saveButton.disabled =
+        const saveDisabled =
             state.route.length === 0 ||
             datesInvalid();
+        saveButton.disabled = saveDisabled;
+        mobileSaveButton.disabled = saveDisabled;
+        mobileSaveStatus.textContent = saveDisabled
+            ? (datesInvalid() ? "Fix the date range" : "Add a city to save")
+            : `${state.route.length} ${state.route.length === 1 ? "stop" : "stops"} ready`;
 
         renderDateFit(nights);
         syncPayload();
@@ -1380,8 +1423,13 @@
         render();
     });
 
-    tripStart.addEventListener("change", renderSummary);
-    tripEnd.addEventListener("change", renderSummary);
+    const handleDateChange = () => {
+        if (tripStart.value && tripEnd.value) trackAnalyticsMilestone("dates_added");
+        renderSummary();
+    };
+
+    tripStart.addEventListener("change", handleDateChange);
+    tripEnd.addEventListener("change", handleDateChange);
 
     let submitting = false;
 
@@ -1401,10 +1449,13 @@
 
         submitting = true;
         saveButton.disabled = true;
+        mobileSaveButton.disabled = true;
         saveButton.classList.add("is-submitting");
+        mobileSaveButton.classList.add("is-submitting");
         saveButton.textContent = IS_EDITING
             ? "Updating…"
             : "Saving…";
+        mobileSaveButton.textContent = saveButton.textContent;
     });
 
     render();
