@@ -119,14 +119,24 @@
                 </div>
 
                 <div>
-                    <span>Last updated</span>
+                    <span>Price checked</span>
                     <strong>
-                        {% if city.last_updated %}
-                            {{ city.last_updated.strftime("%d %b %Y · %H:%M") }}
+                        {% if city.price_checked_at %}
+                            {{ city.price_checked_at.strftime("%d %b %Y") }}
                         {% else %}
-                            —
+                            Never verified
                         {% endif %}
                     </strong>
+                </div>
+
+                <div>
+                    <span>Price source</span>
+                    <strong>{{ city.price_source or "—" }}</strong>
+                </div>
+
+                <div>
+                    <span>Confidence</span>
+                    <strong>{{ city.price_confidence|title }}</strong>
                 </div>
             </div>
         </div>
