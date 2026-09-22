@@ -1,4 +1,30 @@
+import pytest
+
+from core import create_app
+from core.extensions import db
 from core.models.user import User
+
+
+@pytest.fixture()
+def app():
+    app = create_app({
+        "TESTING": True,
+        "SECRET_KEY": "legal-test-secret",
+        "SQLALCHEMY_DATABASE_URI": "sqlite://",
+        "WTF_CSRF_ENABLED": False,
+        "RATELIMIT_ENABLED": False,
+        "ANALYTICS_ENABLED": False,
+    })
+    with app.app_context():
+        db.create_all()
+    yield app
+    with app.app_context():
+        db.drop_all()
+
+
+@pytest.fixture()
+def client(app):
+    return app.test_client()
 
 
 def test_legal_pages_are_public(client):
@@ -10,7 +36,7 @@ def test_legal_pages_are_public(client):
     assert b"hello@leaveprints.com" in privacy.data
     assert terms.status_code == 200
     assert b"Terms of Use" in terms.data
-    assert b"2026-09-05" in terms.data
+    assert b"2026-09-06" in terms.data
 
 
 def test_registration_requires_terms(client, app):
