@@ -6,7 +6,7 @@ from core import create_app
 from core.extensions import db
 from core.mail import send_onboarding_email
 from core.models.user import User
-from core.onboarding import send_due_onboarding_emails
+from core.onboarding import run_onboarding_worker_pass, send_due_onboarding_emails
 
 
 @pytest.fixture()
@@ -79,6 +79,14 @@ def test_only_due_verified_users_receive_onboarding_email(app, monkeypatch):
 
         second_result = send_due_onboarding_emails(now=now)
         assert second_result == {"candidates": 0, "sent": 0, "failed": 0}
+
+
+def test_empty_onboarding_pass_releases_database_session(app):
+    with app.app_context():
+        result = run_onboarding_worker_pass()
+
+        assert result == {"candidates": 0, "sent": 0, "failed": 0}
+        assert not db.session.registry.has()
 
 
 def test_failed_delivery_is_released_for_retry(app, monkeypatch):
