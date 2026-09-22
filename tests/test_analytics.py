@@ -9,6 +9,7 @@ from core.models.analytics_event import AnalyticsEvent
 from core.models.city import City
 from core.models.city_price_snapshot import CityPriceSnapshot
 from core.models.country import Country
+from core.models.trip import Trip, TripStop
 from core.models.user import User
 
 
@@ -106,6 +107,21 @@ def test_capture_event_keeps_only_safe_primitive_properties(app):
         }
 
 
+def test_capture_event_deduplicates_immediate_authenticated_retries(app):
+    with app.app_context():
+        assert capture_event(
+            "login_completed",
+            user_id=42,
+            properties={"source": "password"},
+        )
+        assert not capture_event(
+            "login_completed",
+            user_id=42,
+            properties={"source": "password"},
+        )
+        assert AnalyticsEvent.query.count() == 1
+
+
 def test_client_milestone_endpoint_requires_login(app, client):
     response = client.post(
         "/analytics/event",
@@ -125,12 +141,28 @@ def test_client_milestone_endpoint_requires_login(app, client):
         assert event.user_id == user_id
 
 
+def test_landing_event_keeps_sanitised_campaign_attribution(app, client):
+    response = client.get(
+        "/?utm_source=instagram&utm_medium=bio&utm_campaign=rome%20reel!"
+    )
+    assert response.status_code == 200
+
+    with app.app_context():
+        event = AnalyticsEvent.query.filter_by(name="landing_viewed").one()
+        assert event.properties == {
+            "authenticated": False,
+            "utm_source": "instagram",
+            "utm_medium": "bio",
+            "utm_campaign": "romereel",
+        }
+
+
 def test_admin_analytics_page_is_available(app, client):
     login_test_user(client, app)
 
     response = client.get("/admin/analytics")
     assert response.status_code == 200
-    assert b"LeavePrints analytics" in response.data
+    assert b"Content intelligence" in response.data
 
 
 def test_non_admin_cannot_open_analytics_dashboard(app, client):
@@ -179,3 +211,70 @@ def test_admin_analytics_renders_trip_and_price_sections(app, client):
     assert response.status_code == 200
     assert b"Content intelligence" in response.data
     assert b"Historical cost data" in response.data
+
+
+def test_admin_analytics_excludes_internal_user_events(app, client):
+    with app.app_context():
+        admin = User.query.filter_by(email="analytics@example.com").one()
+        traveller = User.query.filter_by(email="traveller@example.com").one()
+
+        capture_event(
+            "planner_opened",
+            admin.id,
+            properties={"source": "internal-marker"},
+        )
+        capture_event(
+            "planner_opened",
+            traveller.id,
+            properties={"source": "customer-marker"},
+        )
+
+    login_test_user(client, app)
+    response = client.get("/admin/analytics")
+
+    assert response.status_code == 200
+    assert b"customer-marker" in response.data
+    assert b"internal-marker" not in response.data
+    assert b"internal account" in response.data
+
+
+def test_admin_analytics_excludes_internal_trips_from_content_signals(app, client):
+    with app.app_context():
+        admin = User.query.filter_by(email="analytics@example.com").one()
+        traveller = User.query.filter_by(email="traveller@example.com").one()
+        city = City.query.filter_by(name="Sofia").one()
+
+        internal_trip = Trip(
+            user_id=admin.id,
+            name="Internal only route",
+            travel_style="balanced",
+            display_currency="GBP",
+            fx_rate=1,
+        )
+        customer_trip = Trip(
+            user_id=traveller.id,
+            name="Customer route",
+            travel_style="balanced",
+            display_currency="GBP",
+            fx_rate=1,
+        )
+        db.session.add_all([internal_trip, customer_trip])
+        db.session.flush()
+        for trip in (internal_trip, customer_trip):
+            db.session.add(TripStop(
+                trip_id=trip.id,
+                city_id=city.id,
+                position=1,
+                nights=2,
+                daily_cost_gbp=40,
+                hostel_per_night_gbp=15,
+                living_per_day_gbp=25,
+            ))
+        db.session.commit()
+
+    login_test_user(client, app)
+    response = client.get("/admin/analytics")
+
+    assert response.status_code == 200
+    assert b"Customer route" in response.data
+    assert b"Internal only route" not in response.data

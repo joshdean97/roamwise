@@ -89,7 +89,9 @@
                     the first or second city, saving a trip, enabling a public Print or loading a
                     shared route. Authenticated events can be associated with your internal user id.
                     Anonymous landing-page and public-Print views are counted without a persistent
-                    visitor identifier. The analytics event store does not record your email,
+                    visitor identifier. When present, we also record campaign tags from LeavePrints
+                    links and the referring site's hostname (not the full referring URL) to understand
+                    which content sends useful traffic. The analytics event store does not record your email,
                     username, IP address, browser fingerprint or free-form trip notes.
                 </p>
 

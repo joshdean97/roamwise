@@ -37,6 +37,16 @@ class User(UserMixin, db.Model):
         default=False
     )
 
+    # Internal accounts can exercise the real product without contaminating
+    # customer activation, destination demand or retention reporting. Admins
+    # are always treated as internal by the analytics query layer too.
+    is_internal = db.Column(
+        db.Boolean,
+        nullable=False,
+        default=False,
+        server_default=db.false(),
+    )
+
     email_confirmed_at = db.Column(
         db.DateTime(timezone=True),
         nullable=True

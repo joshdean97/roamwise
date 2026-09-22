@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta, timezone
+
 from flask import current_app
 
 from core.extensions import db
@@ -12,6 +14,10 @@ ALLOWED_EVENTS = {
     "planner_opened",
     "first_city_added",
     "second_city_added",
+    "dates_added",
+    "transport_started",
+    "save_attempted",
+    "save_failed",
     "shared_route_loaded",
     "trip_saved",
     "trip_edited",
@@ -68,13 +74,38 @@ def capture_event(name, user_id=None, properties=None):
         current_app.logger.warning("Ignored unknown analytics event: %s", name)
         return False
 
-    event = AnalyticsEvent(
-        name=name,
-        user_id=int(user_id) if user_id is not None else None,
-        properties=_clean_properties(properties),
-    )
+    cleaned_properties = _clean_properties(properties)
+    normalised_user_id = int(user_id) if user_id is not None else None
 
+    # Browser retries and double submissions should not turn one action into
+    # two product events. Anonymous page views are deliberately excluded: with
+    # no visitor identifier, deduplicating them globally would merge different
+    # people who happened to arrive at the same time.
     try:
+        if normalised_user_id is not None:
+            duplicate_cutoff = (
+                datetime.now(timezone.utc).replace(tzinfo=None)
+                - timedelta(seconds=5)
+            )
+            recent_matches = (
+                AnalyticsEvent.query
+                .filter(
+                    AnalyticsEvent.name == name,
+                    AnalyticsEvent.user_id == normalised_user_id,
+                    AnalyticsEvent.created_at >= duplicate_cutoff,
+                )
+                .order_by(AnalyticsEvent.created_at.desc())
+                .limit(5)
+                .all()
+            )
+            if any((match.properties or {}) == cleaned_properties for match in recent_matches):
+                return False
+
+        event = AnalyticsEvent(
+            name=name,
+            user_id=normalised_user_id,
+            properties=cleaned_properties,
+        )
         db.session.add(event)
         db.session.commit()
         return True

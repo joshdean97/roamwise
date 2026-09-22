@@ -376,7 +376,7 @@ def delete_account():
         )
 
     flash("Your LeavePrints account has been deleted.", "success")
-    return redirect(url_for("main.home"))
+    return redirect(url_for("auth.login"))
 
 
 @auth_bp.route("/register", methods=["GET", "POST"])
@@ -410,6 +410,14 @@ def register():
 
         if len(email) > MAX_EMAIL_LENGTH or "@" not in email:
             flash("Please enter a valid email address.", "error")
+            return redirect(url_for("auth.register"))
+
+        email_domain = email.rsplit("@", 1)[-1]
+        if email_domain.endswith(".con"):
+            flash(
+                "That email ends in .con. Check whether you meant .com before continuing.",
+                "error",
+            )
             return redirect(url_for("auth.register"))
 
         password_error = _password_error(password, confirm_password)

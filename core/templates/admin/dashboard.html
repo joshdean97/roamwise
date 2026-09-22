@@ -71,7 +71,7 @@
             <div class="admin-panel-header">
                 <div>
                     <span class="admin-panel-kicker">Destination data</span>
-                    <h2>Recently updated cities</h2>
+                    <h2>Recently price-checked cities</h2>
                 </div>
                 <a class="admin-text-link" href="{{ url_for('city.get_all_cities') }}">View all →</a>
             </div>
@@ -84,7 +84,7 @@
                                 <th>City</th>
                                 <th>Country</th>
                                 <th>Balanced / day</th>
-                                <th>Updated</th>
+                                <th>Price checked</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -104,10 +104,10 @@
                                         {{ "%.2f"|format(city.balanced_cost) }}
                                     </td>
                                     <td>
-                                        {% if city.last_updated %}
-                                            {{ city.last_updated.strftime('%d %b %Y') }}
+                                        {% if city.price_checked_at %}
+                                            {{ city.price_checked_at.strftime('%d %b %Y') }}
                                         {% else %}
-                                            —
+                                            Never verified
                                         {% endif %}
                                     </td>
                                 </tr>
@@ -212,7 +212,7 @@
                         <strong>{{ dashboard_stats.get('currency_count', 0) }}</strong>
                     </div>
                     <div>
-                        <span>Fresh this month</span>
+                        <span>Price-checked this month</span>
                         <strong>{{ dashboard_stats.get('fresh_city_count', 0) }}</strong>
                     </div>
                 </div>

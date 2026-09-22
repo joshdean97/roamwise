@@ -153,7 +153,27 @@ def test_registration_creates_unconfirmed_account(app, client):
         user = User.query.filter_by(email="fresh@example.com").one()
         assert not user.is_email_confirmed
         assert user.terms_accepted_at is not None
-        assert user.terms_version == "2026-09-05"
+        assert user.terms_version == "2026-09-06"
+
+
+def test_registration_rejects_likely_dot_con_email_typo(app, client):
+    response = client.post(
+        "/auth/register",
+        data={
+            "username": "typo-user",
+            "email": "typo@example.con",
+            "password": "test-password",
+            "confirm_password": "test-password",
+            "terms_accepted": "yes",
+        },
+        follow_redirects=True,
+    )
+
+    assert response.status_code == 200
+    assert b"ends in .con" in response.data
+
+    with app.app_context():
+        assert User.query.filter_by(email="typo@example.con").first() is None
 
 
 def test_login_limit_returns_429_when_enabled():

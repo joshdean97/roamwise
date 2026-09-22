@@ -170,6 +170,8 @@ def test_using_shared_route_records_attribution_and_unique_use(app, client):
     }
     response = client.post("/plan-trip", data=post_data, follow_redirects=True)
     assert response.status_code == 200
+    assert b"Trip saved. Review your Print" in response.data
+    assert b"Ready to post" in response.data
 
     with app.app_context():
         creator_trip = Trip.query.filter_by(share_token="public-token").one()

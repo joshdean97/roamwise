@@ -1,3 +1,6 @@
+from datetime import datetime
+from decimal import Decimal
+
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required
 
@@ -12,6 +15,21 @@ city_bp = Blueprint(
     __name__,
     url_prefix="/city"
 )
+
+PRICE_CONFIDENCE_LEVELS = {"unverified", "low", "medium", "high"}
+
+
+def apply_price_metadata(city):
+    checked_value = (request.form.get("price_checked_at") or "").strip()
+    city.price_checked_at = (
+        datetime.strptime(checked_value, "%Y-%m-%d")
+        if checked_value else None
+    )
+    city.price_source = (request.form.get("price_source") or "").strip()[:255] or None
+    confidence = (request.form.get("price_confidence") or "unverified").strip().lower()
+    city.price_confidence = (
+        confidence if confidence in PRICE_CONFIDENCE_LEVELS else "unverified"
+    )
 
 
 @city_bp.route("/all")
@@ -54,9 +72,10 @@ def add_city():
             name=request.form["name"],
             region=request.form.get("region"),
             country_id=request.form["country_id"],
-            hostel_per_night=request.form["hostel_per_night"],
-            monthly_living_cost=request.form["monthly_living_cost"]
+            hostel_per_night=Decimal(request.form["hostel_per_night"]),
+            monthly_living_cost=Decimal(request.form["monthly_living_cost"]),
         )
+        apply_price_metadata(city)
 
         db.session.add(city)
         db.session.flush()
@@ -100,13 +119,10 @@ def update_city(city_id):
         city.region = request.form.get("region")
         city.country_id = request.form["country_id"]
 
-        city.hostel_per_night = (
-            request.form["hostel_per_night"]
-        )
+        city.hostel_per_night = Decimal(request.form["hostel_per_night"])
 
-        city.monthly_living_cost = (
-            request.form["monthly_living_cost"]
-        )
+        city.monthly_living_cost = Decimal(request.form["monthly_living_cost"])
+        apply_price_metadata(city)
 
         new_prices = (
             float(city.hostel_per_night),

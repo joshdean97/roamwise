@@ -48,7 +48,8 @@
                             <th>Shoestring</th>
                             <th>Balanced</th>
                             <th>Comfortable</th>
-                            <th>Updated</th>
+                            <th>Price checked</th>
+                            <th>Confidence</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -87,12 +88,14 @@
                                 </td>
 
                                 <td>
-                                    {% if city.last_updated %}
-                                        {{ city.last_updated.strftime("%d %b %Y") }}
+                                    {% if city.price_checked_at %}
+                                        {{ city.price_checked_at.strftime("%d %b %Y") }}
                                     {% else %}
-                                        —
+                                        Never
                                     {% endif %}
                                 </td>
+
+                                <td>{{ city.price_confidence|title }}</td>
 
                                 <td>
                                     <a
