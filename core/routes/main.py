@@ -1,6 +1,7 @@
 import io
 import json
 import os
+import re
 import secrets
 from datetime import date
 from decimal import Decimal
@@ -68,6 +69,12 @@ TRANSPORT_MODE_LABELS = {
 TRANSPORT_MODES = set(TRANSPORT_MODE_LABELS)
 MAX_TRANSPORT_COST_GBP = Decimal("10000")
 MAX_TRANSPORT_NOTE_LENGTH = 200
+
+
+def _safe_campaign_value(value):
+    """Keep attribution useful without storing arbitrary query-string text."""
+    value = (value or "").strip()[:80]
+    return re.sub(r"[^a-zA-Z0-9._-]", "", value) or None
 
 
 def parse_optional_date(value):
@@ -1024,10 +1031,22 @@ def build_share_payload(trip):
 
 @main_bp.route("/")
 def home():
+    properties = {
+        "authenticated": bool(current_user.is_authenticated),
+    }
+    for key in ("utm_source", "utm_medium", "utm_campaign"):
+        cleaned = _safe_campaign_value(request.args.get(key))
+        if cleaned:
+            properties[key] = cleaned
+
+    referrer_host = urlparse(request.referrer or "").hostname
+    if referrer_host and referrer_host not in {request.host.split(":", 1)[0]}:
+        properties["referrer_host"] = referrer_host[:120]
+
     capture_event(
         "landing_viewed",
         current_user.id if current_user.is_authenticated else None,
-        properties={"authenticated": bool(current_user.is_authenticated)},
+        properties=properties,
     )
     return render_template("index.html")
 
@@ -1143,6 +1162,8 @@ def analytics_event():
     allowed_client_events = {
         "first_city_added",
         "second_city_added",
+        "dates_added",
+        "transport_started",
         "share_card_downloaded",
     }
 
@@ -1336,6 +1357,15 @@ def plan_trip():
     if request.method == "POST":
         initial_state = planner_state_from_request()
 
+        capture_event(
+            "save_attempted",
+            current_user.id,
+            properties={
+                "stop_count": len(initial_state.get("route") or []),
+                "source": "shared" if initial_state.get("source_share_token") else "direct",
+            },
+        )
+
         source_share_token = initial_state.get("source_share_token", "")
         source_trip = None
         if source_share_token:
@@ -1392,16 +1422,23 @@ def plan_trip():
                     "travel_style": trip.travel_style,
                     "display_currency": trip.display_currency,
                     "source": "shared" if source_trip else "direct",
+                    "transport_complete": (
+                        len(trip.stops) <= 1
+                        or (
+                            len(trip.legs) >= len(trip.stops) - 1
+                            and all((leg.mode or "").strip() for leg in trip.legs)
+                        )
+                    ),
                 },
             )
 
             flash(
-                "Trip saved.",
+                "Trip saved. Review your Print, then publish it whenever you're ready.",
                 "success",
             )
 
             return redirect(
-                url_for("main.my_trips")
+                url_for("main.share_trip", trip_id=trip.id)
             )
 
         except (
@@ -1410,10 +1447,20 @@ def plan_trip():
             json.JSONDecodeError,
         ) as exc:
             db.session.rollback()
+            capture_event(
+                "save_failed",
+                current_user.id,
+                properties={"reason": "validation"},
+            )
             flash(str(exc), "error")
 
         except Exception:
             db.session.rollback()
+            capture_event(
+                "save_failed",
+                current_user.id,
+                properties={"reason": "server_error"},
+            )
             current_app.logger.exception(
                 "Unexpected error while saving trip"
             )
