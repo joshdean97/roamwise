@@ -3,6 +3,7 @@ from datetime import datetime, timedelta, timezone
 
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import login_required
+from sqlalchemy import or_
 from sqlalchemy.orm import joinedload, selectinload
 
 from core.decorators import admin_required
@@ -48,8 +49,8 @@ def dashboard():
         day=1,
     )
 
-    # A city is considered stale after 30 days without
-    # an update.
+    # A city is considered stale after 30 days without a documented price
+    # check. Database update timestamps are not evidence of research freshness.
     stale_cutoff = now - timedelta(days=30)
 
     # --------------------------------------------------------
@@ -81,7 +82,10 @@ def dashboard():
     stale_city_count = (
         City.query
         .filter(
-            City.last_updated < stale_cutoff
+            or_(
+                City.price_checked_at.is_(None),
+                City.price_checked_at < stale_cutoff,
+            )
         )
         .count()
     )
@@ -119,7 +123,7 @@ def dashboard():
     fresh_city_count = (
         City.query
         .filter(
-            City.last_updated >= start_of_month
+            City.price_checked_at >= start_of_month
         )
         .count()
     )
@@ -147,7 +151,8 @@ def dashboard():
     recent_cities = (
         City.query
         .order_by(
-            City.last_updated.desc()
+            City.price_checked_at.desc().nullslast(),
+            City.last_updated.desc(),
         )
         .limit(5)
         .all()
@@ -177,11 +182,26 @@ def analytics_dashboard():
     cutoff = now - timedelta(days=30)
     previous_cutoff = now - timedelta(days=60)
 
+    internal_user_ids = {
+        row[0]
+        for row in db.session.query(User.id)
+        .filter(or_(User.is_admin.is_(True), User.is_internal.is_(True)))
+        .all()
+    }
+
+    def external_events(query):
+        if not internal_user_ids:
+            return query
+        return query.filter(or_(
+            AnalyticsEvent.user_id.is_(None),
+            ~AnalyticsEvent.user_id.in_(internal_user_ids),
+        ))
+
     def counts_since(since=None):
-        query = db.session.query(
+        query = external_events(db.session.query(
             AnalyticsEvent.name,
             db.func.count(AnalyticsEvent.id),
-        )
+        ))
         if since is not None:
             query = query.filter(AnalyticsEvent.created_at >= since)
         return dict(query.group_by(AnalyticsEvent.name).all())
@@ -197,6 +217,10 @@ def analytics_dashboard():
         ("shared_route_saved", "Actual route uses"),
         ("account_created", "Signups"),
         ("planner_opened", "Planner opens"),
+        ("dates_added", "Date ranges added"),
+        ("transport_started", "Transport entries started"),
+        ("save_attempted", "Save attempts"),
+        ("save_failed", "Save failures"),
         ("trip_saved", "Trips saved"),
         ("share_page_viewed", "Share pages"),
         ("public_share_enabled", "Public shares"),
@@ -214,40 +238,62 @@ def analytics_dashboard():
     ]
 
     def users_for_event(event_name):
+        query = db.session.query(AnalyticsEvent.user_id).filter(
+            AnalyticsEvent.name == event_name,
+            AnalyticsEvent.user_id.isnot(None),
+        )
+        if internal_user_ids:
+            query = query.filter(~AnalyticsEvent.user_id.in_(internal_user_ids))
         return {
             row[0]
-            for row in db.session.query(AnalyticsEvent.user_id)
-            .filter(
-                AnalyticsEvent.name == event_name,
-                AnalyticsEvent.user_id.isnot(None),
-            )
-            .distinct()
-            .all()
+            for row in query.distinct().all()
         }
 
     signup_users = users_for_event("account_created")
-    viewed_users = signup_users & users_for_event("public_trip_viewed")
     started_users = signup_users & users_for_event("planner_opened")
-    first_leg_users = signup_users & users_for_event("second_city_added")
+    first_city_users = signup_users & users_for_event("first_city_added")
+    second_city_users = signup_users & users_for_event("second_city_added")
     saved_users = signup_users & users_for_event("trip_saved")
     shared_users = signup_users & users_for_event("public_share_enabled")
+    viewed_users = signup_users & users_for_event("public_trip_viewed")
 
     def signup_rate(users):
         return len(users) / len(signup_users) * 100 if signup_users else 0
 
+    def step_rate(users, previous_users):
+        return len(users) / len(previous_users) * 100 if previous_users else 0
+
     funnel = {
         "signup_users": len(signup_users),
-        "viewed_users": len(viewed_users),
         "started_users": len(started_users),
-        "first_leg_users": len(first_leg_users),
+        "first_city_users": len(first_city_users),
+        "second_city_users": len(second_city_users),
         "saved_users": len(saved_users),
         "shared_users": len(shared_users),
-        "signup_to_viewed": signup_rate(viewed_users),
         "signup_to_started": signup_rate(started_users),
-        "signup_to_first_leg": signup_rate(first_leg_users),
-        "signup_to_saved": signup_rate(saved_users),
-        "signup_to_shared": signup_rate(shared_users),
+        "started_to_first_city": step_rate(first_city_users, started_users),
+        "first_to_second_city": step_rate(second_city_users, first_city_users),
+        "second_city_to_saved": step_rate(saved_users, second_city_users),
+        "saved_to_shared": step_rate(shared_users, saved_users),
     }
+    discovery_adoption = {
+        "viewed_users": len(viewed_users),
+        "signup_to_viewed": signup_rate(viewed_users),
+    }
+
+    acquisition_sources = Counter()
+    landing_events = external_events(AnalyticsEvent.query).filter(
+        AnalyticsEvent.name == "landing_viewed",
+        AnalyticsEvent.created_at >= cutoff,
+    ).all()
+    for event in landing_events:
+        properties = event.properties or {}
+        source = (
+            properties.get("utm_source")
+            or properties.get("referrer_host")
+            or "direct / unknown"
+        )
+        acquisition_sources[str(source)] += 1
 
     first_city = event_counts_all.get("first_city_added", 0)
     second_city = event_counts_all.get("second_city_added", 0)
@@ -257,8 +303,12 @@ def analytics_dashboard():
         "first_to_second": second_city / first_city * 100 if first_city else 0,
     }
 
+    trips_query = Trip.query
+    if internal_user_ids:
+        trips_query = trips_query.filter(~Trip.user_id.in_(internal_user_ids))
+
     trips = (
-        Trip.query
+        trips_query
         .options(
             selectinload(Trip.stops)
             .selectinload(TripStop.city)
@@ -308,7 +358,15 @@ def analytics_dashboard():
                 elif trip.created_at and trip.created_at >= previous_cutoff:
                     stats["previous_30"] += 1
 
-        if trip.total_nights:
+        transport_complete = (
+            len(ordered_stops) <= 1
+            or (
+                len(trip.legs) >= len(ordered_stops) - 1
+                and all((leg.mode or "").strip() for leg in trip.legs)
+            )
+        )
+
+        if trip.total_nights and transport_complete:
             completed_trips.append({
                 "name": trip.name,
                 "route": route,
@@ -341,11 +399,15 @@ def analytics_dashboard():
         key=lambda row: (row["trips"], row["nights"]),
         reverse=True,
     )[:10]
-    trending_destinations = sorted(
-        [row for row in destinations if row["last_30"]],
-        key=lambda row: (row["change"], row["last_30"], row["trips"]),
-        reverse=True,
-    )[:10]
+    has_previous_period = any(row["previous_30"] for row in destinations)
+    trending_destinations = (
+        sorted(
+            [row for row in destinations if row["last_30"]],
+            key=lambda row: (row["change"], row["last_30"], row["trips"]),
+            reverse=True,
+        )[:10]
+        if has_previous_period else []
+    )
     popular_routes = [
         {"route": route, "trips": count}
         for route, count in route_counts.most_common(10)
@@ -358,6 +420,22 @@ def analytics_dashboard():
     total_nights = sum(trip.total_nights for trip in trips)
     total_cost = sum(trip.total_cost_gbp for trip in trips)
     returning_users = sum(1 for count in trips_by_user.values() if count > 1)
+    repeat_within_7 = 0
+    repeat_within_30 = 0
+    trips_by_user_dates = defaultdict(list)
+    for trip in trips:
+        if trip.created_at:
+            trips_by_user_dates[trip.user_id].append(trip.created_at)
+    for dates in trips_by_user_dates.values():
+        if len(dates) < 2:
+            continue
+        dates.sort()
+        days_to_repeat = (dates[1] - dates[0]).total_seconds() / 86400
+        if days_to_repeat <= 7:
+            repeat_within_7 += 1
+        if days_to_repeat <= 30:
+            repeat_within_30 += 1
+
     product_summary = {
         "trips": len(trips),
         "travellers_with_trips": len(trips_by_user),
@@ -368,6 +446,9 @@ def analytics_dashboard():
         "average_nights": total_nights / len(trips) if trips else 0,
         "average_total_cost": total_cost / len(trips) if trips else 0,
         "average_daily_cost": total_cost / total_nights if total_nights else 0,
+        "complete_budgets": len(completed_trips),
+        "repeat_within_7": repeat_within_7,
+        "repeat_within_30": repeat_within_30,
     }
 
     price_snapshots = (
@@ -444,8 +525,9 @@ def analytics_dashboard():
         },
     ]
 
+    recent_event_query = external_events(AnalyticsEvent.query)
     recent_events = (
-        AnalyticsEvent.query
+        recent_event_query
         .order_by(AnalyticsEvent.created_at.desc(), AnalyticsEvent.id.desc())
         .limit(50)
         .all()
@@ -467,7 +549,11 @@ def analytics_dashboard():
         event_counts_all=event_counts_all,
         event_counts_30=event_counts_30,
         funnel=funnel,
+        discovery_adoption=discovery_adoption,
+        acquisition_sources=acquisition_sources.most_common(10),
         planner_activation=planner_activation,
+        has_previous_period=has_previous_period,
+        internal_account_count=len(internal_user_ids),
         recent_events=recent_events,
         title="Content & Product Analytics | LeavePrints",
     )
