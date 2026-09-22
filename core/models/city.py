@@ -50,6 +50,26 @@ class City(db.Model):
         onupdate=db.func.current_timestamp()
     )
 
+    # Data freshness is about when the price was actually checked, not when a
+    # migration or unrelated edit happened to touch the row.
+    price_checked_at = db.Column(
+        db.DateTime,
+        nullable=True,
+        index=True,
+    )
+
+    price_source = db.Column(
+        db.String(255),
+        nullable=True,
+    )
+
+    price_confidence = db.Column(
+        db.String(20),
+        nullable=False,
+        default="unverified",
+        server_default="unverified",
+    )
+
     __table_args__ = (
         db.UniqueConstraint(
             "name",
