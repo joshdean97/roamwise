@@ -16,7 +16,7 @@
     </section>
 
     <div class="analytics-note">
-        <strong>Truth check:</strong> planning metrics come from saved LeavePrints trips. They show intent, not confirmed bookings or actual spend. Prices are stored in canonical GBP.
+        <strong>Truth check:</strong> planning metrics show intent, not bookings or actual spend. {{ internal_account_count }} internal account{{ '' if internal_account_count == 1 else 's' }} and their trips are excluded. Anonymous landing views are raw page views, not unique visitors. Prices are stored in canonical GBP.
     </div>
 
     <section class="signal-grid" aria-label="Top content opportunities">
@@ -34,27 +34,30 @@
             <div><span>At a glance</span><h2>How people use the planner</h2></div>
         </div>
         <div class="analytics-card-grid summary-grid">
-            <article class="analytics-card"><span>Saved trips</span><strong>{{ product_summary.trips }}</strong><small>Current database</small></article>
-            <article class="analytics-card"><span>Travellers planning</span><strong>{{ product_summary.travellers_with_trips }}</strong><small>Users with ≥1 saved trip</small></article>
+            <article class="analytics-card"><span>Customer trips</span><strong>{{ product_summary.trips }}</strong><small>Internal trips excluded</small></article>
+            <article class="analytics-card"><span>Activated planners</span><strong>{{ product_summary.travellers_with_trips }}</strong><small>Customers with ≥1 saved trip</small></article>
             <article class="analytics-card"><span>Returning planners</span><strong>{{ product_summary.returning_users }}</strong><small>{{ "%.1f"|format(product_summary.returning_rate) }}% created multiple trips</small></article>
-            <article class="analytics-card"><span>Average trip</span><strong>{{ "%.1f"|format(product_summary.average_nights) }}d</strong><small>Across saved trips</small></article>
-            <article class="analytics-card"><span>Average trip cost</span><strong>£{{ "%.0f"|format(product_summary.average_total_cost) }}</strong><small>Stay and entered transport</small></article>
-            <article class="analytics-card"><span>Average daily cost</span><strong>£{{ "%.2f"|format(product_summary.average_daily_cost) }}</strong><small>All saved nights combined</small></article>
+            <article class="analytics-card"><span>Repeated within 7d</span><strong>{{ product_summary.repeat_within_7 }}</strong><small>Second saved trip</small></article>
+            <article class="analytics-card"><span>Repeated within 30d</span><strong>{{ product_summary.repeat_within_30 }}</strong><small>Second saved trip</small></article>
+            <article class="analytics-card"><span>Complete budgets</span><strong>{{ product_summary.complete_budgets }}</strong><small>Every intercity leg has transport</small></article>
         </div>
     </section>
 
     <section class="analytics-section analytics-funnel-section">
         <div class="analytics-section-head">
-            <div><span>Activation funnel</span><h2>Signup → view → build → save → share</h2></div>
-            <small>Unique users from the tracked signup cohort</small>
+            <div><span>Planner activation</span><h2>Signup → open → build → save → share</h2></div>
+            <small>Unique customer accounts · step-to-step conversion</small>
         </div>
         <div class="funnel-grid">
             <article><span>01</span><strong>{{ funnel.signup_users }}</strong><p>Signed up</p></article>
-            <article><span>02</span><strong>{{ funnel.viewed_users }}</strong><p>Viewed a public Print</p><em>{{ "%.1f"|format(funnel.signup_to_viewed) }}% of signups</em></article>
-            <article><span>03</span><strong>{{ funnel.started_users }}</strong><p>Opened the trip planner</p><em>{{ "%.1f"|format(funnel.signup_to_started) }}% of signups</em></article>
-            <article><span>04</span><strong>{{ funnel.first_leg_users }}</strong><p>Added a first route leg</p><em>{{ "%.1f"|format(funnel.signup_to_first_leg) }}% of signups</em></article>
-            <article><span>05</span><strong>{{ funnel.saved_users }}</strong><p>Saved a trip</p><em>{{ "%.1f"|format(funnel.signup_to_saved) }}% of signups</em></article>
-            <article><span>06</span><strong>{{ funnel.shared_users }}</strong><p>Made a Print public</p><em>{{ "%.1f"|format(funnel.signup_to_shared) }}% of signups</em></article>
+            <article><span>02</span><strong>{{ funnel.started_users }}</strong><p>Opened the planner</p><em>{{ "%.1f"|format(funnel.signup_to_started) }}% of signups</em></article>
+            <article><span>03</span><strong>{{ funnel.first_city_users }}</strong><p>Added first city</p><em>{{ "%.1f"|format(funnel.started_to_first_city) }}% of opens</em></article>
+            <article><span>04</span><strong>{{ funnel.second_city_users }}</strong><p>Added second city</p><em>{{ "%.1f"|format(funnel.first_to_second_city) }}% of builders</em></article>
+            <article><span>05</span><strong>{{ funnel.saved_users }}</strong><p>Saved a trip</p><em>{{ "%.1f"|format(funnel.second_city_to_saved) }}% with 2+ cities</em></article>
+            <article><span>06</span><strong>{{ funnel.shared_users }}</strong><p>Made a Print public</p><em>{{ "%.1f"|format(funnel.saved_to_shared) }}% of savers</em></article>
+        </div>
+        <div class="analytics-note">
+            <strong>Discovery is a separate loop:</strong> {{ discovery_adoption.viewed_users }} signup-cohort user{{ '' if discovery_adoption.viewed_users == 1 else 's' }} viewed a public Print ({{ "%.1f"|format(discovery_adoption.signup_to_viewed) }}%). It is not treated as a required planner step.
         </div>
     </section>
 
@@ -88,7 +91,7 @@
                     </tbody>
                 </table>
             </div>
-            {% else %}<div class="analytics-empty">No trips saved in the last 30 days yet.</div>{% endif %}
+            {% else %}<div class="analytics-empty">Not enough comparison data yet. Trends appear only after both 30-day periods contain customer trips.</div>{% endif %}
         </div>
     </section>
 
@@ -104,7 +107,7 @@
             {% else %}<div class="analytics-empty">Routes will appear once trips are saved.</div>{% endif %}
         </div>
         <div class="analytics-section">
-            <div class="analytics-section-head"><div><span>Value stories</span><h2>Cheapest saved trips</h2></div></div>
+            <div class="analytics-section-head"><div><span>Value stories</span><h2>Cheapest complete trips</h2></div><small>Every intercity leg includes a transport mode</small></div>
             {% if cheapest_trips %}
             <div class="analytics-table-wrap">
                 <table class="analytics-table">
@@ -116,7 +119,7 @@
                     </tbody>
                 </table>
             </div>
-            {% else %}<div class="analytics-empty">No costed saved trips yet.</div>{% endif %}
+            {% else %}<div class="analytics-empty">No customer trips have a complete intercity transport budget yet.</div>{% endif %}
         </div>
     </section>
 
@@ -165,6 +168,12 @@
 
     <section class="analytics-split">
         <div class="analytics-section">
+            <div class="analytics-section-head"><div><span>Acquisition</span><h2>Landing sources · 30d</h2></div><small>Raw page views; use UTM links for every reel</small></div>
+            <div class="planner-funnel">
+                {% for label, count in acquisition_sources %}<div><span>{{ label }}</span><strong>{{ count }}</strong></div>{% else %}<div><span>No source data yet</span><strong>—</strong></div>{% endfor %}
+            </div>
+        </div>
+        <div class="analytics-section">
             <div class="analytics-section-head"><div><span>Preferences</span><h2>Travel styles</h2></div></div>
             <div class="planner-funnel">
                 {% for label, count in style_counts %}<div><span>{{ label|title }}</span><strong>{{ count }}</strong></div>{% else %}<div><span>No data yet</span><strong>—</strong></div>{% endfor %}
@@ -179,7 +188,7 @@
     </section>
 
     <section class="analytics-section">
-        <div class="analytics-section-head"><div><span>First-party events</span><h2>Last 30 days / all time</h2></div></div>
+        <div class="analytics-section-head"><div><span>First-party events</span><h2>Last 30 days / all time</h2></div><small>Internal user events excluded; anonymous views remain raw</small></div>
         <div class="analytics-card-grid">
             {% for metric in metric_cards %}
             <article class="analytics-card"><span>{{ metric.label }}</span><strong>{{ metric.last_30 }}</strong><small>{{ metric.all_time }} all time</small></article>
