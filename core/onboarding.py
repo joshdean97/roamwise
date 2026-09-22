@@ -93,6 +93,16 @@ def send_due_onboarding_emails(now=None, limit=100):
     return {"candidates": len(candidate_ids), "sent": sent, "failed": failed}
 
 
+def run_onboarding_worker_pass():
+    """Run one worker pass without retaining a database transaction."""
+    try:
+        return send_due_onboarding_emails()
+    finally:
+        # Even a read-only pass opens a PostgreSQL transaction. The worker can
+        # sleep for an hour, so release it before sleeping to avoid blocking DDL.
+        db.session.remove()
+
+
 def register_onboarding_commands(app):
     @app.cli.command("send-onboarding-emails")
     def send_onboarding_emails_command():
@@ -122,7 +132,7 @@ def register_onboarding_commands(app):
 
         while True:
             try:
-                result = send_due_onboarding_emails()
+                result = run_onboarding_worker_pass()
                 if result["candidates"]:
                     current_app.logger.info(
                         "Onboarding email pass: %s sent, %s failed",
