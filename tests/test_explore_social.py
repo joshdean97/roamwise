@@ -118,6 +118,14 @@ def test_explore_only_lists_public_trips(client):
     assert response.status_code == 200
     assert b"Trail City" in response.data
     assert b"Secret City" not in response.data
+    assert b"Use this route" in response.data
+
+
+def test_anonymous_user_can_load_shared_route_into_planner(client):
+    response = client.get("/?use=public-token")
+    assert response.status_code == 200
+    assert b"Save this budget" in response.data
+    assert b"public-token" in response.data
 
 
 def test_save_toggle_creates_one_engagement(app, client):
@@ -171,7 +179,7 @@ def test_using_shared_route_records_attribution_and_unique_use(app, client):
     response = client.post("/plan-trip", data=post_data, follow_redirects=True)
     assert response.status_code == 200
     assert b"Trip saved. Review your Print" in response.data
-    assert b"Ready to post" in response.data
+    assert b"Your trip is saved. What next?" in response.data
 
     with app.app_context():
         creator_trip = Trip.query.filter_by(share_token="public-token").one()

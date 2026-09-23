@@ -56,6 +56,33 @@
         cursor: wait;
     }
 
+    .budget-ready {
+        display: none;
+        margin-top: 16px;
+        padding: 14px;
+        border: 1px solid #bfe2d9;
+        border-radius: 14px;
+        background: #edf9f5;
+    }
+    .budget-ready.show { display: block; }
+    .budget-ready strong { display: block; color: var(--rw-teal-dark); }
+    .budget-ready p { margin: 5px 0 12px; color: #334155; font-size: .78rem; }
+    .budget-ready-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+    .budget-ready-actions button { border-radius: 999px; padding: 9px 12px; font: inherit; font-size: .74rem; font-weight: 800; cursor: pointer; }
+    .budget-ready-save { border: 0; background: var(--rw-teal-dark); color: white; }
+    .budget-ready-add { border: 1px solid #b7d7d0; background: white; color: var(--rw-teal-dark); }
+
+    .save-auth-modal[hidden] { display: none; }
+    .save-auth-modal { position: fixed; inset: 0; z-index: 1400; display: grid; place-items: center; padding: 20px; background: rgba(10, 21, 34, .62); }
+    .save-auth-dialog { width: min(440px, 100%); padding: 26px; border-radius: 22px; background: white; box-shadow: 0 28px 90px rgba(8, 20, 35, .3); }
+    .save-auth-dialog h2 { margin: 6px 0 8px; }
+    .save-auth-dialog p { margin: 0 0 18px; color: var(--rw-muted); line-height: 1.55; }
+    .save-auth-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .save-auth-actions a { padding: 12px; border-radius: 12px; text-align: center; font-weight: 800; text-decoration: none; }
+    .save-auth-primary { background: var(--rw-teal-dark); color: white; }
+    .save-auth-secondary { border: 1px solid #cedbd8; color: var(--rw-ink); }
+    .save-auth-close { float: right; border: 0; background: transparent; color: var(--rw-muted); font-size: 1.3rem; cursor: pointer; }
+
     .mobile-save-bar {
         display: none;
     }
@@ -497,6 +524,15 @@
                         <small id="averagePerDay">£0.00 / day</small>
                     </div>
 
+                    <div class="budget-ready" id="budgetReady" aria-live="polite">
+                        <strong>Your first budget is ready.</strong>
+                        <p id="budgetReadyCopy">Save it now or add another destination.</p>
+                        <div class="budget-ready-actions">
+                            <button class="budget-ready-save" type="submit">Save this estimate</button>
+                            <button class="budget-ready-add" id="addAnotherDestination" type="button">+ Add another destination</button>
+                        </div>
+                    </div>
+
                     <div class="summary-list">
                         <div class="summary-line">
                             <span>Planned nights</span>
@@ -558,7 +594,11 @@
                         {% if is_editing %}
                             Update this saved route with your latest changes.
                         {% else %}
-                            Save this route to your account so you can come back to the budget later.
+                            {% if current_user.is_authenticated %}
+                                Save this budget so you can return, edit and share it later.
+                            {% else %}
+                                Plan for free. You only need an account when you save.
+                            {% endif %}
                         {% endif %}
                     </p>
                     {% if is_editing %}
@@ -619,12 +659,40 @@
 
 <div class="data-report-toast" id="dataReportToast" role="status" aria-live="polite" hidden></div>
 
+<div class="save-auth-modal" id="saveAuthModal" hidden>
+    <div class="save-auth-dialog" role="dialog" aria-modal="true" aria-labelledby="saveAuthTitle">
+        <button class="save-auth-close" id="saveAuthClose" type="button" aria-label="Close">×</button>
+        <span class="panel-kicker">Keep your plan</span>
+        <h2 id="saveAuthTitle">Your budget is ready.</h2>
+        <p id="saveAuthCopy">Create a free account or log in to save it. Your route will still be here when you return.</p>
+        <div class="save-auth-actions">
+            <a class="save-auth-primary" href="{{ url_for('auth.register') }}">Create account</a>
+            <a class="save-auth-secondary" href="{{ url_for('auth.login', next=url_for('main.home')) }}">Log in</a>
+        </div>
+    </div>
+</div>
+
 <script>
 (() => {
     const FX_RATES = {{ fx_rates|tojson }};
     const CITY_OPTIONS = {{ city_options|tojson }};
-    const INITIAL_TRIP = {{ planner_initial|tojson }};
+    const IS_AUTHENTICATED = {{ current_user.is_authenticated|tojson }};
     const IS_EDITING = {{ is_editing|default(false)|tojson }};
+    const DRAFT_KEY = "leaveprints.planner-draft.v1";
+    let INITIAL_TRIP = {{ planner_initial|tojson }};
+    let restoredLocalDraft = false;
+
+    if (!IS_EDITING && (!INITIAL_TRIP.route || INITIAL_TRIP.route.length === 0)) {
+        try {
+            const savedDraft = JSON.parse(localStorage.getItem(DRAFT_KEY) || "null");
+            if (savedDraft && Array.isArray(savedDraft.route) && savedDraft.route.length) {
+                INITIAL_TRIP = savedDraft;
+                restoredLocalDraft = true;
+            }
+        } catch (error) {
+            localStorage.removeItem(DRAFT_KEY);
+        }
+    }
     const ANALYTICS_URL = {{ url_for('main.analytics_event')|tojson }};
     const ANALYTICS_CSRF = {{ csrf_token()|tojson }};
     const DATA_REPORT_URL = {{ url_for('main.report_city_data')|tojson }};
@@ -753,6 +821,9 @@
     const nonSchengenDays = document.getElementById("nonSchengenDays");
     const schengenMeter = document.getElementById("schengenMeter");
     const dateFit = document.getElementById("dateFit");
+    const budgetReady = document.getElementById("budgetReady");
+    const budgetReadyCopy = document.getElementById("budgetReadyCopy");
+    const addAnotherDestination = document.getElementById("addAnotherDestination");
     const saveButton = document.getElementById("saveTripButton");
     const mobileSaveButton = document.getElementById("mobileSaveTripButton");
     const mobileSaveStatus = document.getElementById("mobileSaveStatus");
@@ -767,14 +838,21 @@
     const dataReportSubmit = document.getElementById("dataReportSubmit");
     const dataReportClose = document.getElementById("dataReportClose");
     const dataReportToast = document.getElementById("dataReportToast");
+    const saveAuthModal = document.getElementById("saveAuthModal");
+    const saveAuthClose = document.getElementById("saveAuthClose");
+    const saveAuthCopy = document.getElementById("saveAuthCopy");
     let dataReportCity = null;
 
     const routeJson = document.getElementById("routeJson");
     const transportJson = document.getElementById("transportJson");
     const travelStyleHidden = document.getElementById("travelStyleHidden");
     const displayCurrencyHidden = document.getElementById("displayCurrencyHidden");
+    const sourceShareTokenInput = document.querySelector('[name="source_share_token"]');
 
     travelStyle.value = state.style;
+    tripStart.value = INITIAL_TRIP.start_date || "";
+    tripEnd.value = INITIAL_TRIP.end_date || "";
+    sourceShareTokenInput.value = INITIAL_TRIP.source_share_token || "";
 
     const currencyExists = Array.from(
         displayCurrency.options
@@ -1093,6 +1171,18 @@
         dataReportCity = null;
     }
 
+    function openSaveAuthModal() {
+        saveAuthCopy.textContent = `${tripTotal.textContent} is ready. Create a free account or log in to save it — your route will still be here when you return.`;
+        saveAuthModal.hidden = false;
+        document.body.style.overflow = "hidden";
+        trackAnalyticsMilestone("save_auth_prompt_opened");
+    }
+
+    function closeSaveAuthModal() {
+        saveAuthModal.hidden = true;
+        document.body.style.overflow = "";
+    }
+
     function showDataReportToast(message) {
         dataReportToast.textContent = message;
         dataReportToast.hidden = false;
@@ -1204,7 +1294,12 @@
             row.querySelector('[data-action="up"]').addEventListener("click", () => moveCity(index, -1));
             row.querySelector('[data-action="down"]').addEventListener("click", () => moveCity(index, 1));
             row.querySelector('[data-action="remove"]').addEventListener("click", () => removeCity(index));
-            row.querySelector('[data-action="report"]').addEventListener("click", () => openDataReportModal(city));
+            const reportButton = row.querySelector('[data-action="report"]');
+            if (IS_AUTHENTICATED) {
+                reportButton.addEventListener("click", () => openDataReportModal(city));
+            } else {
+                reportButton.hidden = true;
+            }
 
             routeList.appendChild(row);
 
@@ -1311,6 +1406,13 @@
             ? (datesInvalid() ? "Fix the date range" : "Add a city to save")
             : `${state.route.length} ${state.route.length === 1 ? "stop" : "stops"} ready`;
 
+        budgetReady.classList.toggle("show", !saveDisabled);
+        if (!saveDisabled) {
+            budgetReadyCopy.textContent = `${money(total)} for ${nights} ${nights === 1 ? "night" : "nights"}. Save it now or add another destination.`;
+            trackAnalyticsMilestone("first_budget_generated");
+            trackAnalyticsMilestone("save_cta_viewed");
+        }
+
         renderDateFit(nights);
         syncPayload();
     }
@@ -1345,6 +1447,40 @@
         dateFit.classList.add("show");
     }
 
+    function plannerDraft() {
+        return {
+            route: state.route.map(city => ({ city_id: city.id, nights: city.nights })),
+            travel_style: state.style,
+            display_currency: state.currency,
+            start_date: tripStart.value,
+            end_date: tripEnd.value,
+            source_share_token: sourceShareTokenInput.value,
+            transport: {
+                arrival: { ...state.arrivalTransport },
+                departure: { ...state.departureTransport },
+                legs: state.route.slice(0, -1).map((city, index) => {
+                    const nextCity = state.route[index + 1];
+                    return {
+                        position: index + 1,
+                        from_city_id: city.id,
+                        to_city_id: nextCity.id,
+                        ...transportLegEntry(city, nextCity)
+                    };
+                })
+            }
+        };
+    }
+
+    function persistDraft() {
+        if (IS_EDITING) return;
+        try {
+            if (state.route.length) localStorage.setItem(DRAFT_KEY, JSON.stringify(plannerDraft()));
+            else localStorage.removeItem(DRAFT_KEY);
+        } catch (error) {
+            // Planning must still work when storage is unavailable or full.
+        }
+    }
+
     function syncPayload() {
         routeJson.value = JSON.stringify(
             state.route.map((city, index) => ({
@@ -1374,6 +1510,7 @@
 
         travelStyleHidden.value = state.style;
         displayCurrencyHidden.value = state.currency;
+        persistDraft();
     }
 
     function render() {
@@ -1399,14 +1536,23 @@
     dataReportModal.addEventListener("click", event => {
         if (event.target === dataReportModal) closeDataReportModal();
     });
+    saveAuthClose.addEventListener("click", closeSaveAuthModal);
+    saveAuthModal.addEventListener("click", event => {
+        if (event.target === saveAuthModal) closeSaveAuthModal();
+    });
     document.addEventListener("keydown", event => {
         if (event.key === "Escape" && !dataReportModal.hidden) closeDataReportModal();
+        if (event.key === "Escape" && !saveAuthModal.hidden) closeSaveAuthModal();
     });
 
     searchInput.addEventListener("input", event => renderSearchResults(event.target.value));
 
     searchInput.addEventListener("focus", () => {
         if (searchInput.value.trim()) renderSearchResults(searchInput.value);
+    });
+    addAnotherDestination.addEventListener("click", () => {
+        searchInput.scrollIntoView({ behavior: "smooth", block: "center" });
+        window.setTimeout(() => searchInput.focus(), 250);
     });
 
     document.addEventListener("click", event => {
@@ -1442,12 +1588,22 @@
             return;
         }
 
+        trackAnalyticsMilestone("save_cta_clicked");
+
+        if (!IS_AUTHENTICATED) {
+            event.preventDefault();
+            persistDraft();
+            openSaveAuthModal();
+            return;
+        }
+
         if (submitting) {
             event.preventDefault();
             return;
         }
 
         submitting = true;
+        if (!IS_EDITING) localStorage.removeItem(DRAFT_KEY);
         saveButton.disabled = true;
         mobileSaveButton.disabled = true;
         saveButton.classList.add("is-submitting");
@@ -1458,6 +1614,9 @@
         mobileSaveButton.textContent = saveButton.textContent;
     });
 
+    if (restoredLocalDraft && IS_AUTHENTICATED) {
+        trackAnalyticsMilestone("draft_restored_after_auth");
+    }
     render();
 })();
 </script>

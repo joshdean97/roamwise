@@ -219,6 +219,12 @@
     color: white;
 }
 
+.explore-action.secondary {
+    border: 1px solid #d6ddd4;
+    background: white;
+    color: #173b2d;
+}
+
 .explore-save-button {
     border: 1px solid #d6ddd4;
     background: white;

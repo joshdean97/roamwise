@@ -492,7 +492,7 @@
 
             <a
                 class="use-route-button"
-                href="{% if current_user.is_authenticated %}{{ url_for('main.plan_trip', use=trip.share_token) }}{% else %}{{ url_for('auth.login', next=url_for('main.plan_trip', use=trip.share_token)) }}{% endif %}"
+                href="{{ url_for('main.home', use=trip.share_token) }}"
             >
                 Use this route →
             </a>

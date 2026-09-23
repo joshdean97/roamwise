@@ -217,6 +217,11 @@ def analytics_dashboard():
         ("shared_route_saved", "Actual route uses"),
         ("account_created", "Signups"),
         ("planner_opened", "Planner opens"),
+        ("first_budget_generated", "First budgets generated"),
+        ("save_cta_viewed", "Save CTAs viewed"),
+        ("save_cta_clicked", "Save CTAs clicked"),
+        ("save_auth_prompt_opened", "Save auth prompts"),
+        ("draft_restored_after_auth", "Drafts restored after auth"),
         ("dates_added", "Date ranges added"),
         ("transport_started", "Transport entries started"),
         ("save_attempted", "Save attempts"),
@@ -226,6 +231,7 @@ def analytics_dashboard():
         ("public_share_enabled", "Public shares"),
         ("public_trip_viewed", "Public Print views"),
         ("shared_route_loaded", "Routes reused"),
+        ("route_template_saved", "Route templates saved"),
     ]
     metric_cards = [
         {
@@ -250,7 +256,9 @@ def analytics_dashboard():
         }
 
     signup_users = users_for_event("account_created")
+    verified_users = signup_users & users_for_event("email_confirmed")
     started_users = signup_users & users_for_event("planner_opened")
+    budget_users = signup_users & users_for_event("first_budget_generated")
     first_city_users = signup_users & users_for_event("first_city_added")
     second_city_users = signup_users & users_for_event("second_city_added")
     saved_users = signup_users & users_for_event("trip_saved")
@@ -265,11 +273,17 @@ def analytics_dashboard():
 
     funnel = {
         "signup_users": len(signup_users),
+        "verified_users": len(verified_users),
         "started_users": len(started_users),
+        "budget_users": len(budget_users),
         "first_city_users": len(first_city_users),
         "second_city_users": len(second_city_users),
         "saved_users": len(saved_users),
         "shared_users": len(shared_users),
+        "signup_to_verified": signup_rate(verified_users),
+        "verified_to_started": step_rate(started_users, verified_users),
+        "started_to_budget": step_rate(budget_users, started_users),
+        "budget_to_saved": step_rate(saved_users, budget_users),
         "signup_to_started": signup_rate(started_users),
         "started_to_first_city": step_rate(first_city_users, started_users),
         "first_to_second_city": step_rate(second_city_users, first_city_users),

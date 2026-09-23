@@ -21,7 +21,7 @@ from flask import (
 from flask_login import current_user, login_required
 from sqlalchemy.orm import joinedload
 
-from core.analytics import capture_event
+from core.analytics import analytics_visitor_id, capture_event
 from core.extensions import db, limiter
 from core.fx import DISPLAY_CURRENCIES, get_exchange_rates
 from core.models.city import City
@@ -806,19 +806,57 @@ def render_planner(
 
     return render_template(
         "trips/plan_trip.html",
-        city_options=build_city_options(
-            cities
-        ),
+        city_options=build_city_options(cities),
         exchange_rates=exchange_rates,
         display_currency=selected_currency,
         initial_trip=initial_trip,
         form_action=form_action,
         submit_label=submit_label,
         is_editing=is_editing,
-        fx_limited=not SUPPORTED_DISPLAY_CURRENCIES.issubset(
-            set(exchange_rates)
-        ),
+        fx_limited=not SUPPORTED_DISPLAY_CURRENCIES.issubset(set(exchange_rates)),
     )
+
+
+def planner_state_for_get(exchange_rates):
+    initial_state = empty_initial_state()
+    use_token = (request.args.get("use") or "").strip()
+    visitor_id = analytics_visitor_id()
+
+    if use_token:
+        source_trip = get_public_trip_or_404(use_token)
+        initial_state = trip_copy_state(source_trip)
+
+        if source_trip.display_currency not in exchange_rates:
+            exchange_rates[source_trip.display_currency] = float(source_trip.fx_rate)
+
+        event_properties = {
+            "stop_count": len(source_trip.stops),
+            "visitor_id": visitor_id,
+        }
+        capture_event(
+            "shared_route_loaded",
+            current_user.id if current_user.is_authenticated else None,
+            properties=event_properties,
+        )
+        capture_event(
+            "route_template_loaded",
+            current_user.id if current_user.is_authenticated else None,
+            properties=event_properties,
+        )
+        flash(
+            "Route loaded. Change anything you like, then save it as your own budget.",
+            "success",
+        )
+
+    capture_event(
+        "planner_opened",
+        current_user.id if current_user.is_authenticated else None,
+        properties={
+            "source": "shared" if use_token else "direct",
+            "visitor_id": visitor_id,
+        },
+    )
+    return initial_state
 
 
 
@@ -1031,8 +1069,10 @@ def build_share_payload(trip):
 
 @main_bp.route("/")
 def home():
+    visitor_id = analytics_visitor_id()
     properties = {
         "authenticated": bool(current_user.is_authenticated),
+        "visitor_id": visitor_id,
     }
     for key in ("utm_source", "utm_medium", "utm_campaign"):
         cleaned = _safe_campaign_value(request.args.get(key))
@@ -1048,7 +1088,14 @@ def home():
         current_user.id if current_user.is_authenticated else None,
         properties=properties,
     )
-    return render_template("index.html")
+    exchange_rates = dict(get_exchange_rates())
+    initial_state = planner_state_for_get(exchange_rates)
+    return render_planner(
+        exchange_rates=exchange_rates,
+        initial_trip=initial_state,
+        form_action=url_for("main.plan_trip"),
+        submit_label="Save this budget",
+    )
 
 
 @main_bp.get("/how-costs-work")
@@ -1153,7 +1200,6 @@ def report_city_data():
 
 
 @main_bp.post("/analytics/event")
-@login_required
 @limiter.limit("90 per minute")
 def analytics_event():
     payload = request.get_json(silent=True) or {}
@@ -1165,12 +1211,21 @@ def analytics_event():
         "dates_added",
         "transport_started",
         "share_card_downloaded",
+        "first_budget_generated",
+        "save_cta_viewed",
+        "save_cta_clicked",
+        "save_auth_prompt_opened",
+        "draft_restored_after_auth",
     }
 
     if event_name not in allowed_client_events:
         abort(400)
 
-    capture_event(event_name, current_user.id)
+    capture_event(
+        event_name,
+        current_user.id if current_user.is_authenticated else None,
+        properties={"visitor_id": analytics_visitor_id()},
+    )
     return {"ok": True}, 200
 
 
@@ -1304,7 +1359,6 @@ def toggle_trip_save(share_token):
     "/plan-trip",
     methods=["GET", "POST"],
 )
-@login_required
 def plan_trip():
     exchange_rates = dict(
         get_exchange_rates()
@@ -1312,50 +1366,19 @@ def plan_trip():
     initial_state = empty_initial_state()
 
     if request.method == "GET":
-        use_token = (
-            request.args.get("use")
-            or ""
-        ).strip()
-
-        if use_token:
-            source_trip = get_public_trip_or_404(
-                use_token
-            )
-
-            initial_state = trip_copy_state(
-                source_trip
-            )
-
-            if (
-                source_trip.display_currency
-                not in exchange_rates
-            ):
-                exchange_rates[
-                    source_trip.display_currency
-                ] = float(
-                    source_trip.fx_rate
-                )
-
-            capture_event(
-                "shared_route_loaded",
-                current_user.id,
-                properties={"stop_count": len(source_trip.stops)},
-            )
-
-            flash(
-                "Shared route loaded. Choose your dates or make any "
-                "changes, then save it as your own trip.",
-                "success",
-            )
-
-        capture_event(
-            "planner_opened",
-            current_user.id,
-            properties={"source": "shared" if use_token else "direct"},
-        )
+        initial_state = planner_state_for_get(exchange_rates)
 
     if request.method == "POST":
         initial_state = planner_state_from_request()
+
+        if not current_user.is_authenticated:
+            capture_event(
+                "save_auth_prompt_opened",
+                None,
+                properties={"visitor_id": analytics_visitor_id()},
+            )
+            flash("Log in or create an account to save your budget.", "info")
+            return redirect(url_for("auth.login", next=url_for("main.home")))
 
         capture_event(
             "save_attempted",
@@ -1363,6 +1386,7 @@ def plan_trip():
             properties={
                 "stop_count": len(initial_state.get("route") or []),
                 "source": "shared" if initial_state.get("source_share_token") else "direct",
+                "visitor_id": analytics_visitor_id(),
             },
         )
 
@@ -1410,6 +1434,16 @@ def plan_trip():
                         "source_trip_id": source_trip.id,
                         "copied_trip_id": trip.id,
                         "first_use_for_source": first_use_for_source,
+                        "visitor_id": analytics_visitor_id(),
+                    },
+                )
+                capture_event(
+                    "route_template_saved",
+                    current_user.id,
+                    properties={
+                        "source_trip_id": source_trip.id,
+                        "copied_trip_id": trip.id,
+                        "visitor_id": analytics_visitor_id(),
                     },
                 )
 
@@ -1429,6 +1463,7 @@ def plan_trip():
                             and all((leg.mode or "").strip() for leg in trip.legs)
                         )
                     ),
+                    "visitor_id": analytics_visitor_id(),
                 },
             )
 
@@ -1438,7 +1473,7 @@ def plan_trip():
             )
 
             return redirect(
-                url_for("main.share_trip", trip_id=trip.id)
+                url_for("main.share_trip", trip_id=trip.id, saved=1)
             )
 
         except (
@@ -1480,7 +1515,7 @@ def plan_trip():
         form_action=url_for(
             "main.plan_trip"
         ),
-        submit_label="Save trip",
+        submit_label="Save this budget",
     )
 
 @main_bp.route(

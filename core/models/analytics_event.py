@@ -6,7 +6,8 @@ class AnalyticsEvent(db.Model):
 
     We intentionally do not store IP addresses, user agents, emails or usernames
     here. Authenticated events may contain the internal LeavePrints user id so we
-    can measure activation funnels; anonymous page views have no persistent id.
+    can measure activation funnels. Anonymous events carry only a random,
+    first-party browser-session id in their properties.
     """
 
     __tablename__ = "analytics_event"

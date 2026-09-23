@@ -45,19 +45,19 @@
 
     <section class="analytics-section analytics-funnel-section">
         <div class="analytics-section-head">
-            <div><span>Planner activation</span><h2>Signup → open → build → save → share</h2></div>
+            <div><span>Planner activation</span><h2>Signup → verify → open → budget → save → share</h2></div>
             <small>Unique customer accounts · step-to-step conversion</small>
         </div>
         <div class="funnel-grid">
             <article><span>01</span><strong>{{ funnel.signup_users }}</strong><p>Signed up</p></article>
-            <article><span>02</span><strong>{{ funnel.started_users }}</strong><p>Opened the planner</p><em>{{ "%.1f"|format(funnel.signup_to_started) }}% of signups</em></article>
-            <article><span>03</span><strong>{{ funnel.first_city_users }}</strong><p>Added first city</p><em>{{ "%.1f"|format(funnel.started_to_first_city) }}% of opens</em></article>
-            <article><span>04</span><strong>{{ funnel.second_city_users }}</strong><p>Added second city</p><em>{{ "%.1f"|format(funnel.first_to_second_city) }}% of builders</em></article>
-            <article><span>05</span><strong>{{ funnel.saved_users }}</strong><p>Saved a trip</p><em>{{ "%.1f"|format(funnel.second_city_to_saved) }}% with 2+ cities</em></article>
+            <article><span>02</span><strong>{{ funnel.verified_users }}</strong><p>Verified email</p><em>{{ "%.1f"|format(funnel.signup_to_verified) }}% of signups</em></article>
+            <article><span>03</span><strong>{{ funnel.started_users }}</strong><p>Opened the planner</p><em>{{ "%.1f"|format(funnel.verified_to_started) }}% of verified</em></article>
+            <article><span>04</span><strong>{{ funnel.budget_users }}</strong><p>Generated first budget</p><em>{{ "%.1f"|format(funnel.started_to_budget) }}% of opens</em></article>
+            <article><span>05</span><strong>{{ funnel.saved_users }}</strong><p>Saved a trip</p><em>{{ "%.1f"|format(funnel.budget_to_saved) }}% with a budget</em></article>
             <article><span>06</span><strong>{{ funnel.shared_users }}</strong><p>Made a Print public</p><em>{{ "%.1f"|format(funnel.saved_to_shared) }}% of savers</em></article>
         </div>
         <div class="analytics-note">
-            <strong>Discovery is a separate loop:</strong> {{ discovery_adoption.viewed_users }} signup-cohort user{{ '' if discovery_adoption.viewed_users == 1 else 's' }} viewed a public Print ({{ "%.1f"|format(discovery_adoption.signup_to_viewed) }}%). It is not treated as a required planner step.
+            <strong>Discovery is a separate loop:</strong> {{ discovery_adoption.viewed_users }} signup-cohort user{{ '' if discovery_adoption.viewed_users == 1 else 's' }} viewed a public Print ({{ "%.1f"|format(discovery_adoption.signup_to_viewed) }}%). Multi-city building is also a branch, not a required save step. New budget and draft-restoration events populate from this release onward.
         </div>
     </section>
 
