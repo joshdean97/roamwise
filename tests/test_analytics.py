@@ -122,12 +122,19 @@ def test_capture_event_deduplicates_immediate_authenticated_retries(app):
         assert AnalyticsEvent.query.count() == 1
 
 
-def test_client_milestone_endpoint_requires_login(app, client):
+def test_client_milestone_endpoint_tracks_anonymous_and_authenticated_users(app, client):
     response = client.post(
         "/analytics/event",
         json={"event": "first_city_added"},
     )
-    assert response.status_code in {302, 401}
+    assert response.status_code == 200
+
+    with app.app_context():
+        anonymous_event = AnalyticsEvent.query.filter_by(
+            name="first_city_added",
+            user_id=None,
+        ).one()
+        assert anonymous_event.properties["visitor_id"]
 
     user_id = login_test_user(client, app)
     response = client.post(
@@ -137,7 +144,10 @@ def test_client_milestone_endpoint_requires_login(app, client):
     assert response.status_code == 200
 
     with app.app_context():
-        event = AnalyticsEvent.query.filter_by(name="first_city_added").one()
+        event = AnalyticsEvent.query.filter(
+            AnalyticsEvent.name == "first_city_added",
+            AnalyticsEvent.user_id.isnot(None),
+        ).one()
         assert event.user_id == user_id
 
 
@@ -154,7 +164,32 @@ def test_landing_event_keeps_sanitised_campaign_attribution(app, client):
             "utm_source": "instagram",
             "utm_medium": "bio",
             "utm_campaign": "romereel",
+            "visitor_id": event.properties["visitor_id"],
         }
+        assert event.properties["visitor_id"]
+
+
+def test_homepage_is_the_anonymous_planner(client):
+    response = client.get("/")
+    assert response.status_code == 200
+    assert b"Build the route. Know the damage." in response.data
+    assert b"Save this budget" in response.data
+    assert b"You only need an account when you save" in response.data
+
+
+def test_anonymous_server_side_save_falls_back_to_login(client):
+    response = client.post(
+        "/plan-trip",
+        data={
+            "route_json": "[]",
+            "transport_json": "{}",
+            "travel_style": "balanced",
+            "display_currency": "GBP",
+        },
+    )
+    assert response.status_code == 302
+    assert "/auth/login" in response.headers["Location"]
+    assert "next=/" in response.headers["Location"]
 
 
 def test_admin_analytics_page_is_available(app, client):

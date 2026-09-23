@@ -17,7 +17,7 @@ from itsdangerous import BadSignature, SignatureExpired, URLSafeTimedSerializer
 from sqlalchemy import func
 from sqlalchemy.exc import IntegrityError
 
-from core.analytics import capture_event
+from core.analytics import analytics_visitor_id, capture_event
 from core.extensions import db, limiter
 from core.mail import (
     send_account_deleted_email,
@@ -199,7 +199,11 @@ def login():
                 return redirect(url_for("auth.resend_confirmation", email=email))
 
             login_user(user)
-            capture_event("login_completed", user.id)
+            capture_event(
+                "login_completed",
+                user.id,
+                properties={"visitor_id": analytics_visitor_id()},
+            )
             flash("Login successful.", "success")
             next_path = _safe_next_path(
                 request.form.get("next") or request.args.get("next")
@@ -450,7 +454,11 @@ def register():
             flash("Username or email already exists.", "error")
             return redirect(url_for("auth.register"))
 
-        capture_event("account_created", new_user.id)
+        capture_event(
+            "account_created",
+            new_user.id,
+            properties={"visitor_id": analytics_visitor_id()},
+        )
 
         try:
             _send_confirmation_for(new_user)
@@ -491,7 +499,11 @@ def confirm_email(token):
 
     user.email_confirmed_at = datetime.now(timezone.utc)
     db.session.commit()
-    capture_event("email_confirmed", user.id)
+    capture_event(
+        "email_confirmed",
+        user.id,
+        properties={"visitor_id": analytics_visitor_id()},
+    )
 
     flash("Email confirmed. Welcome to LeavePrints — you can log in now.", "success")
     return redirect(url_for("auth.login"))

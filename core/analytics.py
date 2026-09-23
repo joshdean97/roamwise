@@ -1,6 +1,8 @@
 from datetime import datetime, timedelta, timezone
 
-from flask import current_app
+import secrets
+
+from flask import current_app, session
 
 from core.extensions import db
 from core.models.analytics_event import AnalyticsEvent
@@ -12,6 +14,11 @@ ALLOWED_EVENTS = {
     "email_confirmed",
     "login_completed",
     "planner_opened",
+    "first_budget_generated",
+    "save_cta_viewed",
+    "save_cta_clicked",
+    "save_auth_prompt_opened",
+    "draft_restored_after_auth",
     "first_city_added",
     "second_city_added",
     "dates_added",
@@ -19,6 +26,8 @@ ALLOWED_EVENTS = {
     "save_attempted",
     "save_failed",
     "shared_route_loaded",
+    "route_template_loaded",
+    "route_template_saved",
     "trip_saved",
     "trip_edited",
     "share_page_viewed",
@@ -34,6 +43,19 @@ ALLOWED_EVENTS = {
     "explore_trip_opened",
     "explore_viewed",
 }
+
+
+def analytics_visitor_id():
+    """Return a short, first-party browser-session identifier.
+
+    It lets anonymous planner actions be joined to the login/save that follows
+    without collecting an IP address, user agent, email address or fingerprint.
+    """
+    visitor_id = session.get("analytics_visitor_id")
+    if not visitor_id:
+        visitor_id = secrets.token_urlsafe(12)
+        session["analytics_visitor_id"] = visitor_id
+    return visitor_id
 
 
 def _clean_properties(properties):

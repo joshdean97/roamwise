@@ -5,7 +5,7 @@
     <header class="legal-hero">
         <span class="legal-kicker">Legal, but readable</span>
         <h1>Privacy Policy</h1>
-        <p class="legal-updated">Last updated: 5 September 2026</p>
+        <p class="legal-updated">Last updated: 23 September 2026</p>
         <p>
             This notice explains how LeavePrints uses personal data when you visit the site,
             create an account, plan a trip or share a public Print.
@@ -88,8 +88,9 @@
                     understand whether the beta is useful — for example, opening the planner, adding
                     the first or second city, saving a trip, enabling a public Print or loading a
                     shared route. Authenticated events can be associated with your internal user id.
-                    Anonymous landing-page and public-Print views are counted without a persistent
-                    visitor identifier. When present, we also record campaign tags from LeavePrints
+                    For anonymous planner sessions, we use a random first-party session identifier to
+                    understand the path from building a budget to saving it. It is not a browser
+                    fingerprint and is not based on your identity. When present, we also record campaign tags from LeavePrints
                     links and the referring site's hostname (not the full referring URL) to understand
                     which content sends useful traffic. The analytics event store does not record your email,
                     username, IP address, browser fingerprint or free-form trip notes.
@@ -209,17 +210,17 @@
             <section id="cookies">
                 <h2>6. Cookies and similar technologies</h2>
                 <p>
-                    LeavePrints currently uses first-party session and security storage needed for
-                    functions such as login state, form security and delivering the service you ask
-                    for. We do not currently use advertising or behavioural-tracking cookies.
+                    LeavePrints uses first-party session and security storage for login state, form
+                    security and a random analytics session identifier. The anonymous planner also
+                    stores an unfinished draft in your browser so it can survive login and accidental
+                    navigation. The draft is removed after a successful save. We do not use advertising
+                    or behavioural-tracking cookies.
                 </p>
                 <p>
-                    Product analytics is recorded server-side in the LeavePrints database and does not
-                    add an analytics cookie, browser-storage identifier or third-party analytics script.
-                    Because the current browser storage remains limited to essential service/security
-                    functions, LeavePrints does not currently show a cookie-consent banner. If we later
-                    add non-essential tracking technologies, we will update this notice and introduce
-                    any consent controls required at that time.
+                    Product analytics is recorded server-side and no third-party analytics script is
+                    loaded. Planner draft storage exists only to provide the save-after-login flow you
+                    request. If we later add advertising, cross-site tracking or other non-essential
+                    technologies, we will update this notice and introduce any required consent controls.
                 </p>
             </section>
 

@@ -40,7 +40,7 @@
         <ul id="siteNavMenu">
             {% if current_user.is_authenticated %}
                 <li><a href="{{ url_for('main.explore') }}">Explore</a></li>
-                <li><a href="{{ url_for('main.plan_trip') }}">Plan A Trip</a></li>
+                <li><a href="{{ url_for('main.home') }}">Plan A Trip</a></li>
                 <li><a href="{{ url_for('main.my_trips') }}">My Trips</a></li>
                 <li><a href="{{ url_for('auth.account') }}">Account</a></li>
                 <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
@@ -49,31 +49,22 @@
                     <li><a href="{{ url_for('admin.dashboard') }}">Admin</a></li>
                 {% endif %}
             {% else %}
-                {% if request.endpoint == 'main.home' %}
-                    <li class="lp-nav-only"><a href="{{ url_for('main.explore') }}">Explore</a></li>
-                    <li class="lp-nav-only"><a href="#features">Features</a></li>
-                    <li class="lp-nav-only"><a href="#how-it-works">How it works</a></li>
-                    <li><a href="{{ url_for('auth.login') }}">Login</a></li>
-                    <li><a class="lp-nav-cta" href="{{ url_for('auth.register') }}">Start free</a></li>
-                {% else %}
-                    <li><a href="{{ url_for('main.home') }}">Home</a></li>
-                    <li><a href="{{ url_for('main.explore') }}">Explore</a></li>
-                    <li><a href="{{ url_for('auth.login') }}">Login</a></li>
-                    <li><a href="{{ url_for('auth.register') }}">Register</a></li>
-                {% endif %}
+                <li><a href="{{ url_for('main.home') }}">Plan A Trip</a></li>
+                <li><a href="{{ url_for('main.explore') }}">Explore</a></li>
+                <li><a href="{{ url_for('main.how_costs_work') }}">How costs work</a></li>
+                <li><a href="{{ url_for('auth.login') }}">Login</a></li>
+                <li><a class="lp-nav-cta" href="{{ url_for('auth.register') }}">Start free</a></li>
             {% endif %}
         </ul>
     </nav>
     {% block content %}{% endblock %}
-    {% if request.endpoint != 'main.home' %}
-        <footer class="site-legal-footer">
-            <span>© 2026 LeavePrints</span>
-            <a href="{{ url_for('main.privacy') }}">Privacy</a>
-            <a href="{{ url_for('main.terms') }}">Terms</a>
-            <a href="{{ url_for('main.how_costs_work') }}">How costs work</a>
-            <a href="mailto:hello@leaveprints.com">Contact</a>
-        </footer>
-    {% endif %}
+    <footer class="site-legal-footer">
+        <span>© 2026 LeavePrints</span>
+        <a href="{{ url_for('main.privacy') }}">Privacy</a>
+        <a href="{{ url_for('main.terms') }}">Terms</a>
+        <a href="{{ url_for('main.how_costs_work') }}">How costs work</a>
+        <a href="mailto:hello@leaveprints.com">Contact</a>
+    </footer>
     <script src="{{ url_for('static', filename='mobile-nav.js') }}" defer></script>
 </body>
 </html>

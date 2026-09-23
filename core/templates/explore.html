@@ -70,7 +70,8 @@
                     </a>
 
                     <div class="explore-card-actions">
-                        <a class="explore-action" href="{{ url_for('main.public_trip', share_token=trip.share_token, source='explore') }}">View Print →</a>
+                        <a class="explore-action" href="{{ url_for('main.home', use=trip.share_token) }}">Use this route →</a>
+                        <a class="explore-action secondary" href="{{ url_for('main.public_trip', share_token=trip.share_token, source='explore') }}">View Print</a>
 
                         {% if current_user.is_authenticated and current_user.id != trip.user_id %}
                             <form method="post" action="{{ url_for('main.toggle_trip_save', share_token=trip.share_token) }}">

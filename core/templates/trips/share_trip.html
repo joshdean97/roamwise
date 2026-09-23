@@ -363,10 +363,10 @@
 
 
 <aside class="share-controls">
-    <h2>Ready to post</h2>
+    <h2>{% if request.args.get('saved') == '1' %}Your trip is saved. What next?{% else %}Ready to post{% endif %}</h2>
     <p>
-        The card uses the saved trip prices and saved exchange rate,
-        so it matches the version shown in My Trips.
+        Publish it to Explore, download the share card, or keep it private.
+        Nothing goes public unless you choose it.
     </p>
 
     {% if share_data.is_public %}
@@ -455,7 +455,7 @@
                     class="share-visibility-button"
                     type="submit"
                 >
-                    Create public trip link
+                    Publish to Explore
                 </button>
             </form>
         </div>
@@ -469,6 +469,10 @@
     >
         Download PNG
     </button>
+
+    <a class="share-visibility-button unshare" href="{{ url_for('main.my_trips') }}" style="display:block;text-align:center;text-decoration:none;">
+        Keep private
+    </a>
 
     <button
         class="share-button secondary"
@@ -515,6 +519,9 @@
 
 <script>
 (() => {
+    {% if request.args.get('saved') == '1' %}
+    try { localStorage.removeItem("leaveprints.planner-draft.v1"); } catch (error) {}
+    {% endif %}
     const data = {{ share_data|tojson }};
 
     const ANALYTICS_URL = {{ url_for('main.analytics_event')|tojson }};
