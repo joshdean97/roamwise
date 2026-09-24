@@ -79,13 +79,13 @@
 
         <div class="auth-footer">
             <span>New to LeavePrints?</span>
-            <a href="{{ url_for('auth.register') }}">
+            <a href="{{ url_for('auth.register', next=login_next) }}">
                 Create an account
             </a>
         </div>
         <div class="auth-footer">
             <span>Didn't get your confirmation email?</span>
-            <a href="{{ url_for('auth.resend_confirmation') }}">
+            <a href="{{ url_for('auth.resend_confirmation', next=login_next) }}">
                 Resend it
             </a>
         </div>

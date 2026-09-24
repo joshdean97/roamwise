@@ -25,6 +25,10 @@ admin_bp = Blueprint(
     url_prefix="/admin"
 )
 
+# The anonymous planner became the homepage at this release. Earlier events do
+# not share its visitor-linked funnel semantics and must not be mixed into it.
+PLANNER_FIRST_RELEASE_AT = datetime(2026, 9, 24, 3, 30)
+
 
 # ============================================================
 # Admin dashboard
@@ -257,13 +261,8 @@ def analytics_dashboard():
 
     signup_users = users_for_event("account_created")
     verified_users = signup_users & users_for_event("email_confirmed")
-    started_users = signup_users & users_for_event("planner_opened")
-    budget_users = signup_users & users_for_event("first_budget_generated")
-    first_city_users = signup_users & users_for_event("first_city_added")
-    second_city_users = signup_users & users_for_event("second_city_added")
     saved_users = signup_users & users_for_event("trip_saved")
     shared_users = signup_users & users_for_event("public_share_enabled")
-    viewed_users = signup_users & users_for_event("public_trip_viewed")
 
     def signup_rate(users):
         return len(users) / len(signup_users) * 100 if signup_users else 0
@@ -271,30 +270,67 @@ def analytics_dashboard():
     def step_rate(users, previous_users):
         return len(users) / len(previous_users) * 100 if previous_users else 0
 
-    funnel = {
+    account_activation = {
         "signup_users": len(signup_users),
         "verified_users": len(verified_users),
-        "started_users": len(started_users),
-        "budget_users": len(budget_users),
-        "first_city_users": len(first_city_users),
-        "second_city_users": len(second_city_users),
         "saved_users": len(saved_users),
         "shared_users": len(shared_users),
         "signup_to_verified": signup_rate(verified_users),
-        "verified_to_started": step_rate(started_users, verified_users),
-        "started_to_budget": step_rate(budget_users, started_users),
-        "budget_to_saved": step_rate(saved_users, budget_users),
-        "signup_to_started": signup_rate(started_users),
-        "started_to_first_city": step_rate(first_city_users, started_users),
-        "first_to_second_city": step_rate(second_city_users, first_city_users),
-        "second_city_to_saved": step_rate(saved_users, second_city_users),
         "saved_to_shared": step_rate(shared_users, saved_users),
     }
-    discovery_adoption = {
-        "viewed_users": len(viewed_users),
-        "signup_to_viewed": signup_rate(viewed_users),
-    }
 
+    funnel_event_names = {
+        "landing_viewed",
+        "planner_opened",
+        "first_budget_generated",
+        "save_cta_clicked",
+        "save_auth_prompt_opened",
+        "account_created",
+        "trip_saved",
+    }
+    funnel_events = external_events(AnalyticsEvent.query).filter(
+        AnalyticsEvent.created_at >= PLANNER_FIRST_RELEASE_AT,
+        AnalyticsEvent.name.in_(funnel_event_names),
+    ).all()
+
+    identities_by_event = defaultdict(set)
+    for event in funnel_events:
+        properties = event.properties or {}
+        visitor_id = properties.get("visitor_id")
+        identity = (
+            f"visitor:{visitor_id}"
+            if visitor_id
+            else f"user:{event.user_id}"
+            if event.user_id is not None
+            else None
+        )
+        if identity:
+            identities_by_event[event.name].add(identity)
+
+    visitor_cohort = (
+        identities_by_event["landing_viewed"]
+        | identities_by_event["planner_opened"]
+    )
+    budget_cohort = visitor_cohort & identities_by_event["first_budget_generated"]
+    save_intent_cohort = budget_cohort & identities_by_event["save_cta_clicked"]
+    auth_prompt_cohort = save_intent_cohort & identities_by_event["save_auth_prompt_opened"]
+    signup_cohort = auth_prompt_cohort & identities_by_event["account_created"]
+    saved_cohort = signup_cohort & identities_by_event["trip_saved"]
+
+    funnel = {
+        "visitors": len(visitor_cohort),
+        "budgets": len(budget_cohort),
+        "save_intents": len(save_intent_cohort),
+        "auth_prompts": len(auth_prompt_cohort),
+        "signups": len(signup_cohort),
+        "saves": len(saved_cohort),
+        "visitor_to_budget": step_rate(budget_cohort, visitor_cohort),
+        "budget_to_intent": step_rate(save_intent_cohort, budget_cohort),
+        "intent_to_prompt": step_rate(auth_prompt_cohort, save_intent_cohort),
+        "prompt_to_signup": step_rate(signup_cohort, auth_prompt_cohort),
+        "signup_to_save": step_rate(saved_cohort, signup_cohort),
+        "started_at": PLANNER_FIRST_RELEASE_AT,
+    }
     acquisition_sources = Counter()
     landing_events = external_events(AnalyticsEvent.query).filter(
         AnalyticsEvent.name == "landing_viewed",
@@ -563,7 +599,7 @@ def analytics_dashboard():
         event_counts_all=event_counts_all,
         event_counts_30=event_counts_30,
         funnel=funnel,
-        discovery_adoption=discovery_adoption,
+        account_activation=account_activation,
         acquisition_sources=acquisition_sources.most_common(10),
         planner_activation=planner_activation,
         has_previous_period=has_previous_period,

@@ -122,7 +122,7 @@ def test_capture_event_deduplicates_immediate_authenticated_retries(app):
         assert AnalyticsEvent.query.count() == 1
 
 
-def test_client_milestone_endpoint_tracks_anonymous_and_authenticated_users(app, client):
+def test_client_milestone_endpoint_deduplicates_same_visitor_across_auth(app, client):
     response = client.post(
         "/analytics/event",
         json={"event": "first_city_added"},
@@ -136,7 +136,7 @@ def test_client_milestone_endpoint_tracks_anonymous_and_authenticated_users(app,
         ).one()
         assert anonymous_event.properties["visitor_id"]
 
-    user_id = login_test_user(client, app)
+    login_test_user(client, app)
     response = client.post(
         "/analytics/event",
         json={"event": "first_city_added"},
@@ -144,11 +144,9 @@ def test_client_milestone_endpoint_tracks_anonymous_and_authenticated_users(app,
     assert response.status_code == 200
 
     with app.app_context():
-        event = AnalyticsEvent.query.filter(
-            AnalyticsEvent.name == "first_city_added",
-            AnalyticsEvent.user_id.isnot(None),
-        ).one()
-        assert event.user_id == user_id
+        events = AnalyticsEvent.query.filter_by(name="first_city_added").all()
+        assert len(events) == 1
+        assert events[0].user_id is None
 
 
 def test_landing_event_keeps_sanitised_campaign_attribution(app, client):
@@ -177,6 +175,26 @@ def test_homepage_is_the_anonymous_planner(client):
     assert b"You only need an account when you save" in response.data
 
 
+def test_planner_places_full_width_destination_action_below_route(client):
+    response = client.get("/")
+    html = response.data.decode()
+
+    assert 'class="planner-add-destination"' in html
+    assert html.index('id="routeList"') < html.index('id="addAnotherDestination"')
+    assert "width: 100%" in html
+
+
+def test_save_prompt_preserves_draft_until_success_and_requests_autosave(client):
+    response = client.get("/")
+    html = response.data.decode()
+
+    assert "Create account and save" in html
+    assert "autosave%3D1" in html
+    assert "AUTOSAVE_AFTER_AUTH" in html
+    assert "requestSubmit(saveButton)" in html
+    assert "if (!IS_EDITING) localStorage.removeItem(DRAFT_KEY)" not in html
+
+
 def test_anonymous_server_side_save_falls_back_to_login(client):
     response = client.post(
         "/plan-trip",
@@ -198,6 +216,29 @@ def test_admin_analytics_page_is_available(app, client):
     response = client.get("/admin/analytics")
     assert response.status_code == 200
     assert b"Content intelligence" in response.data
+    assert b"Unique browsers since 24 Sep 2026" in response.data
+
+
+def test_admin_funnel_deduplicates_visitor_and_requires_previous_stage(app, client):
+    with app.app_context():
+        traveller = User.query.filter_by(email="traveller@example.com").one()
+        visitor = {"visitor_id": "visitor-funnel-test"}
+        assert capture_event("landing_viewed", properties=visitor)
+        assert capture_event("first_budget_generated", properties=visitor)
+        assert not capture_event("first_budget_generated", properties=visitor)
+        assert capture_event("save_cta_clicked", properties=visitor)
+        assert capture_event("save_auth_prompt_opened", properties=visitor)
+        assert capture_event("account_created", traveller.id, properties=visitor)
+        assert capture_event("trip_saved", traveller.id, properties=visitor)
+
+    login_test_user(client, app)
+    response = client.get("/admin/analytics")
+    html = response.data.decode()
+
+    assert "Visit → budget → save intent → account → saved" in html
+    assert "<strong>1</strong><p>Unique visitors</p>" in html
+    assert "<strong>1</strong><p>Built a budget</p>" in html
+    assert "<strong>1</strong><p>Saved the budget</p>" in html
 
 
 def test_non_admin_cannot_open_analytics_dashboard(app, client):

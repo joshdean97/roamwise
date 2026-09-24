@@ -16,7 +16,7 @@
     </section>
 
     <div class="analytics-note">
-        <strong>Truth check:</strong> planning metrics show intent, not bookings or actual spend. {{ internal_account_count }} internal account{{ '' if internal_account_count == 1 else 's' }} and their trips are excluded. Anonymous landing views are raw page views, not unique visitors. Prices are stored in canonical GBP.
+        <strong>Truth check:</strong> planning metrics show intent, not bookings or actual spend. {{ internal_account_count }} internal account{{ '' if internal_account_count == 1 else 's' }} and their trips are excluded. Metric cards are raw events; the conversion funnel below uses unique visitor IDs. Prices are stored in canonical GBP.
     </div>
 
     <section class="signal-grid" aria-label="Top content opportunities">
@@ -45,19 +45,19 @@
 
     <section class="analytics-section analytics-funnel-section">
         <div class="analytics-section-head">
-            <div><span>Planner activation</span><h2>Signup → verify → open → budget → save → share</h2></div>
-            <small>Unique customer accounts · step-to-step conversion</small>
+            <div><span>Planner-first funnel</span><h2>Visit → budget → save intent → account → saved</h2></div>
+            <small>Unique browsers since 24 Sep 2026 · each stage belongs to the preceding cohort</small>
         </div>
         <div class="funnel-grid">
-            <article><span>01</span><strong>{{ funnel.signup_users }}</strong><p>Signed up</p></article>
-            <article><span>02</span><strong>{{ funnel.verified_users }}</strong><p>Verified email</p><em>{{ "%.1f"|format(funnel.signup_to_verified) }}% of signups</em></article>
-            <article><span>03</span><strong>{{ funnel.started_users }}</strong><p>Opened the planner</p><em>{{ "%.1f"|format(funnel.verified_to_started) }}% of verified</em></article>
-            <article><span>04</span><strong>{{ funnel.budget_users }}</strong><p>Generated first budget</p><em>{{ "%.1f"|format(funnel.started_to_budget) }}% of opens</em></article>
-            <article><span>05</span><strong>{{ funnel.saved_users }}</strong><p>Saved a trip</p><em>{{ "%.1f"|format(funnel.budget_to_saved) }}% with a budget</em></article>
-            <article><span>06</span><strong>{{ funnel.shared_users }}</strong><p>Made a Print public</p><em>{{ "%.1f"|format(funnel.saved_to_shared) }}% of savers</em></article>
+            <article><span>01</span><strong>{{ funnel.visitors }}</strong><p>Unique visitors</p></article>
+            <article><span>02</span><strong>{{ funnel.budgets }}</strong><p>Built a budget</p><em>{{ "%.1f"|format(funnel.visitor_to_budget) }}% of visitors</em></article>
+            <article><span>03</span><strong>{{ funnel.save_intents }}</strong><p>Clicked save</p><em>{{ "%.1f"|format(funnel.budget_to_intent) }}% of builders</em></article>
+            <article><span>04</span><strong>{{ funnel.auth_prompts }}</strong><p>Saw account prompt</p><em>{{ "%.1f"|format(funnel.intent_to_prompt) }}% of save clicks</em></article>
+            <article><span>05</span><strong>{{ funnel.signups }}</strong><p>Created account</p><em>{{ "%.1f"|format(funnel.prompt_to_signup) }}% of prompts</em></article>
+            <article><span>06</span><strong>{{ funnel.saves }}</strong><p>Saved the budget</p><em>{{ "%.1f"|format(funnel.signup_to_save) }}% of signups</em></article>
         </div>
         <div class="analytics-note">
-            <strong>Discovery is a separate loop:</strong> {{ discovery_adoption.viewed_users }} signup-cohort user{{ '' if discovery_adoption.viewed_users == 1 else 's' }} viewed a public Print ({{ "%.1f"|format(discovery_adoption.signup_to_viewed) }}%). Multi-city building is also a branch, not a required save step. New budget and draft-restoration events populate from this release onward.
+            <strong>All-time account context:</strong> {{ account_activation.signup_users }} external signups, {{ account_activation.verified_users }} verified, {{ account_activation.saved_users }} with a saved trip, and {{ account_activation.shared_users }} with a public Print. Historical saves are intentionally excluded from the new visitor funnel.
         </div>
     </section>
 

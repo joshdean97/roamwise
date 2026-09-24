@@ -40,6 +40,10 @@
                     value="{{ csrf_token() }}"
                 >
             {% endif %}
+            {% set register_next = request.args.get('next') or request.form.get('next') %}
+            {% if register_next %}
+                <input type="hidden" name="next" value="{{ register_next }}">
+            {% endif %}
 
             <div class="form-group">
                 <label for="username">Username</label>
@@ -123,7 +127,7 @@
 
         <div class="auth-footer">
             <span>Already have an account?</span>
-            <a href="{{ url_for('auth.login') }}">
+            <a href="{{ url_for('auth.login', next=register_next) }}">
                 Log in
             </a>
         </div>
