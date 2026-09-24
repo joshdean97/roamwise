@@ -133,6 +133,54 @@ def test_confirmation_token_confirms_user(app, client):
         assert user.is_email_confirmed
 
 
+def test_confirmation_logs_user_in_and_restores_safe_autosave_destination(app, client):
+    with app.app_context():
+        user = User(username="save-me", email="save@example.com")
+        user.set_password("test-password")
+        db.session.add(user)
+        db.session.commit()
+        token = generate_email_confirmation_token(user, next_path="/?autosave=1")
+        user_id = user.id
+
+    response = client.get(f"/auth/confirm-email/{token}")
+
+    assert response.status_code == 302
+    assert response.headers["Location"] == "/?autosave=1"
+    with client.session_transaction() as session:
+        assert session["_user_id"] == str(user_id)
+
+
+def test_registration_validation_preserves_autosave_destination(client):
+    response = client.post(
+        "/auth/register",
+        data={"next": "/?autosave=1"},
+    )
+
+    assert response.status_code == 302
+    assert "next=/?autosave%3D1" in response.headers["Location"]
+
+
+def test_login_preserves_autosave_destination_for_unconfirmed_user(app, client):
+    with app.app_context():
+        user = User(username="pending-save", email="pending@example.com")
+        user.set_password("test-password")
+        db.session.add(user)
+        db.session.commit()
+
+    response = client.post(
+        "/auth/login",
+        data={
+            "email": "pending@example.com",
+            "password": "test-password",
+            "next": "/?autosave=1",
+        },
+    )
+
+    assert response.status_code == 302
+    assert "resend-confirmation" in response.headers["Location"]
+    assert "next=/?autosave%3D1" in response.headers["Location"]
+
+
 def test_registration_creates_unconfirmed_account(app, client):
     response = client.post(
         "/auth/register",

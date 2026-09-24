@@ -109,35 +109,41 @@ def verify_password_reset_token(token):
     return user
 
 
-def generate_email_confirmation_token(user):
+def generate_email_confirmation_token(user, next_path=None):
     return _email_confirmation_serializer().dumps({
         "user_id": user.id,
         "email": user.email,
+        "next": _safe_next_path(next_path),
     })
 
 
-def verify_email_confirmation_token(token):
+def _verified_email_confirmation(token):
     try:
         payload = _email_confirmation_serializer().loads(
             token,
             max_age=current_app.config["EMAIL_CONFIRMATION_MAX_AGE_SECONDS"],
         )
     except (BadSignature, SignatureExpired):
-        return None
+        return None, None
 
     try:
         user_id = int(payload.get("user_id"))
     except (TypeError, ValueError, AttributeError):
-        return None
+        return None, None
 
     user = db.session.get(User, user_id)
     if not user:
-        return None
+        return None, None
 
     payload_email = payload.get("email") or ""
     if not hmac.compare_digest(user.email, payload_email):
-        return None
+        return None, None
 
+    return user, _safe_next_path(payload.get("next"))
+
+
+def verify_email_confirmation_token(token):
+    user, _ = _verified_email_confirmation(token)
     return user
 
 
@@ -167,8 +173,8 @@ def _public_url(endpoint, **values):
     return url_for(endpoint, _external=True, **values)
 
 
-def _send_confirmation_for(user):
-    token = generate_email_confirmation_token(user)
+def _send_confirmation_for(user, next_path=None):
+    token = generate_email_confirmation_token(user, next_path=next_path)
     confirmation_url = _public_url("auth.confirm_email", token=token)
     send_email_confirmation(user, confirmation_url)
 
@@ -178,7 +184,9 @@ def _send_confirmation_for(user):
 def login():
     if current_user.is_authenticated:
         flash("You are already logged in.", "info")
-        return redirect(url_for("main.home"))
+        return redirect(
+            _safe_next_path(request.args.get("next")) or url_for("main.home")
+        )
 
     if request.method == "POST":
         email = normalise_email(request.form.get("email"))
@@ -196,7 +204,14 @@ def login():
                     "Confirm your email before logging in. You can request a new link below.",
                     "info",
                 )
-                return redirect(url_for("auth.resend_confirmation", email=email))
+                next_path = _safe_next_path(
+                    request.form.get("next") or request.args.get("next")
+                )
+                return redirect(url_for(
+                    "auth.resend_confirmation",
+                    email=email,
+                    next=next_path,
+                ))
 
             login_user(user)
             capture_event(
@@ -386,9 +401,18 @@ def delete_account():
 @auth_bp.route("/register", methods=["GET", "POST"])
 @limiter.limit("5 per hour", methods=["POST"])
 def register():
+    next_path = _safe_next_path(
+        request.form.get("next") or request.args.get("next")
+    )
+
+    def registration_redirect():
+        if next_path:
+            return redirect(url_for("auth.register", next=next_path))
+        return redirect(url_for("auth.register"))
+
     if current_user.is_authenticated:
         flash("You are already logged in.", "info")
-        return redirect(url_for("main.home"))
+        return redirect(next_path or url_for("main.home"))
 
     if request.method == "POST":
         username = (request.form.get("username") or "").strip()
@@ -399,22 +423,22 @@ def register():
 
         if not username or not email or not password or not confirm_password:
             flash("Please fill out all fields.", "error")
-            return redirect(url_for("auth.register"))
+            return registration_redirect()
 
         if not terms_accepted:
             flash(
                 "Please agree to the Terms of Use and acknowledge the Privacy Policy to create an account.",
                 "error",
             )
-            return redirect(url_for("auth.register"))
+            return registration_redirect()
 
         if len(username) > MAX_USERNAME_LENGTH:
             flash("Username is too long.", "error")
-            return redirect(url_for("auth.register"))
+            return registration_redirect()
 
         if len(email) > MAX_EMAIL_LENGTH or "@" not in email:
             flash("Please enter a valid email address.", "error")
-            return redirect(url_for("auth.register"))
+            return registration_redirect()
 
         email_domain = email.rsplit("@", 1)[-1]
         if email_domain.endswith(".con"):
@@ -422,12 +446,12 @@ def register():
                 "That email ends in .con. Check whether you meant .com before continuing.",
                 "error",
             )
-            return redirect(url_for("auth.register"))
+            return registration_redirect()
 
         password_error = _password_error(password, confirm_password)
         if password_error:
             flash(password_error, "error")
-            return redirect(url_for("auth.register"))
+            return registration_redirect()
 
         existing_user = User.query.filter(
             (func.lower(User.username) == username.lower())
@@ -436,7 +460,7 @@ def register():
 
         if existing_user:
             flash("Username or email already exists.", "error")
-            return redirect(url_for("auth.register"))
+            return registration_redirect()
 
         new_user = User(
             username=username,
@@ -452,7 +476,7 @@ def register():
         except IntegrityError:
             db.session.rollback()
             flash("Username or email already exists.", "error")
-            return redirect(url_for("auth.register"))
+            return registration_redirect()
 
         capture_event(
             "account_created",
@@ -461,7 +485,7 @@ def register():
         )
 
         try:
-            _send_confirmation_for(new_user)
+            _send_confirmation_for(new_user, next_path=next_path)
         except Exception:
             current_app.logger.exception(
                 "Could not send account confirmation email for user id %s",
@@ -477,14 +501,18 @@ def register():
                 "success",
             )
 
-        return redirect(url_for("auth.resend_confirmation", email=email))
+        return redirect(url_for(
+            "auth.resend_confirmation",
+            email=email,
+            next=next_path,
+        ))
 
     return render_template("auth/register.html", title="Register")
 
 
 @auth_bp.get("/confirm-email/<token>")
 def confirm_email(token):
-    user = verify_email_confirmation_token(token)
+    user, next_path = _verified_email_confirmation(token)
 
     if not user:
         flash(
@@ -495,7 +523,7 @@ def confirm_email(token):
 
     if user.is_email_confirmed:
         flash("Your email is already confirmed. You can log in.", "info")
-        return redirect(url_for("auth.login"))
+        return redirect(url_for("auth.login", next=next_path))
 
     user.email_confirmed_at = datetime.now(timezone.utc)
     db.session.commit()
@@ -504,9 +532,24 @@ def confirm_email(token):
         user.id,
         properties={"visitor_id": analytics_visitor_id()},
     )
+    login_user(user)
+    capture_event(
+        "login_completed",
+        user.id,
+        properties={
+            "source": "email_confirmation",
+            "visitor_id": analytics_visitor_id(),
+        },
+    )
 
-    flash("Email confirmed. Welcome to LeavePrints — you can log in now.", "success")
-    return redirect(url_for("auth.login"))
+    if next_path:
+        flash(
+            "Email confirmed. Welcome to LeavePrints — we're saving your plan now.",
+            "success",
+        )
+    else:
+        flash("Email confirmed. Welcome to LeavePrints.", "success")
+    return redirect(next_path or url_for("main.home"))
 
 
 @auth_bp.route("/resend-confirmation", methods=["GET", "POST"])
@@ -516,6 +559,9 @@ def resend_confirmation():
         return redirect(url_for("main.home"))
 
     email_value = normalise_email(request.args.get("email"))
+    next_path = _safe_next_path(
+        request.form.get("next") or request.args.get("next")
+    )
 
     if request.method == "POST":
         email = normalise_email(request.form.get("email"))
@@ -530,7 +576,7 @@ def resend_confirmation():
 
         if user and not user.is_email_confirmed:
             try:
-                _send_confirmation_for(user)
+                _send_confirmation_for(user, next_path=next_path)
             except Exception:
                 current_app.logger.exception(
                     "Could not resend account confirmation email for user id %s",
@@ -542,12 +588,13 @@ def resend_confirmation():
             "If that address belongs to an unconfirmed account, we've sent a fresh confirmation link.",
             "success",
         )
-        return redirect(url_for("auth.resend_confirmation"))
+        return redirect(url_for("auth.resend_confirmation", next=next_path))
 
     return render_template(
         "auth/resend_confirmation.html",
         title="Confirm your email",
         email_value=email_value,
+        next_path=next_path,
     )
 
 

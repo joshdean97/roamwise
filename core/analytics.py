@@ -44,6 +44,21 @@ ALLOWED_EVENTS = {
     "explore_viewed",
 }
 
+VISITOR_MILESTONE_EVENTS = {
+    "first_budget_generated",
+    "save_cta_viewed",
+    "save_cta_clicked",
+    "save_auth_prompt_opened",
+    "draft_restored_after_auth",
+    "first_city_added",
+    "second_city_added",
+    "dates_added",
+    "transport_started",
+    "shared_route_loaded",
+    "route_template_loaded",
+    "route_template_saved",
+}
+
 
 def analytics_visitor_id():
     """Return a short, first-party browser-session identifier.
@@ -104,6 +119,27 @@ def capture_event(name, user_id=None, properties=None):
     # no visitor identifier, deduplicating them globally would merge different
     # people who happened to arrive at the same time.
     try:
+        visitor_id = cleaned_properties.get("visitor_id")
+        if visitor_id and name in VISITOR_MILESTONE_EVENTS:
+            visitor_cutoff = (
+                datetime.now(timezone.utc).replace(tzinfo=None)
+                - timedelta(hours=24)
+            )
+            recent_visitor_events = (
+                AnalyticsEvent.query
+                .filter(
+                    AnalyticsEvent.name == name,
+                    AnalyticsEvent.created_at >= visitor_cutoff,
+                )
+                .order_by(AnalyticsEvent.created_at.desc())
+                .all()
+            )
+            if any(
+                (event.properties or {}).get("visitor_id") == visitor_id
+                for event in recent_visitor_events
+            ):
+                return False
+
         if normalised_user_id is not None:
             duplicate_cutoff = (
                 datetime.now(timezone.utc).replace(tzinfo=None)

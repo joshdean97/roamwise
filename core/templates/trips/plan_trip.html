@@ -70,7 +70,19 @@
     .budget-ready-actions { display: flex; flex-wrap: wrap; gap: 8px; }
     .budget-ready-actions button { border-radius: 999px; padding: 9px 12px; font: inherit; font-size: .74rem; font-weight: 800; cursor: pointer; }
     .budget-ready-save { border: 0; background: var(--rw-teal-dark); color: white; }
-    .budget-ready-add { border: 1px solid #b7d7d0; background: white; color: var(--rw-teal-dark); }
+    .planner-add-destination {
+        width: 100%;
+        margin-top: 16px;
+        padding: 13px 16px;
+        border: 1px solid #b7d7d0;
+        border-radius: 14px;
+        background: white;
+        color: var(--rw-teal-dark);
+        font: inherit;
+        font-weight: 800;
+        cursor: pointer;
+    }
+    .planner-add-destination:hover { border-color: var(--rw-teal-dark); background: #f3fbf8; }
 
     .save-auth-modal[hidden] { display: none; }
     .save-auth-modal { position: fixed; inset: 0; z-index: 1400; display: grid; place-items: center; padding: 20px; background: rgba(10, 21, 34, .62); }
@@ -511,6 +523,7 @@
                 </div>
 
                 <div id="routeList" class="route-list"></div>
+                <button class="planner-add-destination" id="addAnotherDestination" type="button">+ Add another destination</button>
             </div>
 
             <aside class="summary-stack">
@@ -526,10 +539,9 @@
 
                     <div class="budget-ready" id="budgetReady" aria-live="polite">
                         <strong>Your first budget is ready.</strong>
-                        <p id="budgetReadyCopy">Save it now or add another destination.</p>
+                        <p id="budgetReadyCopy">Save it now so you can return and refine it later.</p>
                         <div class="budget-ready-actions">
                             <button class="budget-ready-save" type="submit">Save this estimate</button>
-                            <button class="budget-ready-add" id="addAnotherDestination" type="button">+ Add another destination</button>
                         </div>
                     </div>
 
@@ -664,10 +676,10 @@
         <button class="save-auth-close" id="saveAuthClose" type="button" aria-label="Close">×</button>
         <span class="panel-kicker">Keep your plan</span>
         <h2 id="saveAuthTitle">Your budget is ready.</h2>
-        <p id="saveAuthCopy">Create a free account or log in to save it. Your route will still be here when you return.</p>
+        <p id="saveAuthCopy">Create a free account or log in to save it. We'll preserve your route and save it when you return.</p>
         <div class="save-auth-actions">
-            <a class="save-auth-primary" href="{{ url_for('auth.register') }}">Create account</a>
-            <a class="save-auth-secondary" href="{{ url_for('auth.login', next=url_for('main.home')) }}">Log in</a>
+            <a class="save-auth-primary" href="{{ url_for('auth.register', next=url_for('main.home', autosave=1)) }}">Create account and save</a>
+            <a class="save-auth-secondary" href="{{ url_for('auth.login', next=url_for('main.home', autosave=1)) }}">Log in and save</a>
         </div>
     </div>
 </div>
@@ -678,6 +690,7 @@
     const CITY_OPTIONS = {{ city_options|tojson }};
     const IS_AUTHENTICATED = {{ current_user.is_authenticated|tojson }};
     const IS_EDITING = {{ is_editing|default(false)|tojson }};
+    const AUTOSAVE_AFTER_AUTH = {{ (request.args.get('autosave') == '1')|tojson }};
     const DRAFT_KEY = "leaveprints.planner-draft.v1";
     let INITIAL_TRIP = {{ planner_initial|tojson }};
     let restoredLocalDraft = false;
@@ -1172,7 +1185,8 @@
     }
 
     function openSaveAuthModal() {
-        saveAuthCopy.textContent = `${tripTotal.textContent} is ready. Create a free account or log in to save it — your route will still be here when you return.`;
+        const routeName = state.route.map(city => city.name).join(" → ");
+        saveAuthCopy.textContent = `${routeName} is estimated at ${tripTotal.textContent}. Create a free account or log in — we'll preserve this route and save it automatically when you return.`;
         saveAuthModal.hidden = false;
         document.body.style.overflow = "hidden";
         trackAnalyticsMilestone("save_auth_prompt_opened");
@@ -1603,7 +1617,6 @@
         }
 
         submitting = true;
-        if (!IS_EDITING) localStorage.removeItem(DRAFT_KEY);
         saveButton.disabled = true;
         mobileSaveButton.disabled = true;
         saveButton.classList.add("is-submitting");
@@ -1618,6 +1631,14 @@
         trackAnalyticsMilestone("draft_restored_after_auth");
     }
     render();
+
+    if (AUTOSAVE_AFTER_AUTH && restoredLocalDraft && IS_AUTHENTICATED) {
+        saveButton.textContent = "Saving your budget…";
+        mobileSaveButton.textContent = "Saving your budget…";
+        window.setTimeout(() => {
+            document.getElementById("tripPlannerForm").requestSubmit(saveButton);
+        }, 250);
+    }
 })();
 </script>
 {% endblock %}
