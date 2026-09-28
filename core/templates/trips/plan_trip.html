@@ -56,20 +56,13 @@
         cursor: wait;
     }
 
-    .budget-ready {
-        display: none;
-        margin-top: 16px;
-        padding: 14px;
-        border: 1px solid #bfe2d9;
-        border-radius: 14px;
-        background: #edf9f5;
-    }
+    .budget-ready { display: none; margin-top: 18px; padding-top: 18px; border-top: 1px solid rgba(255, 255, 255, .32); }
     .budget-ready.show { display: block; }
-    .budget-ready strong { display: block; color: var(--rw-teal-dark); }
-    .budget-ready p { margin: 5px 0 12px; color: #334155; font-size: .78rem; }
-    .budget-ready-actions { display: flex; flex-wrap: wrap; gap: 8px; }
-    .budget-ready-actions button { border-radius: 999px; padding: 9px 12px; font: inherit; font-size: .74rem; font-weight: 800; cursor: pointer; }
-    .budget-ready-save { border: 0; background: var(--rw-teal-dark); color: white; }
+    .budget-ready strong { display: block; color: white; font-size: 1rem; }
+    .budget-ready p { margin: 6px 0 14px; color: #e4f5ef; font-size: .83rem; line-height: 1.45; }
+    .budget-ready-actions button { width: 100%; min-height: 54px; border-radius: 12px; padding: 12px 16px; font: inherit; font-size: 1rem; font-weight: 900; cursor: pointer; }
+    .budget-ready-save { border: 0; background: #ffda91; color: #15332f; box-shadow: 0 8px 20px rgba(0, 0, 0, .18); }
+    .budget-ready-save:hover { background: #ffe8b9; }
     .planner-progress { margin: 0 0 18px; padding: 14px 18px; border: 1px solid #dceae5; border-radius: 16px; background: #f7fbf9; }
     .planner-progress p { margin: 0 0 9px; color: var(--rw-teal-dark); font-size: .77rem; font-weight: 800; }
     .planner-progress ol { display: flex; flex-wrap: wrap; gap: 8px 18px; margin: 0; padding: 0; list-style: none; font-size: .78rem; color: var(--rw-muted); }
@@ -84,7 +77,7 @@
     .trip-name-field { display: block; margin: 14px 0 0; }
     .trip-name-field span { display: block; margin-bottom: 5px; font-size: .77rem; font-weight: 750; }
     .trip-name-field input { width: 100%; padding: 10px 12px; border: 1px solid #bbd4ce; border-radius: 10px; font: inherit; }
-    .trip-continuity { margin: 9px 0 12px !important; font-size: .77rem; line-height: 1.5; }
+    .trip-continuity { margin: 12px 0 0 !important; color: #d8eee7 !important; font-size: .76rem; line-height: 1.5; }
     .save-auth-continue { display: block; margin: 13px auto 0; border: 0; background: transparent; color: var(--rw-muted); font: inherit; font-size: .8rem; text-decoration: underline; cursor: pointer; }
     .planner-add-destination {
         width: 100%;
@@ -226,13 +219,15 @@
         }
 
         .mobile-save-bar {
-            position: sticky;
-            z-index: 20;
-            bottom: 10px;
+            position: fixed;
+            z-index: 50;
+            left: 12px;
+            right: 12px;
+            bottom: max(12px, env(safe-area-inset-bottom));
             display: flex;
             align-items: center;
             gap: 12px;
-            margin: 18px 10px 8px;
+            margin: 0;
             padding: 10px;
             border: 1px solid #d8e4e1;
             border-radius: 16px;
@@ -240,10 +235,16 @@
             box-shadow: 0 12px 35px rgba(24, 55, 49, .18);
             backdrop-filter: blur(10px);
         }
+        .mobile-save-bar:not(.is-ready) { display: none; }
 
         .mobile-save-bar .save-button {
             flex: 1;
+            min-height: 54px;
+            background: var(--rw-teal-dark);
+            box-shadow: 0 6px 16px rgba(14, 85, 76, .24);
         }
+
+        .trip-planner { padding-bottom: 112px; }
 
         .mobile-save-status {
             color: var(--rw-muted);
@@ -558,6 +559,14 @@
                     <label class="trip-name-field" for="tripName"><span>Give your trip a name · optional</span>
                         <input id="tripName" type="text" maxlength="200" autocomplete="off" placeholder="Your trip name">
                     </label>
+                    <div class="budget-ready" id="budgetReady" aria-live="polite">
+                        <strong>Your trip is ready.</strong>
+                        <p id="budgetReadyCopy">Keep your plan so you can come back to it.</p>
+                        <div class="budget-ready-actions">
+                            <button class="budget-ready-save" type="submit">{{ submit_label|default('Keep my trip') }}</button>
+                        </div>
+                        <p class="trip-continuity">Come back later · edit from any device · keep refining your budget · share when you're ready.</p>
+                    </div>
                 </div>
                 <div class="summary-card">
                     <span class="panel-kicker">Your estimate</span>
@@ -567,15 +576,6 @@
                         <span>Estimated total</span>
                         <strong id="tripTotal">£0.00</strong>
                         <small id="averagePerDay">£0.00 / day</small>
-                    </div>
-
-                    <div class="budget-ready" id="budgetReady" aria-live="polite">
-                        <strong>Your trip is ready.</strong>
-                        <p id="budgetReadyCopy">Keep your plan so you can come back to it.</p>
-                        <p class="trip-continuity">Come back later · edit from any device · keep refining your budget · share when you're ready.</p>
-                        <div class="budget-ready-actions">
-                            <button class="budget-ready-save" type="submit">{{ submit_label|default('Keep my trip') }}</button>
-                        </div>
                     </div>
 
                     <div class="summary-list">
@@ -897,6 +897,7 @@
     const addAnotherDestination = document.getElementById("addAnotherDestination");
     const saveButton = document.getElementById("saveTripButton");
     const mobileSaveButton = document.getElementById("mobileSaveTripButton");
+    const mobileSaveBar = document.querySelector(".mobile-save-bar");
     const mobileSaveStatus = document.getElementById("mobileSaveStatus");
 
     const dataReportModal = document.getElementById("dataReportModal");
@@ -1491,9 +1492,10 @@
             : "Step 2 of 3 · Your trip is ready to keep";
         saveButton.disabled = saveDisabled;
         mobileSaveButton.disabled = saveDisabled;
+        mobileSaveBar.classList.toggle("is-ready", !saveDisabled);
         mobileSaveStatus.textContent = saveDisabled
             ? (datesInvalid() ? "Fix the date range" : "Add a city to save")
-            : `${state.route.length} ${state.route.length === 1 ? "stop" : "stops"} ready`;
+            : `${money(total)} estimate`;
 
         budgetReady.classList.toggle("show", !saveDisabled);
         if (!saveDisabled) {
