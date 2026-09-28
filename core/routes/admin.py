@@ -28,6 +28,7 @@ admin_bp = Blueprint(
 # The anonymous planner became the homepage at this release. Earlier events do
 # not share its visitor-linked funnel semantics and must not be mixed into it.
 PLANNER_FIRST_RELEASE_AT = datetime(2026, 9, 24, 3, 30)
+OWNERSHIP_RELEASE_AT = datetime(2026, 9, 28)
 
 
 # ============================================================
@@ -222,6 +223,10 @@ def analytics_dashboard():
         ("account_created", "Signups"),
         ("planner_opened", "Planner opens"),
         ("first_budget_generated", "First budgets generated"),
+        ("trip_generated", "Trips presented"),
+        ("ownership_prompt_seen", "Ownership prompts seen"),
+        ("trip_renamed", "Trips renamed"),
+        ("auth_started", "Account flows started"),
         ("save_cta_viewed", "Save CTAs viewed"),
         ("save_cta_clicked", "Save CTAs clicked"),
         ("save_auth_prompt_opened", "Save auth prompts"),
@@ -331,6 +336,47 @@ def analytics_dashboard():
         "signup_to_save": step_rate(saved_cohort, signup_cohort),
         "started_at": PLANNER_FIRST_RELEASE_AT,
     }
+
+    ownership_names = {
+        "trip_generated", "ownership_prompt_seen", "trip_renamed",
+        "save_cta_clicked", "save_auth_prompt_opened", "auth_started",
+        "account_created", "draft_restored_after_auth", "trip_saved",
+    }
+    ownership_events = external_events(AnalyticsEvent.query).filter(
+        AnalyticsEvent.created_at >= OWNERSHIP_RELEASE_AT,
+        AnalyticsEvent.name.in_(ownership_names),
+    ).all()
+    ownership_identities = defaultdict(set)
+    for event in ownership_events:
+        visitor_id = (event.properties or {}).get("visitor_id")
+        identity = (
+            f"visitor:{visitor_id}" if visitor_id else
+            f"user:{event.user_id}" if event.user_id is not None else None
+        )
+        if identity:
+            ownership_identities[event.name].add(identity)
+
+    generated = ownership_identities["trip_generated"]
+    prompt_seen = generated & ownership_identities["ownership_prompt_seen"]
+    save_clicked = prompt_seen & ownership_identities["save_cta_clicked"]
+    auth_started = save_clicked & ownership_identities["auth_started"]
+    account_created = auth_started & ownership_identities["account_created"]
+    draft_restored = account_created & ownership_identities["draft_restored_after_auth"]
+    trip_saved = draft_restored & ownership_identities["trip_saved"]
+    ownership_funnel = [
+        ("Trip created", generated, None),
+        ("Saw keep prompt", prompt_seen, generated),
+        ("Clicked keep", save_clicked, prompt_seen),
+        ("Started account", auth_started, save_clicked),
+        ("Created account", account_created, auth_started),
+        ("Draft restored", draft_restored, account_created),
+        ("Trip saved", trip_saved, draft_restored),
+    ]
+    ownership_funnel = [
+        {"label": label, "count": len(people), "rate": step_rate(people, previous) if previous is not None else None}
+        for label, people, previous in ownership_funnel
+    ]
+    renamed_count = len(generated & ownership_identities["trip_renamed"])
     acquisition_sources = Counter()
     landing_events = external_events(AnalyticsEvent.query).filter(
         AnalyticsEvent.name == "landing_viewed",
@@ -599,6 +645,8 @@ def analytics_dashboard():
         event_counts_all=event_counts_all,
         event_counts_30=event_counts_30,
         funnel=funnel,
+        ownership_funnel=ownership_funnel,
+        renamed_count=renamed_count,
         account_activation=account_activation,
         acquisition_sources=acquisition_sources.most_common(10),
         planner_activation=planner_activation,

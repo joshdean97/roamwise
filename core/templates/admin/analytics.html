@@ -61,6 +61,19 @@
         </div>
     </section>
 
+    <section class="analytics-section analytics-funnel-section">
+        <div class="analytics-section-head">
+            <div><span>Trip ownership experiment</span><h2>Created → kept → account → saved</h2></div>
+            <small>Unique browsers since 28 Sep 2026 · stages belong to the preceding cohort</small>
+        </div>
+        <div class="funnel-grid">
+            {% for stage in ownership_funnel %}
+                <article><span>{{ "%02d"|format(loop.index) }}</span><strong>{{ stage.count }}</strong><p>{{ stage.label }}</p>{% if stage.rate is not none %}<em>{{ "%.1f"|format(stage.rate) }}% of prior stage</em>{% endif %}</article>
+            {% endfor %}
+        </div>
+        <div class="analytics-note"><strong>{{ renamed_count }}</strong> builders renamed their trip. Email confirmation can delay the last two stages; saved trips are counted only after the draft is restored in this browser.</div>
+    </section>
+
     <section class="analytics-split">
         <div class="analytics-section">
             <div class="analytics-section-head"><div><span>Destinations</span><h2>Most planned</h2></div></div>

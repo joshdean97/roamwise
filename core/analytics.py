@@ -15,6 +15,10 @@ ALLOWED_EVENTS = {
     "login_completed",
     "planner_opened",
     "first_budget_generated",
+    "trip_generated",
+    "ownership_prompt_seen",
+    "trip_renamed",
+    "auth_started",
     "save_cta_viewed",
     "save_cta_clicked",
     "save_auth_prompt_opened",
@@ -46,6 +50,10 @@ ALLOWED_EVENTS = {
 
 VISITOR_MILESTONE_EVENTS = {
     "first_budget_generated",
+    "trip_generated",
+    "ownership_prompt_seen",
+    "trip_renamed",
+    "auth_started",
     "save_cta_viewed",
     "save_cta_clicked",
     "save_auth_prompt_opened",

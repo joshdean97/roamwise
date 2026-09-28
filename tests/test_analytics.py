@@ -171,8 +171,9 @@ def test_homepage_is_the_anonymous_planner(client):
     response = client.get("/")
     assert response.status_code == 200
     assert b"Build the route. Know the damage." in response.data
-    assert b"Save this budget" in response.data
-    assert b"You only need an account when you save" in response.data
+    assert b"Keep my trip" in response.data
+    assert b"Keep your trip in an account" in response.data
+    assert b"Give your trip a name" in response.data
 
 
 def test_planner_places_full_width_destination_action_below_route(client):
@@ -188,7 +189,8 @@ def test_save_prompt_preserves_draft_until_success_and_requests_autosave(client)
     response = client.get("/")
     html = response.data.decode()
 
-    assert "Create account and save" in html
+    assert "Create account and keep it" in html
+    assert "Continue planning without saving" in html
     assert "autosave%3D1" in html
     assert "AUTOSAVE_AFTER_AUTH" in html
     assert "requestSubmit(saveButton)" in html
@@ -208,6 +210,47 @@ def test_anonymous_server_side_save_falls_back_to_login(client):
     assert response.status_code == 302
     assert "/auth/login" in response.headers["Location"]
     assert "next=/" in response.headers["Location"]
+
+
+def test_trip_name_is_saved_and_can_be_edited(app, client):
+    login_test_user(client, app)
+    with app.app_context():
+        city_id = City.query.filter_by(name="Sofia").one().id
+    data = {
+        "route_json": f'[{{"position":1,"city_id":{city_id},"nights":3}}]',
+        "transport_json": '{"arrival":{},"departure":{},"legs":[]}',
+        "travel_style": "balanced",
+        "display_currency": "GBP",
+        "trip_name": "My Bulgaria trip",
+    }
+    response = client.post("/plan-trip", data=data)
+    assert response.status_code == 302
+    with app.app_context():
+        trip = Trip.query.one()
+        assert trip.name == "My Bulgaria trip"
+        trip_id = trip.id
+
+    response = client.get(f"/trips/{trip_id}/edit")
+    assert response.status_code == 200
+    assert 'value="My Bulgaria trip"' in response.data.decode()
+    data["trip_name"] = "Renamed after booking"
+    assert client.post(f"/trips/{trip_id}/edit", data=data).status_code == 302
+    with app.app_context():
+        assert Trip.query.one().name == "Renamed after booking"
+
+
+def test_ownership_events_are_visitor_linked_and_visible_to_admin(app, client):
+    for event in ("trip_generated", "ownership_prompt_seen", "trip_renamed", "auth_started"):
+        assert client.post("/analytics/event", json={"event": event}).status_code == 200
+    with app.app_context():
+        events = AnalyticsEvent.query.filter(AnalyticsEvent.name.in_({
+            "trip_generated", "ownership_prompt_seen", "trip_renamed", "auth_started",
+        })).all()
+        assert len({event.properties["visitor_id"] for event in events}) == 1
+    login_test_user(client, app)
+    response = client.get("/admin/analytics")
+    assert b"Trip ownership experiment" in response.data
+    assert b"Trips renamed" in response.data
 
 
 def test_admin_analytics_page_is_available(app, client):
