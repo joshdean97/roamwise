@@ -247,6 +247,7 @@ def trip_copy_state(trip):
 
 def trip_initial_state(trip):
     return {
+        "name": trip.name,
         "route": [
             {
                 "city_id": stop.city_id,
@@ -273,6 +274,7 @@ def trip_initial_state(trip):
 
 def empty_initial_state():
     return {
+        "name": "",
         "route": [],
         "travel_style": "balanced",
         "display_currency": "GBP",
@@ -506,6 +508,7 @@ def planner_state_from_request():
     )
 
     return {
+        "name": (request.form.get("trip_name") or "").strip()[:200],
         "route": route,
         "travel_style": travel_style,
         "display_currency": display_currency,
@@ -687,7 +690,10 @@ def save_trip_form(trip, exchange_rates):
             f"{last_city.name}"
         )
 
-    trip.name = trip_name
+    custom_name = (request.form.get("trip_name") or "").strip()
+    if len(custom_name) > 200 or any(ord(char) < 32 for char in custom_name):
+        raise ValueError("Trip names must be 200 characters or fewer.")
+    trip.name = custom_name or trip_name
     trip.start_date = start_date
     trip.end_date = end_date
     trip.travel_style = travel_style
@@ -1094,7 +1100,7 @@ def home():
         exchange_rates=exchange_rates,
         initial_trip=initial_state,
         form_action=url_for("main.plan_trip"),
-        submit_label="Save this budget",
+        submit_label="Keep my trip",
     )
 
 
@@ -1212,6 +1218,10 @@ def analytics_event():
         "transport_started",
         "share_card_downloaded",
         "first_budget_generated",
+        "trip_generated",
+        "ownership_prompt_seen",
+        "trip_renamed",
+        "auth_started",
         "save_cta_viewed",
         "save_cta_clicked",
         "save_auth_prompt_opened",
@@ -1377,7 +1387,7 @@ def plan_trip():
                 None,
                 properties={"visitor_id": analytics_visitor_id()},
             )
-            flash("Log in or create an account to save your budget.", "info")
+            flash("Log in or create an account to keep your trip.", "info")
             return redirect(url_for("auth.login", next=url_for("main.home")))
 
         capture_event(
@@ -1515,7 +1525,7 @@ def plan_trip():
         form_action=url_for(
             "main.plan_trip"
         ),
-        submit_label="Save this budget",
+        submit_label="Keep my trip",
     )
 
 @main_bp.route(

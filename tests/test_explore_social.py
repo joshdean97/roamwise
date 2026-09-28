@@ -124,7 +124,7 @@ def test_explore_only_lists_public_trips(client):
 def test_anonymous_user_can_load_shared_route_into_planner(client):
     response = client.get("/?use=public-token")
     assert response.status_code == 200
-    assert b"Save this budget" in response.data
+    assert b"Keep my trip" in response.data
     assert b"public-token" in response.data
 
 

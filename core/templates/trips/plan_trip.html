@@ -70,6 +70,22 @@
     .budget-ready-actions { display: flex; flex-wrap: wrap; gap: 8px; }
     .budget-ready-actions button { border-radius: 999px; padding: 9px 12px; font: inherit; font-size: .74rem; font-weight: 800; cursor: pointer; }
     .budget-ready-save { border: 0; background: var(--rw-teal-dark); color: white; }
+    .planner-progress { margin: 0 0 18px; padding: 14px 18px; border: 1px solid #dceae5; border-radius: 16px; background: #f7fbf9; }
+    .planner-progress p { margin: 0 0 9px; color: var(--rw-teal-dark); font-size: .77rem; font-weight: 800; }
+    .planner-progress ol { display: flex; flex-wrap: wrap; gap: 8px 18px; margin: 0; padding: 0; list-style: none; font-size: .78rem; color: var(--rw-muted); }
+    .planner-progress li.done { color: var(--rw-teal-dark); font-weight: 800; }
+    .trip-preview { display: none; margin: 0 0 18px; padding: 20px; border-radius: 18px; background: linear-gradient(130deg, #103e40, #176a61); color: white; }
+    .trip-preview.show { display: block; }
+    .trip-preview .preview-kicker { color: #b8eee0; font-size: .72rem; font-weight: 850; text-transform: uppercase; letter-spacing: .08em; }
+    .trip-preview h2 { margin: 8px 0 5px; color: white; }
+    .trip-preview .preview-route { overflow-wrap: anywhere; margin: 0 0 12px; color: #e4f5ef; }
+    .trip-preview .preview-stats { display: flex; flex-wrap: wrap; gap: 8px; }
+    .trip-preview .preview-stats span { padding: 7px 10px; border: 1px solid #ffffff5e; border-radius: 999px; font-size: .77rem; }
+    .trip-name-field { display: block; margin: 14px 0 0; }
+    .trip-name-field span { display: block; margin-bottom: 5px; font-size: .77rem; font-weight: 750; }
+    .trip-name-field input { width: 100%; padding: 10px 12px; border: 1px solid #bbd4ce; border-radius: 10px; font: inherit; }
+    .trip-continuity { margin: 9px 0 12px !important; font-size: .77rem; line-height: 1.5; }
+    .save-auth-continue { display: block; margin: 13px auto 0; border: 0; background: transparent; color: var(--rw-muted); font: inherit; font-size: .8rem; text-decoration: underline; cursor: pointer; }
     .planner-add-destination {
         width: 100%;
         margin-top: 16px;
@@ -441,6 +457,11 @@
         </div>
     </section>
 
+    <div class="planner-progress" aria-live="polite">
+        <p id="progressText">Step 1 of 3 · Start your route</p>
+        <ol><li id="progressRoute">Choose a city</li><li id="progressBudget">See your trip budget</li><li id="progressKeep">Keep and revisit your trip</li></ol>
+    </div>
+
     <form id="tripPlannerForm" method="post" action="{{ form_action|default(url_for('main.plan_trip')) }}">
         {% if csrf_token is defined %}
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
@@ -451,6 +472,7 @@
         <input type="hidden" name="travel_style" id="travelStyleHidden" value="balanced">
         <input type="hidden" name="display_currency" id="displayCurrencyHidden" value="{{ selected_currency }}">
         <input type="hidden" name="source_share_token" value="{{ planner_initial.source_share_token|default('') }}">
+        <input type="hidden" name="trip_name" id="tripNameHidden" value="{{ planner_initial.name|default('') }}">
 
         <section class="planner-controls" aria-label="Trip settings">
             <div class="field">
@@ -520,6 +542,7 @@
                     <div class="route-empty-icon">⌖</div>
                     <strong>Your route is empty</strong>
                     <p>Search for your first city above. You can reorder stops once they are added.</p>
+                    <button class="planner-add-destination" id="exampleCityButton" type="button" hidden>Try starting with Budapest →</button>
                 </div>
 
                 <div id="routeList" class="route-list"></div>
@@ -527,6 +550,15 @@
             </div>
 
             <aside class="summary-stack">
+                <div class="trip-preview" id="tripPreview" aria-live="polite">
+                    <span class="preview-kicker">Your trip is taking shape</span>
+                    <h2 id="previewName"></h2>
+                    <p class="preview-route" id="previewRoute"></p>
+                    <div class="preview-stats"><span id="previewNights"></span><span id="previewBudget"></span><span id="previewDaily"></span></div>
+                    <label class="trip-name-field" for="tripName"><span>Give your trip a name · optional</span>
+                        <input id="tripName" type="text" maxlength="200" autocomplete="off" placeholder="Your trip name">
+                    </label>
+                </div>
                 <div class="summary-card">
                     <span class="panel-kicker">Your estimate</span>
                     <h2>Trip budget</h2>
@@ -538,10 +570,11 @@
                     </div>
 
                     <div class="budget-ready" id="budgetReady" aria-live="polite">
-                        <strong>Your first budget is ready.</strong>
-                        <p id="budgetReadyCopy">Save it now so you can return and refine it later.</p>
+                        <strong>Your trip is ready.</strong>
+                        <p id="budgetReadyCopy">Keep your plan so you can come back to it.</p>
+                        <p class="trip-continuity">Come back later · edit from any device · keep refining your budget · share when you're ready.</p>
                         <div class="budget-ready-actions">
-                            <button class="budget-ready-save" type="submit">Save this estimate</button>
+                            <button class="budget-ready-save" type="submit">{{ submit_label|default('Keep my trip') }}</button>
                         </div>
                     </div>
 
@@ -607,9 +640,9 @@
                             Update this saved route with your latest changes.
                         {% else %}
                             {% if current_user.is_authenticated %}
-                                Save this budget so you can return, edit and share it later.
+                                Keep this trip to revisit, edit and share later.
                             {% else %}
-                                Plan for free. You only need an account when you save.
+                                Plan for free. Keep your trip in an account to revisit it from any device.
                             {% endif %}
                         {% endif %}
                     </p>
@@ -675,12 +708,14 @@
     <div class="save-auth-dialog" role="dialog" aria-modal="true" aria-labelledby="saveAuthTitle">
         <button class="save-auth-close" id="saveAuthClose" type="button" aria-label="Close">×</button>
         <span class="panel-kicker">Keep your plan</span>
-        <h2 id="saveAuthTitle">Your budget is ready.</h2>
-        <p id="saveAuthCopy">Create a free account or log in to save it. We'll preserve your route and save it when you return.</p>
+        <h2 id="saveAuthTitle">Keep your trip.</h2>
+        <p id="saveAuthCopy">Your route is ready. Create a free account to keep developing it.</p>
+        <p>Pick it up later on this device, edit it elsewhere and share your Print when you're ready. Your draft will be saved when you return in this browser.</p>
         <div class="save-auth-actions">
-            <a class="save-auth-primary" href="{{ url_for('auth.register', next=url_for('main.home', autosave=1)) }}">Create account and save</a>
-            <a class="save-auth-secondary" href="{{ url_for('auth.login', next=url_for('main.home', autosave=1)) }}">Log in and save</a>
+            <a class="save-auth-primary" href="{{ url_for('auth.register', next=url_for('main.home', autosave=1)) }}">Create account and keep it</a>
+            <a class="save-auth-secondary" href="{{ url_for('auth.login', next=url_for('main.home', autosave=1)) }}">Log in to keep it</a>
         </div>
+        <button class="save-auth-continue" id="saveAuthContinue" type="button">Continue planning without saving</button>
     </div>
 </div>
 
@@ -717,6 +752,7 @@
         fetch(ANALYTICS_URL, {
             method: "POST",
             credentials: "same-origin",
+            keepalive: true,
             headers: {
                 "Content-Type": "application/json",
                 "X-CSRFToken": ANALYTICS_CSRF
@@ -730,6 +766,14 @@
         analyticsMilestones.add(eventName);
         trackAnalyticsEvent(eventName);
     };
+
+    const ownershipObserver = "IntersectionObserver" in window
+        ? new IntersectionObserver(entries => {
+            if (entries.some(entry => entry.isIntersecting)) {
+                trackAnalyticsMilestone("ownership_prompt_seen");
+            }
+        }, { threshold: 0.25 })
+        : null;
 
     const cityById = new Map(
         CITY_OPTIONS.map(city => [
@@ -793,6 +837,7 @@
 
     const state = {
         route: initialRoute,
+        name: String(INITIAL_TRIP.name || "").slice(0, 200),
         style: INITIAL_TRIP.travel_style || "balanced",
         currency: INITIAL_TRIP.display_currency || {{ selected_currency|tojson }},
         arrivalTransport: normaliseTransportEntry(initialTransport.arrival),
@@ -836,6 +881,19 @@
     const dateFit = document.getElementById("dateFit");
     const budgetReady = document.getElementById("budgetReady");
     const budgetReadyCopy = document.getElementById("budgetReadyCopy");
+    const tripPreview = document.getElementById("tripPreview");
+    const previewName = document.getElementById("previewName");
+    const previewRoute = document.getElementById("previewRoute");
+    const previewNights = document.getElementById("previewNights");
+    const previewBudget = document.getElementById("previewBudget");
+    const previewDaily = document.getElementById("previewDaily");
+    const tripName = document.getElementById("tripName");
+    const tripNameHidden = document.getElementById("tripNameHidden");
+    const progressText = document.getElementById("progressText");
+    const progressRoute = document.getElementById("progressRoute");
+    const progressBudget = document.getElementById("progressBudget");
+    const progressKeep = document.getElementById("progressKeep");
+    const exampleCityButton = document.getElementById("exampleCityButton");
     const addAnotherDestination = document.getElementById("addAnotherDestination");
     const saveButton = document.getElementById("saveTripButton");
     const mobileSaveButton = document.getElementById("mobileSaveTripButton");
@@ -854,6 +912,7 @@
     const saveAuthModal = document.getElementById("saveAuthModal");
     const saveAuthClose = document.getElementById("saveAuthClose");
     const saveAuthCopy = document.getElementById("saveAuthCopy");
+    const saveAuthContinue = document.getElementById("saveAuthContinue");
     let dataReportCity = null;
 
     const routeJson = document.getElementById("routeJson");
@@ -1185,11 +1244,11 @@
     }
 
     function openSaveAuthModal() {
-        const routeName = state.route.map(city => city.name).join(" → ");
-        saveAuthCopy.textContent = `${routeName} is estimated at ${tripTotal.textContent}. Create a free account or log in — we'll preserve this route and save it automatically when you return.`;
+        saveAuthCopy.textContent = `${tripNameForDisplay()} · ${tripTotal.textContent} estimated. Your route will be saved when you return to this browser after signing in.`;
         saveAuthModal.hidden = false;
         document.body.style.overflow = "hidden";
         trackAnalyticsMilestone("save_auth_prompt_opened");
+        saveAuthContinue.focus();
     }
 
     function closeSaveAuthModal() {
@@ -1350,6 +1409,13 @@
         return end < start;
     }
 
+    function tripNameForDisplay() {
+        if (state.name.trim()) return state.name.trim();
+        const route = state.route.map(city => city.name).join(" → ");
+        const nights = state.route.reduce((sum, city) => sum + city.nights, 0);
+        return `${nights} ${nights === 1 ? "night" : "nights"}: ${route}`.slice(0, 200);
+    }
+
     function renderSummary() {
         const multiplier = styleMultiplier();
 
@@ -1414,6 +1480,15 @@
         const saveDisabled =
             state.route.length === 0 ||
             datesInvalid();
+        tripPreview.classList.toggle("show", !saveDisabled);
+        progressRoute.classList.toggle("done", state.route.length > 0);
+        progressBudget.classList.toggle("done", !saveDisabled);
+        progressKeep.classList.toggle("done", IS_EDITING);
+        progressText.textContent = IS_EDITING
+            ? "Saved trip · Edit your route and update it below"
+            : saveDisabled
+            ? (datesInvalid() ? "Fix your date range to see your trip" : "Step 1 of 3 · Choose your first city")
+            : "Step 2 of 3 · Your trip is ready to keep";
         saveButton.disabled = saveDisabled;
         mobileSaveButton.disabled = saveDisabled;
         mobileSaveStatus.textContent = saveDisabled
@@ -1422,8 +1497,16 @@
 
         budgetReady.classList.toggle("show", !saveDisabled);
         if (!saveDisabled) {
-            budgetReadyCopy.textContent = `${money(total)} for ${nights} ${nights === 1 ? "night" : "nights"}. Save it now or add another destination.`;
+            previewName.textContent = tripNameForDisplay();
+            previewRoute.textContent = state.route.map(city => city.name).join(" → ");
+            previewNights.textContent = `${nights} ${nights === 1 ? "night" : "nights"}`;
+            previewBudget.textContent = `${money(total)} estimated`;
+            previewDaily.textContent = `${money(averageStayPerDay)}/day stay`;
+            tripName.placeholder = tripNameForDisplay();
+            budgetReadyCopy.textContent = `Keep ${tripNameForDisplay()} and return to refine it later.`;
             trackAnalyticsMilestone("first_budget_generated");
+            trackAnalyticsMilestone("trip_generated");
+            if (!ownershipObserver) trackAnalyticsMilestone("ownership_prompt_seen");
             trackAnalyticsMilestone("save_cta_viewed");
         }
 
@@ -1463,6 +1546,7 @@
 
     function plannerDraft() {
         return {
+            name: state.name,
             route: state.route.map(city => ({ city_id: city.id, nights: city.nights })),
             travel_style: state.style,
             display_currency: state.currency,
@@ -1524,6 +1608,7 @@
 
         travelStyleHidden.value = state.style;
         displayCurrencyHidden.value = state.currency;
+        tripNameHidden.value = state.name.trim() || (state.route.length ? tripNameForDisplay() : "");
         persistDraft();
     }
 
@@ -1551,6 +1636,10 @@
         if (event.target === dataReportModal) closeDataReportModal();
     });
     saveAuthClose.addEventListener("click", closeSaveAuthModal);
+    saveAuthContinue.addEventListener("click", closeSaveAuthModal);
+    document.querySelectorAll(".save-auth-actions a").forEach(link => {
+        link.addEventListener("click", () => trackAnalyticsMilestone("auth_started"));
+    });
     saveAuthModal.addEventListener("click", event => {
         if (event.target === saveAuthModal) closeSaveAuthModal();
     });
@@ -1567,6 +1656,21 @@
     addAnotherDestination.addEventListener("click", () => {
         searchInput.scrollIntoView({ behavior: "smooth", block: "center" });
         window.setTimeout(() => searchInput.focus(), 250);
+    });
+    const exampleCity = CITY_OPTIONS.find(city => city.name.toLowerCase() === "budapest");
+    if (exampleCity) {
+        exampleCityButton.hidden = false;
+        exampleCityButton.addEventListener("click", () => addCity(exampleCity));
+    }
+    tripName.value = state.name;
+    tripName.addEventListener("input", () => {
+        state.name = tripName.value.slice(0, 200);
+        renderSummary();
+    });
+    tripName.addEventListener("change", () => {
+        if (state.name.trim() && state.name.trim() !== String(INITIAL_TRIP.name || "").trim()) {
+            trackAnalyticsMilestone("trip_renamed");
+        }
     });
 
     document.addEventListener("click", event => {
@@ -1630,11 +1734,12 @@
     if (restoredLocalDraft && IS_AUTHENTICATED) {
         trackAnalyticsMilestone("draft_restored_after_auth");
     }
+    if (ownershipObserver) ownershipObserver.observe(budgetReady);
     render();
 
     if (AUTOSAVE_AFTER_AUTH && restoredLocalDraft && IS_AUTHENTICATED) {
-        saveButton.textContent = "Saving your budget…";
-        mobileSaveButton.textContent = "Saving your budget…";
+        saveButton.textContent = "Keeping your trip…";
+        mobileSaveButton.textContent = "Keeping your trip…";
         window.setTimeout(() => {
             document.getElementById("tripPlannerForm").requestSubmit(saveButton);
         }, 250);
