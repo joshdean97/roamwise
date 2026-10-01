@@ -46,9 +46,21 @@ ALLOWED_EVENTS = {
     "trip_bookmarked",
     "explore_trip_opened",
     "explore_viewed",
+    "walkthrough_started",
+    "walkthrough_destination_seen",
+    "walkthrough_nights_seen",
+    "walkthrough_budget_seen",
+    "walkthrough_completed",
+    "walkthrough_skipped",
 }
 
 VISITOR_MILESTONE_EVENTS = {
+    "walkthrough_started",
+    "walkthrough_destination_seen",
+    "walkthrough_nights_seen",
+    "walkthrough_budget_seen",
+    "walkthrough_completed",
+    "walkthrough_skipped",
     "first_budget_generated",
     "trip_generated",
     "ownership_prompt_seen",

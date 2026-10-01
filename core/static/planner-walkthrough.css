@@ -1,0 +1,47 @@
+.walkthrough-replay {
+    margin: 12px 0 0;
+    padding: 8px 0;
+    border: 0;
+    background: transparent;
+    color: var(--rw-teal-dark);
+    font: inherit;
+    font-size: .85rem;
+    font-weight: 800;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    cursor: pointer;
+}
+.walkthrough-card[hidden] { display: none; }
+.walkthrough-card {
+    position: fixed;
+    z-index: 1000;
+    width: min(340px, calc(100vw - 24px));
+    max-height: calc(100dvh - 24px);
+    overflow: visible;
+    padding: 18px;
+    border: 2px solid var(--rw-teal-dark);
+    border-radius: 16px;
+    background: white;
+    color: var(--rw-ink);
+    box-shadow: 0 12px 40px rgba(16, 62, 64, .22);
+}
+.walkthrough-card .walkthrough-step {
+    margin: 0 0 7px;
+    color: var(--rw-teal-dark);
+    font-size: .72rem;
+    font-weight: 850;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+}
+.walkthrough-card h2 { margin: 0 0 7px; font-size: 1.12rem; }
+.walkthrough-card .walkthrough-copy { margin: 0; font-size: .85rem; line-height: 1.5; }
+.walkthrough-actions { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 14px; }
+.walkthrough-actions button { min-height: 40px; padding: 8px 12px; border-radius: 9px; font: inherit; font-size: .8rem; font-weight: 800; cursor: pointer; }
+.walkthrough-skip { border: 0; background: transparent; color: var(--rw-muted); text-decoration: underline; }
+.walkthrough-next { border: 0; background: var(--rw-teal-dark); color: white; }
+.walkthrough-next[hidden] { display: none; }
+.walkthrough-target { outline: 3px solid #dba246 !important; outline-offset: 5px; scroll-margin: 220px 0; }
+.walkthrough-card::after { content: ""; position: absolute; left: var(--walkthrough-arrow, 30px); width: 12px; height: 12px; background: white; border: solid var(--rw-teal-dark); transform: rotate(45deg); }
+.walkthrough-card[data-placement="above"]::after { bottom: -8px; border-width: 0 2px 2px 0; }
+.walkthrough-card[data-placement="below"]::after { top: -8px; border-width: 2px 0 0 2px; }
+@media (prefers-reduced-motion: reduce) { .walkthrough-target { scroll-behavior: auto; } }

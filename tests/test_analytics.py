@@ -107,6 +107,24 @@ def test_capture_event_keeps_only_safe_primitive_properties(app):
         }
 
 
+@pytest.mark.parametrize("event_name", [
+    "walkthrough_started",
+    "walkthrough_destination_seen",
+    "walkthrough_nights_seen",
+    "walkthrough_budget_seen",
+    "walkthrough_completed",
+    "walkthrough_skipped",
+])
+def test_walkthrough_events_are_visitor_linked_and_deduplicated(app, client, event_name):
+    for _ in range(2):
+        response = client.post("/analytics/event", json={"event": event_name})
+        assert response.status_code == 200
+    with app.app_context():
+        event = AnalyticsEvent.query.filter_by(name=event_name).one()
+        assert event.user_id is None
+        assert event.properties["visitor_id"]
+
+
 def test_capture_event_deduplicates_immediate_authenticated_retries(app):
     with app.app_context():
         assert capture_event(
