@@ -1212,6 +1212,12 @@ def analytics_event():
     event_name = (payload.get("event") or "").strip()
 
     allowed_client_events = {
+        "walkthrough_started",
+        "walkthrough_destination_seen",
+        "walkthrough_nights_seen",
+        "walkthrough_budget_seen",
+        "walkthrough_completed",
+        "walkthrough_skipped",
         "first_city_added",
         "second_city_added",
         "dates_added",

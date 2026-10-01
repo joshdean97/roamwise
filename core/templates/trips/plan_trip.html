@@ -419,6 +419,7 @@
 
 </style>
 
+<link rel="stylesheet" href="{{ url_for('static', filename='planner-walkthrough.css') }}">
 <main class="trip-planner">
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages or fx_limited %}
@@ -447,6 +448,7 @@
                 Add your stops, choose how you travel and LeavePrints will turn the route
                 into a realistic backpacking budget before your bank account gets a surprise.
             </p>
+            <button class="walkthrough-replay" id="replayWalkthrough" type="button">Show me how →</button>
         </div>
 
         <div class="planner-hero-badge">
@@ -719,6 +721,16 @@
     </div>
 </div>
 
+<section class="walkthrough-card" id="plannerWalkthrough" role="region" aria-label="Trip planner walkthrough" aria-live="polite" hidden>
+    <p class="walkthrough-step" id="walkthroughStep"></p>
+    <h2 id="walkthroughTitle"></h2>
+    <p class="walkthrough-copy" id="walkthroughCopy"></p>
+    <div class="walkthrough-actions">
+        <button class="walkthrough-skip" id="walkthroughSkip" type="button">Skip tour</button>
+        <button class="walkthrough-next" id="walkthroughNext" type="button" hidden>Next →</button>
+    </div>
+</section>
+<script src="{{ url_for('static', filename='planner-walkthrough.js') }}"></script>
 <script>
 (() => {
     const FX_RATES = {{ fx_rates|tojson }};
@@ -844,6 +856,7 @@
         departureTransport: normaliseTransportEntry(initialTransport.departure),
         transportLegs: new Map()
     };
+    let walkthrough = null;
 
     (initialTransport.legs || []).forEach(leg => {
         const index = Number(leg.position) - 1;
@@ -1087,6 +1100,7 @@
         const nights = Math.max(1, Math.min(90, Number(value) || 1));
         state.route[index].nights = nights;
         render();
+        walkthrough?.nightsChosen();
     }
 
     function renderSearchResults(query) {
@@ -1225,6 +1239,7 @@
     }
 
     function openDataReportModal(city) {
+        if (walkthrough?.active) walkthrough.finish(false);
         dataReportCity = city;
         dataReportCityName.textContent = `${city.name}, ${city.country}`;
         dataReportCategory.value = "daily_estimate";
@@ -1617,6 +1632,7 @@
     function render() {
         renderRoute();
         renderSummary();
+        walkthrough?.sync();
 
         if (searchInput.value.trim()) {
             renderSearchResults(searchInput.value);
@@ -1709,6 +1725,7 @@
         }
 
         trackAnalyticsMilestone("save_cta_clicked");
+        if (walkthrough?.active) walkthrough.finish(true);
 
         if (!IS_AUTHENTICATED) {
             event.preventDefault();
@@ -1738,6 +1755,11 @@
     }
     if (ownershipObserver) ownershipObserver.observe(budgetReady);
     render();
+    if (window.LeavePrintsWalkthrough) walkthrough = new window.LeavePrintsWalkthrough({
+        hasRoute: () => state.route.length > 0,
+        isEditing: IS_EDITING,
+        track: trackAnalyticsMilestone
+    });
 
     if (AUTOSAVE_AFTER_AUTH && restoredLocalDraft && IS_AUTHENTICATED) {
         saveButton.textContent = "Keeping your trip…";
