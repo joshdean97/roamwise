@@ -1,0 +1,99 @@
+name: Generate LeavePrints reels
+
+on:
+  workflow_dispatch:
+    inputs:
+      batch_date:
+        description: 'Optional UTC date to retry (YYYY-MM-DD); blank means today'
+        type: string
+        required: false
+  schedule:
+    - cron: '17 3 * * *'
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: leaveprints-reel-generator
+  cancel-in-progress: false
+
+jobs:
+  generate:
+    # Explicit opt-in after storage and secrets are configured.
+    if: vars.REELS_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Pick batch date
+        id: batch
+        env:
+          INPUT_DATE: ${{ inputs.batch_date }}
+        run: |
+          python - <<'PY'
+          import datetime, os
+          date = os.environ.get('INPUT_DATE') or datetime.datetime.now(datetime.timezone.utc).date().isoformat()
+          datetime.date.fromisoformat(date)
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as stream:
+              stream.write(f'date={date}\n')
+          PY
+      - name: Install renderer
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y ffmpeg fonts-dejavu-core
+          python -m pip install -r requirements-reels.txt
+      - name: Restore previous attempt for this batch
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BATCH_DATE: ${{ steps.batch.outputs.date }}
+        run: |
+          mkdir -p reel-output
+          python - <<'PY'
+          import json, os, subprocess, urllib.request
+          repo = os.environ['GITHUB_REPOSITORY']
+          name = 'reels-' + os.environ['BATCH_DATE']
+          url = f'https://api.github.com/repos/{repo}/actions/artifacts?name={name}&per_page=100'
+          request = urllib.request.Request(url, headers={'Authorization': 'Bearer ' + os.environ['GH_TOKEN']})
+          with urllib.request.urlopen(request) as response:
+              artifacts = json.load(response)['artifacts']
+          artifacts = [a for a in artifacts if not a['expired']]
+          if artifacts:
+              latest = max(artifacts, key=lambda a: a['id'])
+              run_id = latest['workflow_run']['id']
+              subprocess.run(['gh', 'run', 'download', str(run_id), '--repo', repo,
+                              '--name', name, '--dir', 'reel-output'], check=True)
+          PY
+      - name: Render and enqueue six drafts
+        env:
+          LEAVEPRINTS_URL: ${{ vars.LEAVEPRINTS_URL }}
+          CONTENT_API_KEY: ${{ secrets.CONTENT_API_KEY }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          REEL_STORAGE_ENDPOINT: ${{ secrets.REEL_STORAGE_ENDPOINT }}
+          REEL_STORAGE_BUCKET: ${{ secrets.REEL_STORAGE_BUCKET }}
+          REEL_STORAGE_ACCESS_KEY_ID: ${{ secrets.REEL_STORAGE_ACCESS_KEY_ID }}
+          REEL_STORAGE_SECRET_ACCESS_KEY: ${{ secrets.REEL_STORAGE_SECRET_ACCESS_KEY }}
+          REEL_STORAGE_PUBLIC_URL: ${{ vars.REEL_STORAGE_PUBLIC_URL }}
+          REEL_STORAGE_REGION: ${{ vars.REEL_STORAGE_REGION }}
+        run: python -m reel_generator --output reel-output --publish
+      - name: Preserve batch for downloads and retry
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reels-${{ steps.batch.outputs.date }}
+          path: |
+            reel-output/*.json
+            reel-output/*.txt
+            reel-output/reel-??.mp4
+            reel-output/*.jpg
+          if-no-files-found: ignore
+          retention-days: 2
+      - name: Add measured usage to run summary
+        if: always()
+        run: |
+          if [ -f reel-output/summary.json ]; then
+            cat reel-output/summary.json >> "$GITHUB_STEP_SUMMARY"
+          fi
