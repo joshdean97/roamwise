@@ -31,3 +31,5 @@ backups/
 .DS_Store
 .vscode/
 .idea/
+# Generated reel media and batch checkpoints
+reel-output/
