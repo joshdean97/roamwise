@@ -7,6 +7,33 @@ from urllib.parse import quote, urlencode, urlparse
 from urllib.request import Request, urlopen
 
 
+def failure_detail(error):
+    """Report actionable error codes without logging URLs, keys or raw exceptions."""
+    if isinstance(error, HTTPError):
+        return f"Public media check returned HTTP {error.code}; check the public URL and bucket access"
+    known = {
+        "AccessDenied": "check Object Read & Write permission for the selected R2 bucket",
+        "InvalidAccessKeyId": "check the R2 Access Key ID, not the API token value",
+        "SignatureDoesNotMatch": "check the matching Secret Access Key, endpoint and region",
+        "NoSuchBucket": "check REEL_STORAGE_BUCKET in GitHub Secrets",
+        "InvalidBucketName": "use the bucket name alone, without a URL or path",
+        "ExpiredToken": "replace the expired storage credentials",
+        "RequestTimeTooSkewed": "check the runner clock",
+        "InvalidArgument": "check the storage endpoint and upload configuration",
+    }
+    # Managed uploads wrap ClientError in S3UploadFailedError. Extract only a
+    # recognised code; never echo its message, which may contain credentials.
+    message = str(error)
+    response = getattr(error, "response", {})
+    code = response.get("Error", {}).get("Code") if isinstance(response, dict) else None
+    for candidate, advice in known.items():
+        if code == candidate or f"({candidate})" in message:
+            return f"Storage {candidate}: {advice}"
+    if type(error).__name__ == "S3UploadFailedError":
+        return "Storage upload failed; check the R2 key pair, bucket permission and S3 endpoint"
+    return type(error).__name__
+
+
 def required(name):
     value = os.environ.get(name, "").strip()
     if not value:
