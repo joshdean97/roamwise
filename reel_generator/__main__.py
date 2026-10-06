@@ -7,7 +7,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from .render import DEFAULT_FONT, command, render, validate
-from .services import ContentAPI, ObjectStorage, download, search_clips
+from .services import ContentAPI, ObjectStorage, download, failure_detail, search_clips
 
 
 def write_json(path, data):
@@ -113,7 +113,7 @@ def run(args):
         except Exception as error:
             # Preserve completed files and metadata; never queue a partial batch.
             failures.append(position)
-            print(f"Reel {position} failed ({type(error).__name__}); rerun this output directory to retry")
+            print(f"Reel {position} failed: {failure_detail(error)}; rerun this output directory to retry")
     if failures:
         raise RuntimeError(f"Incomplete batch; failed positions: {failures}")
 
