@@ -7,8 +7,24 @@ import pytest
 
 from reel_generator.__main__ import build_payload, render_id, run
 from reel_generator.render import overlay, portable_text, wrapped_lines
-from reel_generator.services import failure_detail, select_clips
+from reel_generator.services import ObjectStorage, failure_detail, select_clips
 from PIL import Image, ImageDraw, ImageFont
+
+
+def test_public_media_check_uses_cloudflare_compatible_user_agent(tmp_path):
+    from unittest.mock import Mock
+    storage = ObjectStorage.__new__(ObjectStorage)
+    storage.client = Mock()
+    storage.bucket = "test-bucket"
+    storage.public_url = "https://public.example"
+    response = Mock()
+    response.__enter__ = Mock(return_value=SimpleNamespace(status=200))
+    response.__exit__ = Mock(return_value=False)
+    with patch("reel_generator.services.urlopen", return_value=response) as open_url:
+        assert storage.upload(tmp_path / "reel.mp4", "reels/test.mp4") == "https://public.example/reels/test.mp4"
+    request = open_url.call_args.args[0]
+    assert request.get_method() == "HEAD"
+    assert request.get_header("User-agent") == "LeavePrints-Reels/1"
 
 
 def test_storage_diagnostics_do_not_expose_raw_credentials():
