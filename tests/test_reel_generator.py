@@ -67,8 +67,16 @@ def test_clip_selection_excludes_short_landscape_and_duplicates():
         select_clips([video(1, duration=3)])
 
 
-def test_emoji_have_portable_meaning():
-    assert portable_text("🇬🇧 London 🚆 Paris ✈️ Rome") == "[GB] London Train Paris Flight Rome"
+def test_emoji_are_preserved_and_rendered_in_colour(tmp_path):
+    from reel_generator.render import emoji_tile, text_runs
+    text = "🇬🇧 London 🚆 Paris ✈️ Rome 🇦🇱"
+    assert portable_text(text) == text
+    assert [run for run, icon in text_runs(text) if icon] == ["🇬🇧", "🚆", "✈️", "🇦🇱"]
+    for icon in ("🇦🇱", "🚌", "✈️", "👩🏽‍💻"):
+        tile = emoji_tile(icon, 50)
+        assert tile.getbbox()
+        assert any(r != g or g != b for r, g, b, a in tile.get_flattened_data() if a > 200)
+    overlay(text, tmp_path / "emoji.png")
 
 
 def test_long_word_wrap_and_layout_safety(tmp_path):
