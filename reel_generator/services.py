@@ -167,7 +167,7 @@ class ObjectStorage:
             "ContentType": content_type, "CacheControl": "public, max-age=86400"})
         url = self.public_url + "/" + quote(key, safe="/")
         # Ensure the queue receives usable public URLs, not private bucket URLs.
-        with urlopen(Request(url, method="HEAD"), timeout=30) as response:
+        with urlopen(Request(url, method="HEAD", headers={"User-Agent": "LeavePrints-Reels/1"}), timeout=30) as response:
             if response.status != 200:
                 raise RuntimeError("Uploaded media is not publicly accessible")
         return url
