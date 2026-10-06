@@ -23,6 +23,20 @@ def test_storage_diagnostics_do_not_expose_raw_credentials():
     assert "secret" not in failure_detail(HTTPError("https://secret.example", 403, "Forbidden", {}, None))
 
 
+def test_numeric_and_wrapped_client_errors_have_http_status():
+    from boto3.exceptions import S3UploadFailedError
+    from botocore.exceptions import ClientError
+    numeric = S3UploadFailedError("private-key: An error occurred (403) when calling PutObject")
+    assert "HTTP 403" in failure_detail(numeric)
+    assert "private-key" not in failure_detail(numeric)
+    inner = ClientError({"Error": {"Code": "Unrecognised", "Message": "private-key"},
+                         "ResponseMetadata": {"HTTPStatusCode": 501}}, "PutObject")
+    wrapper = S3UploadFailedError("sensitive wrapper message")
+    wrapper.__context__ = inner
+    assert "HTTP 501" in failure_detail(wrapper)
+    assert "private-key" not in failure_detail(wrapper)
+
+
 def video(identifier, duration=10, width=1080, height=1920):
     return {"id": identifier, "duration": duration, "url": f"https://www.pexels.com/video/{identifier}",
             "user": {"name": "Test creator"}, "video_files": [{"file_type": "video/mp4",
