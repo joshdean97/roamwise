@@ -7,8 +7,20 @@ import pytest
 
 from reel_generator.__main__ import build_payload, render_id, run
 from reel_generator.render import overlay, portable_text, wrapped_lines
-from reel_generator.services import select_clips
+from reel_generator.services import failure_detail, select_clips
 from PIL import Image, ImageDraw, ImageFont
+
+
+def test_storage_diagnostics_do_not_expose_raw_credentials():
+    from boto3.exceptions import S3UploadFailedError
+    from urllib.error import HTTPError
+    for code in ("AccessDenied", "SignatureDoesNotMatch", "InvalidAccessKeyId", "NoSuchBucket"):
+        error = S3UploadFailedError(f"sensitive-key: An error occurred ({code}) when calling PutObject")
+        detail = failure_detail(error)
+        assert code in detail
+        assert "sensitive-key" not in detail
+    assert "HTTP 403" in failure_detail(HTTPError("https://secret.example", 403, "Forbidden", {}, None))
+    assert "secret" not in failure_detail(HTTPError("https://secret.example", 403, "Forbidden", {}, None))
 
 
 def video(identifier, duration=10, width=1080, height=1920):
