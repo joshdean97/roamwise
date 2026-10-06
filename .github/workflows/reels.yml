@@ -44,7 +44,7 @@ jobs:
       - name: Install renderer
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y ffmpeg fonts-dejavu-core
+          sudo apt-get install -y ffmpeg fonts-dejavu-core fonts-noto-color-emoji
           python -m pip install -r requirements-reels.txt
       - name: Restore previous attempt for this batch
         env:
