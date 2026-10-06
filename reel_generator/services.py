@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import time
 from pathlib import Path
 from urllib.error import HTTPError, URLError
@@ -29,6 +30,24 @@ def failure_detail(error):
     for candidate, advice in known.items():
         if code == candidate or f"({candidate})" in message:
             return f"Storage {candidate}: {advice}"
+    # Boto3 preserves the original ClientError as the wrapper's cause/context.
+    # Some R2 responses use numeric codes or codes outside the recognised list.
+    cause = error
+    seen = set()
+    while cause is not None and id(cause) not in seen:
+        seen.add(id(cause))
+        response = getattr(cause, "response", {})
+        if isinstance(response, dict):
+            code = response.get("Error", {}).get("Code")
+            if code in known:
+                return f"Storage {code}: {known[code]}"
+            status = response.get("ResponseMetadata", {}).get("HTTPStatusCode")
+            if isinstance(status, int) and 400 <= status <= 599:
+                return f"Storage upload returned HTTP {status}; check the R2 credentials, bucket and endpoint"
+        cause = cause.__cause__ or cause.__context__
+    numeric = re.search(r"An error occurred \(([45][0-9]{2})\)", message)
+    if numeric:
+        return f"Storage upload returned HTTP {numeric[1]}; check the R2 credentials, bucket and endpoint"
     if type(error).__name__ == "S3UploadFailedError":
         return "Storage upload failed; check the R2 key pair, bucket permission and S3 endpoint"
     return type(error).__name__
