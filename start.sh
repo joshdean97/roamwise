@@ -9,6 +9,9 @@ flask --app app db upgrade
 echo "Checking city seed data..."
 python seed_city_data.py
 
+echo "Checking reviewed private content trips..."
+python seed_content_trips.py
+
 echo "Starting onboarding email worker..."
 flask --app app onboarding-email-worker &
 

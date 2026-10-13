@@ -64,6 +64,14 @@ class Trip(db.Model):
         server_default=db.false(),
     )
 
+    # Only explicitly curated content templates may enter the reels API while
+    # private. Ordinary private user trips remain excluded.
+    is_content_template = db.Column(
+        db.Boolean, nullable=False, default=False, server_default=db.false(),
+    )
+    content_source_key = db.Column(db.String(100), unique=True, nullable=True)
+    content_research = db.Column(db.JSON, nullable=True)
+
     # Attribution for routes that started from somebody else's public Print.
     # If the source is later deleted, the copied trip remains but the link back
     # to the original disappears.
