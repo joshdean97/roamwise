@@ -6,12 +6,14 @@ from urllib.parse import urlparse
 
 from flask import Blueprint, current_app, jsonify, request
 from sqlalchemy.orm import selectinload
+from sqlalchemy import and_, or_
 
 from core.extensions import db, limiter
 from core.models.city import City
 from core.models.content_draft import ACTIVE_DRAFT_STATUSES, ContentDraft
 from core.models.content_post import ContentPost
 from core.models.trip import Trip, TripLeg, TripStop
+from core.models.user import User
 
 
 content_api_bp = Blueprint(
@@ -162,7 +164,16 @@ def _serialize_draft(draft):
 
 def _public_trip_url(trip):
     base_url = (current_app.config.get("PUBLIC_APP_URL") or request.url_root).rstrip("/")
+    if not trip.is_public or not trip.share_token:
+        return f"{base_url}/plan-trip"
     return f"{base_url}/share/{trip.share_token}"
+
+
+def _content_trip_eligible():
+    return or_(
+        and_(Trip.is_public.is_(True), Trip.share_token.isnot(None)),
+        and_(Trip.is_content_template.is_(True), Trip.user.has(User.is_admin.is_(True))),
+    )
 
 
 def _money(trip, value):
@@ -269,6 +280,19 @@ def _serialize_trip(trip):
         f"Build your own budget: {_public_trip_url(trip)}",
     ])
 
+    if trip.is_content_template:
+        # Research templates are estimates, never a claim of actual spending.
+        overlay_text = overlay_text.replace(" days", " nights").replace(" day:", " night:")
+        overlay_text = overlay_text.replace("Hostels + food + daily spending", "Estimated hostels + daily spending\nIntercity transport included")
+        caption = caption.replace(f"I planned {nights} days", f"Estimated {nights}-night trip")
+        caption += (
+            "\n\nPlanning estimate per person. Transport checked 13 Oct 2026; "
+            "fares vary by date, availability and class. Hostelworld dorm "
+            "starting prices and Numbeo monthly living costs underpin new "
+            "city budgets. Existing city estimates may be older. "
+            "International flights, visas and paid attractions are excluded."
+        )
+
     return {
         "id": trip.id,
         "title": trip.name,
@@ -290,8 +314,15 @@ def _serialize_trip(trip):
             "per_day": round(total / nights, 2) if nights else 0,
         },
         "share_url": _public_trip_url(trip),
+        "is_public": bool(trip.is_public),
+        "is_content_template": bool(trip.is_content_template),
+        "research": trip.content_research if trip.is_content_template else None,
         "reel": {
-            "headline": f"{nights} days across {route} for {symbol}{total:.0f}",
+            "headline": (
+                f"Estimated {nights} nights across {route} for {symbol}{total:.0f}"
+                if trip.is_content_template else
+                f"{nights} days across {route} for {symbol}{total:.0f}"
+            ),
             "route": route,
             "budget_label": f"{symbol}{total:.0f} total",
             "per_day_label": (
@@ -335,8 +366,7 @@ def list_content_trips():
             selectinload(Trip.legs).selectinload(TripLeg.to_city),
         )
         .filter(
-            Trip.is_public.is_(True),
-            Trip.share_token.isnot(None),
+            _content_trip_eligible(),
             Trip.stops.any(),
         )
     )
@@ -383,11 +413,10 @@ def create_reel_drafts():
 
     trip = Trip.query.filter(
         Trip.id == trip_id,
-        Trip.is_public.is_(True),
-        Trip.share_token.isnot(None),
+        _content_trip_eligible(),
     ).first()
     if not trip:
-        return _json_error("Public trip not found", 404)
+        return _json_error("Content trip not found", 404)
 
     renders = payload.get("renders")
     if not isinstance(renders, list) or len(renders) != EXPECTED_REELS_PER_BATCH:
@@ -524,12 +553,11 @@ def create_reel_drafts():
 def mark_content_trip_used(trip_id):
     trip = Trip.query.filter(
         Trip.id == trip_id,
-        Trip.is_public.is_(True),
-        Trip.share_token.isnot(None),
+        _content_trip_eligible(),
     ).first()
 
     if not trip:
-        return _json_error("Public trip not found", 404)
+        return _json_error("Content trip not found", 404)
 
     payload = request.get_json(silent=True)
     if payload is None:

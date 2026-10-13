@@ -106,3 +106,18 @@ Content-Type: application/json
 `posted_at` defaults to the current time. The other optional tracking fields
 can be omitted. After this succeeds, the trip is excluded from future
 `unused=true` requests for the same platform and format.
+
+# Private research templates
+
+The content API also accepts explicitly opted-in `is_content_template` trips
+owned by an administrator. Ordinary private trips remain excluded. These
+templates have `is_public=false` and no share token, so Explore and public
+sharing cannot expose them. Their reel captions link to `/plan-trip` and
+describe the budget as an estimate. Their `research` payload retains transport
+sources, fare currencies and ranges, FX date, Hostelworld dorm samples and
+Numbeo living-cost sources, including explicit low-confidence proxies.
+
+The reviewed October 2026 collection imports 50 private three-stop templates
+for the existing `joshtravels` internal administrator. Startup imports are
+transactional and idempotent; established city prices are preserved. The
+source dataset is `data/reel-trips-2026-10.json`.

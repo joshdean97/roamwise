@@ -1,0 +1,5006 @@
+{
+  "checked_at": "2026-10-13",
+  "collection": "50 private reel research templates",
+  "fx": {
+    "source": "https://open.er-api.com/v6/latest/GBP",
+    "updated_at": "Mon, 12 Oct 2026 23:57:31 +0000",
+    "base": "GBP",
+    "rates": {
+      "EUR": 1.18326,
+      "GBP": 1,
+      "IDR": 23676.509562,
+      "JPY": 209.55408,
+      "KRW": 1764.551421,
+      "LKR": 437.572282,
+      "MAD": 12.8464,
+      "MYR": 5.404197,
+      "THB": 44.442838,
+      "TRY": 65.226984,
+      "TWD": 42.264731,
+      "USD": 1.321975,
+      "VND": 34239.388365
+    }
+  },
+  "exclusions": [
+    "International arrival/departure flights",
+    "Visas",
+    "Travel insurance",
+    "Paid attractions",
+    "Local transfers except where explicitly budgeted"
+  ],
+  "countries": {
+    "TH": {
+      "name": "Thailand",
+      "currency_code": "THB",
+      "region": "Asia",
+      "is_schengen": false,
+      "visa_buffer": false
+    },
+    "VN": {
+      "name": "Vietnam",
+      "currency_code": "VND",
+      "region": "Asia",
+      "is_schengen": false,
+      "visa_buffer": false
+    },
+    "MY": {
+      "name": "Malaysia",
+      "currency_code": "MYR",
+      "region": "Asia",
+      "is_schengen": false,
+      "visa_buffer": false
+    },
+    "TW": {
+      "name": "Taiwan",
+      "currency_code": "TWD",
+      "region": "Asia",
+      "is_schengen": false,
+      "visa_buffer": false
+    },
+    "JP": {
+      "name": "Japan",
+      "currency_code": "JPY",
+      "region": "Asia",
+      "is_schengen": false,
+      "visa_buffer": false
+    },
+    "KR": {
+      "name": "South Korea",
+      "currency_code": "KRW",
+      "region": "Asia",
+      "is_schengen": false,
+      "visa_buffer": false
+    },
+    "ID": {
+      "name": "Indonesia",
+      "currency_code": "IDR",
+      "region": "Asia",
+      "is_schengen": false,
+      "visa_buffer": false
+    },
+    "LK": {
+      "name": "Sri Lanka",
+      "currency_code": "LKR",
+      "region": "Asia",
+      "is_schengen": false,
+      "visa_buffer": false
+    }
+  },
+  "cities": [
+    {
+      "name": "Ankara",
+      "country_code": "TR",
+      "hostel_gbp": 10.14,
+      "living_monthly_gbp": 527.2,
+      "numbeo": {
+        "url": "https://www.numbeo.com/cost-of-living/in/Ankara?displayCurrency=GBP",
+        "scope": "city",
+        "checked_at": "2026-10-13",
+        "monthly_gbp": 527.2
+      },
+      "hostelworld": {
+        "url": "https://www.hostelworld.com/hostels/europe/turkey/ankara/",
+        "scope": "mean of up to five highest-rated displayed dorm starting fares; 8.0+ where 8.5+ unavailable; obvious anomalous prices excluded",
+        "samples": [
+          {
+            "hostel": "Deeps Hostel Ankara 2",
+            "rating": 8.2,
+            "advertised_dorm_from": 12.0,
+            "currency": "EUR",
+            "gbp": 10.14
+          }
+        ],
+        "checked_at": "2026-10-13",
+        "dated_booking_quote": false
+      }
+    },
+    {
+      "name": "Antalya",
+      "country_code": "TR",
+      "hostel_gbp": 10.99,
+      "living_monthly_gbp": 496.3,
+      "numbeo": {
+        "url": "https://www.numbeo.com/cost-of-living/in/Antalya?displayCurrency=GBP",
+        "scope": "city",
+        "checked_at": "2026-10-13",
+        "monthly_gbp": 496.3
+      },
+      "hostelworld": {
+        "url": "https://www.hostelworld.com/hostels/europe/turkey/antalya/",
+        "scope": "mean of up to five highest-rated displayed dorm starting fares; 8.0+ where 8.5+ unavailable; obvious anomalous prices excluded",
+        "samples": [
+          {
+            "hostel": "Orange Beach Camp Karavan Club",
+            "rating": 10.0,
+            "advertised_dorm_from": 18.0,
+            "currency": "EUR",
+            "gbp": 15.21
+          },
+          {
+            "hostel": "Be Bold Hostel",
+            "rating": 9.6,
+            "advertised_dorm_from": 15.0,
+            "currency": "EUR",
+            "gbp": 12.68
+          },
+          {
+            "hostel": "CityHub",
+            "rating": 9.6,
+            "advertised_dorm_from": 9.02,
+            "currency": "EUR",
+            "gbp": 7.62
+          },
+          {
+            "hostel": "Flaneur Hostel",
+            "rating": 9.6,
+            "advertised_dorm_from": 10.0,
+            "currency": "EUR",
+            "gbp": 8.45
+          }
+        ],
+        "checked_at": "2026-10-13",
+        "dated_booking_quote": false
+      }
+    },
+    {
+      "name": "Ayutthaya",
+      "country_code": "TH",
+      "hostel_gbp": 6.37,
+      "living_monthly_gbp": 527.5,
+      "numbeo": {
+        "url": "https://www.numbeo.com/cost-of-living/in/Bangkok?displayCurrency=GBP",
+        "monthly_living_gbp": 527.5,
+        "checked_at": "2026-10-13",
+        "scope": "nearby city proxy",
+        "proxy_city": "Bangkok",
+        "proxy_country": "Thailand",
+        "monthly_gbp": 527.5,
+        "reason": "Numbeo city-level single-person summary unavailable"
+      },
+      "hostelworld": {
+        "url": "https://www.hostelworld.com/hostels/asia/thailand/ayutthaya/",
+        "scope": "mean of up to five highest-rated displayed dorm starting fares; 8.0+ where 8.5+ unavailable; obvious anomalous prices excluded",
+        "samples": [
+          {
+            "hostel": "Nakara Hostel Ayutthaya",
+            "rating": 9.9,
+            "advertised_dorm_from": 7.54,
+            "currency": "EUR",
+            "gbp": 6.37
+          },
+          {
+            "hostel": "Plus Hostel Ayutthaya",
+            "rating": 9.7,
+            "advertised_dorm_from": 8.03,
+            "currency": "EUR",
+            "gbp": 6.79
+          },
+          {
+            "hostel": "Banchan Hostel Ayutthaya",
+            "rating": 9.5,
+            "advertised_dorm_from": 6.47,
+            "currency": "EUR",
+            "gbp": 5.47
+          },
+          {
+            "hostel": "Early Bird Hostel Ayutthaya",
+            "rating": 9.1,
+            "advertised_dorm_from": 8.08,
+            "currency": "EUR",
+            "gbp": 6.83
+          }
+        ],
+        "checked_at": "2026-10-13",
+        "dated_booking_quote": false
+      }
+    },
+    {
+      "name": "Bangkok",
+      "country_code": "TH",
+      "hostel_gbp": 9.88,
+      "living_monthly_gbp": 527.5,
+      "numbeo": {
+        "url": "https://www.numbeo.com/cost-of-living/in/Bangkok?displayCurrency=GBP",
+        "scope": "city",
+        "checked_at": "2026-10-13",
+        "monthly_gbp": 527.5
+      },
+      "hostelworld": {
+        "url": "https://www.hostelworld.com/hostels/asia/thailand/bangkok/",
+        "scope": "mean of up to five highest-rated displayed dorm starting fares; 8.0+ where 8.5+ unavailable; obvious anomalous prices excluded",
+        "samples": [
+          {
+            "hostel": "Arta Stay",
+            "rating": 10.0,
+            "advertised_dorm_from": 8.9,
+            "currency": "EUR",
+            "gbp": 7.52
+          },
+          {
+            "hostel": "Aura Hostel",
+            "rating": 10.0,
+            "advertised_dorm_from": 10.51,
+            "currency": "EUR",
+            "gbp": 8.88
+          },
+          {
+            "hostel": "Baanwanchart Bangkok Residences",
+            "rating": 10.0,
+            "advertised_dorm_from": 16.17,
+            "currency": "EUR",
+            "gbp": 13.67
+          },
+          {
+            "hostel": "Barn & Bed Bangkok",
+            "rating": 10.0,
+            "advertised_dorm_from": 13.47,
+            "currency": "EUR",
+            "gbp": 11.38
+          },
+          {
+            "hostel": "Crew Bangkok Hostel",
+            "rating": 10.0,
+            "advertised_dorm_from": 9.43,
+            "currency": "EUR",
+            "gbp": 7.97
+          }
+        ],
+        "checked_at": "2026-10-13",
+        "dated_booking_quote": false
+      }
+    },
+    {
+      "name": "Batumi",
+      "country_code": "GE",
+      "hostel_gbp": 7.5,
+      "living_monthly_gbp": 459.9,
+      "numbeo": {
+        "url": "https://www.numbeo.com/cost-of-living/in/Batumi?displayCurrency=GBP",
+        "scope": "city",
+        "checked_at": "2026-10-13",
+        "monthly_gbp": 459.9
+      },
+      "hostelworld": {
+        "url": "https://www.hostelworld.com/hostels/europe/georgia/batumi/",
+        "scope": "mean of up to five highest-rated displayed dorm starting fares; 8.0+ where 8.5+ unavailable; obvious anomalous prices excluded",
+        "samples": [
+          {
+            "hostel": "Nari Hostel",
+            "rating": 10.0,
+            "advertised_dorm_from": 8.74,
+            "currency": "EUR",
+            "gbp": 7.39
+          },
+          {
+            "hostel": "Hostel 47",
+            "rating": 9.9,
+            "advertised_dorm_from": 9.02,
+            "currency": "EUR",
+            "gbp": 7.62
+          }
+        ],
+        "checked_at": "2026-10-13",
+        "dated_booking_quote": false
+      }
+    },
+    {
+      "name": "Bukhara",
+      "country_code": "UZ",
+      "hostel_gbp": 7.37,
+      "living_monthly_gbp": 403.29,
+      "numbeo": {
+        "url": "https://www.numbeo.com/cost-of-living/in/Tashkent",
+        "monthly_living_gbp": 403.29,
+        "checked_at": "2026-10-13",
+        "scope": "nearby city proxy",
+        "proxy_city": "Tashkent",
+        "data_as_of": "2026-05-30",
+        "corroborating_url": "https://kun.uz/en/news/2026/05/30/how-much-does-it-cost-to-live-comfortably-in-tashkent-without-rent-2b6a03",
+        "verification": "Numbeo estimate quoted by Kun.uz; direct live summary unavailable during research",
+        "original_monthly": 6343000,
+        "currency": "UZS",
+        "proxy_country": "Uzbekistan",
+        "monthly_gbp": 403.29,
+        "reason": "Numbeo city-level single-person summary unavailable"
+      },
+      "hostelworld": {
+        "url": "https://www.hostelworld.com/hostels/asia/uzbekistan/bukhara/",
+        "scope": "mean of up to five highest-rated displayed dorm starting fares; 8.0+ where 8.5+ unavailable; obvious anomalous prices excluded",
+        "samples": [
+          {
+            "hostel": "Dervish Hostel",
+            "rating": 9.6,
+            "advertised_dorm_from": 9.92,
+            "currency": "EUR",
+            "gbp": 8.38
+          },
+          {
+            "hostel": "Aura Backpackers Bukhara",
+            "rating": 9.1,
+            "advertised_dorm_from": 8.12,
+            "currency": "EUR",
+            "gbp": 6.86
+          },
+          {
+            "hostel": "Hostel Payraviy Guest House",
+            "rating": 9.0,
+            "advertised_dorm_from": 8.12,
+            "currency": "EUR",
+            "gbp": 6.86
+          }
+        ],
+        "checked_at": "2026-10-13",
+        "dated_booking_quote": false
+      }
+    },
+    {
+      "name": "Busan",
+      "country_code": "KR",
+      "hostel_gbp": 14.17,
+      "living_monthly_gbp": 875.9,
+      "numbeo": {
+        "url": "https://www.numbeo.com/cost-of-living/in/Busan?displayCurrency=GBP",
+        "scope": "city",
+        "checked_at": "2026-10-13",
+        "monthly_gbp": 875.9
+      },
+      "hostelworld": {
+        "url": "https://www.hostelworld.com/hostels/asia/south-korea/busan/",
+        "scope": "mean of up to five highest-rated displayed dorm starting fares; 8.0+ where 8.5+ unavailable; obvious anomalous prices excluded",
+        "samples": [
+          {
+            "hostel": "Nomad Live Hostel",
+            "rating": 9.6,
+            "advertised_dorm_from": 22.26,
+            "currency": "EUR",
+            "gbp": 18.81
+          },
+          {
+            "hostel": "Stay Dearmoon",
+            "rating": 9.5,
+            "advertised_dorm_from": 17.84,
+            "currency": "EUR",
+            "gbp": 15.08
+          },
+          {
+            "hostel": "Blue Backpackers Hostel",
+            "rating": 9.2,
+            "advertised_dorm_from": 14.81,
+            "currency": "EUR",
+            "gbp": 12.52
+          },
+          {
+            "hostel": "Funwave Guest House in Busan",
+            "rating": 9.2,
+            "advertised_dorm_from": 15.48,
+            "currency": "EUR",
+            "gbp": 13.08
+          },
+          {
+            "hostel": "Guest House Dear Moon",
+            "rating": 8.9,
+            "advertised_dorm_from": 13.46,
+            "currency": "EUR",
+            "gbp": 11.38
+          }
+        ],
+        "checked_at": "2026-10-13",
+        "dated_booking_quote": false
+      }
+    },
+    {
+      "name": "Casablanca",
+      "country_code": "MA",
+      "hostel_gbp": 15.21,
+      "living_monthly_gbp": 414.4,
+      "numbeo": {
+        "url": "https://www.numbeo.com/cost-of-living/in/Casablanca?displayCurrency=GBP",
+        "scope": "city",
+        "checked_at": "2026-10-13",
+        "monthly_gbp": 414.4
+      },
+      "hostelworld": {
+        "url": "https://www.hostelworld.com/hostels/africa/morocco/casablanca/",
+        "scope": "mean of up to five highest-rated displayed dorm starting fares; 8.0+ where 8.5+ unavailable; obvious anomalous prices excluded",
+        "samples": [
+          {
+            "hostel": "LHostel à Casablanca",
+            "rating": 9.1,
+            "advertised_dorm_from": 18.0,
+            "currency": "EUR",
+            "gbp": 15.21
+          }
+        ],
+        "checked_at": "2026-10-13",
+        "dated_booking_quote": false
+      }
+    },
+    {
+      "name": "Chiang Mai",
+      "country_code": "TH",
+      "hostel_gbp": 5.22,
+      "living_monthly_gbp": 406.9,
+      "numbeo": {
+        "url": "https://www.numbeo.com/cost-of-living/in/Chiang-Mai?displayCurrency=GBP",
+        "scope": "city",
+        "checked_at": "2026-10-13",
+        "monthly_gbp": 406.9
+      },
+      "hostelworld": {
+        "url": "https://www.hostelworld.com/hostels/asia/thailand/chiang-mai/",
+        "scope": "mean of up to five highest-rated displayed dorm starting fares; 8.0+ where 8.5+ unavailable; obvious anomalous prices excluded",
+        "samples": [
+          {
+            "hostel": "168 Chiangmai Guesthouse",
+            "rating": 10.0,
+            "advertised_dorm_from": 2.83,
+            "currency": "EUR",
+            "gbp": 2.39
+          },
+          {
+            "hostel": "Bloomz Hostel",
+            "rating": 10.0,
+            "advertised_dorm_from": 9.7,
+            "currency": "EUR",
+            "gbp": 8.2
+          },
+          {
+            "hostel": "Daizy House",
+            "rating": 10.0,
+            "advertised_dorm_from": 6.74,
+            "currency": "EUR",
+            "gbp": 5.7
+          },
+          {
+            "hostel": "Giant Hostel",
+            "rating": 10.0,
+            "advertised_dorm_from": 4.85,
+            "currency": "EUR",
+            "gbp": 4.1
+          },
+          {
+            "hostel": "Like Home - Chiang Mai",
+            "rating": 10.0,
+            "advertised_dorm_from": 6.74,
+            "currency": "EUR",
+            "gbp": 5.7
+          }
+        ],
+        "checked_at": "2026-10-13",
+        "dated_booking_quote": false
+      }
+    },
+    {
+      "name": "Chumphon",
+      "country_code": "TH",
+      "hostel_gbp": 6.6,
+      "living_monthly_gbp": 527.5,
+      "numbeo": {
+        "url": "https://www.numbeo.com/cost-of-living/in/Bangkok?displayCurrency=GBP",
+        "monthly_living_gbp": 527.5,
+        "checked_at": "2026-10-13",
+        "scope": "nearby city proxy",
+        "proxy_city": "Bangkok",
+        "proxy_country": "Thailand",
+        "monthly_gbp": 527.5,
+        "reason": "Numbeo city-level single-person summary unavailable"
+      },
+      "hostelworld": {
+        "url": "https://www.hostelworld.com/hostels/asia/thailand/chumphon/",
+        "scope": "mean of up to five highest-rated displayed dorm starting fares; 8.0+ where 8.5+ unavailable; obvious anomalous prices excluded",
+        "samples": [
+          {
+            "hostel": "Naisang Hostel",
+            "rating": 10.0,
+            "advertised_dorm_from": 7.81,
+            "currency": "EUR",
+            "gbp": 6.6
+          },
+          {
+            "hostel": "Salsa Hostel",
+            "rating": 9.8,
+            "advertised_dorm_from": 7.54,
+            "currency": "EUR",
+            "gbp": 6.37
+          },
+          {
+            "hostel": "Willow Pillow Guest House & Poshtel",
+            "rating": 9.1,
+            "advertised_dorm_from": 8.08,
+            "currency": "EUR",
+            "gbp": 6.83
+          }
+        ],
+        "checked_at": "2026-10-13",
+        "dated_booking_quote": false
+      }
+    },
+    {
+      "name": "Colombo",
+      "country_code": "LK",
+      "hostel_gbp": 7.07,
+      "living_monthly_gbp": 382.2,
+      "numbeo": {
+        "url": "https://www.numbeo.com/cost-of-living/in/Colombo?displayCurrency=GBP",
+        "scope": "city",
+        "checked_at": "2026-10-13",
+        "monthly_gbp": 382.2
+      },
+      "hostelworld": {
+        "url": "https://www.hostelworld.com/hostels/asia/sri-lanka/colombo/",
+        "scope": "mean of up to five highest-rated displayed dorm starting fares; 8.0+ where 8.5+ unavailable; obvious anomalous prices excluded",
+        "samples": [
+          {
+            "hostel": "Alma Hostel - Colombo",
+            "rating": 9.4,
+            "advertised_dorm_from": 10.82,
+            "currency": "EUR",
+            "gbp": 9.14
+          },
+          {
+            "hostel": "Colombo  Mount  Hostel",
+            "rating": 9.4,
+            "advertised_dorm_from": 6.0,
+            "currency": "EUR",
+            "gbp": 5.07
+          },
+          {
+            "hostel": "Ceylon StayZ",
+            "rating": 9.2,
+            "advertised_dorm_from": 7.21,
+            "currency": "EUR",
+            "gbp": 6.09
+          },
+          {
+            "hostel": "Clock Inn Colombo",
+            "rating": 9.1,
+            "advertised_dorm_from": 9.72,
+            "currency": "EUR",
+            "gbp": 8.21
+          },
+          {
+            "hostel": "Colombo Beach Hostel",
+            "rating": 9.1,
+            "advertised_dorm_from": 8.12,
+            "currency": "EUR",
+            "gbp": 6.86
+          }
+        ],
+        "checked_at": "2026-10-13",
+        "dated_booking_quote": false
+      }
+    },
+    {
+      "name": "Da Lat",
+      "country_code": "VN",
+      "hostel_gbp": 2.05,
+      "living_monthly_gbp": 371.8,
+      "numbeo": {
+        "url": "https://www.numbeo.com/cost-of-living/in/Ho-Chi-Minh-City?displayCurrency=GBP",
+        "monthly_living_gbp": 371.8,
+        "checked_at": "2026-10-13",
+        "scope": "nearby city proxy",
+        "proxy_city": "Ho Chi Minh City",
+        "proxy_country": "Vietnam",
+        "monthly_gbp": 371.8,
+        "reason": "Numbeo city-level single-person summary unavailable"
+      },
+      "hostelworld": {
+        "url": "https://www.hostelworld.com/hostels/asia/vietnam/dalat/",
+        "scope": "mean of up to five highest-rated displayed dorm starting fares; 8.0+ where 8.5+ unavailable; obvious anomalous prices excluded",
+        "samples": [
+          {
+            "hostel": "Dalat Central Stay",
+            "rating": 9.7,
+            "advertised_dorm_from": 1.8,
+            "currency": "EUR",
+            "gbp": 1.52
+          },
+          {
+            "hostel": "Dalat May House",
+            "rating": 9.7,
+            "advertised_dorm_from": 2.61,
+            "currency": "EUR",
+            "gbp": 2.21
+          },
+          {
+            "hostel": "Mooka's Home",
+            "rating": 9.6,
+            "advertised_dorm_from": 3.49,
+            "currency": "EUR",
+            "gbp": 2.95
+          },
+          {
+            "hostel": "Dalat Family Hostel",
+            "rating": 9.5,
+            "advertised_dorm_from": 1.8,
+            "currency": "EUR",
+            "gbp": 1.52
+          }
+        ],
+        "checked_at": "2026-10-13",
+        "dated_booking_quote": false
+      }
+    },
+    {
+      "name": "Da Nang",
+      "country_code": "VN",
+      "hostel_gbp": 9.25,
+      "living_monthly_gbp": 338.6,
+      "numbeo": {
+        "url": "https://www.numbeo.com/cost-of-living/in/Da-Nang?displayCurrency=GBP",
+        "scope": "city",
+        "checked_at": "2026-10-13",
+        "monthly_gbp": 338.6
+      },
+      "hostelworld": {
+        "url": "https://www.hostelworld.com/hostels/asia/vietnam/da-nang/",
+        "scope": "mean of up to five highest-rated displayed dorm starting fares; 8.0+ where 8.5+ unavailable; obvious anomalous prices excluded",
+        "samples": [
+          {
+            "hostel": "Kidona's House",
+            "rating": 10.0,
+            "advertised_dorm_from": 4.88,
+            "currency": "EUR",
+            "gbp": 4.12
+          },
+          {
+            "hostel": "The Glomad Hostel Danang by DS",
+            "rating": 10.0,
+            "advertised_dorm_from": 27.88,
+            "currency": "EUR",
+            "gbp": 23.56
+          },
+          {
+            "hostel": "A Danang Beach Hotel",
+            "rating": 9.7,
+            "advertised_dorm_from": 6.97,
+            "currency": "EUR",
+            "gbp": 5.89
+          },
+          {
+            "hostel": "D.TRI hostel",
+            "rating": 9.7,
+            "advertised_dorm_from": 7.32,
+            "currency": "EUR",
+            "gbp": 6.19
+          },
+          {
+            "hostel": "Dorm Beachside Da Nang by Haviland",
+            "rating": 9.3,
+            "advertised_dorm_from": 7.7,
+            "currency": "EUR",
+            "gbp": 6.51
+          }
+        ],
+        "checked_at": "2026-10-13",
+        "dated_booking_quote": false
+      }
+    },
+    {
+      "name": "Faro",
+      "country_code": "PT",
+      "hostel_gbp": 20.76,
+      "living_monthly_gbp": 554.3,
+      "numbeo": {
+        "url": "https://www.numbeo.com/cost-of-living/in/Faro?displayCurrency=GBP",
+        "scope": "city",
+        "checked_at": "2026-10-13",
+        "monthly_gbp": 554.3
+      },
+      "hostelworld": {
+        "url": "https://www.hostelworld.com/hostels/europe/portugal/faro/",
+        "scope": "mean of up to five highest-rated displayed dorm starting fares; 8.0+ where 8.5+ unavailable; obvious anomalous prices excluded",
+        "samples": [
+          {
+            "hostel": "Faro Coast",
+            "rating": 10.0,
+            "advertised_dorm_from": 14.0,
+            "currency": "EUR",
+            "gbp": 11.83
+          },
+          {
+            "hostel": "Casa da Madalena Backpackers Hostel",
+            "rating": 9.9,
+            "advertised_dorm_from": 25.0,
+            "currency": "EUR",
+            "gbp": 21.13
+          },
+          {
+            "hostel": "Wax Hostel",
+            "rating": 9.9,
+            "advertised_dorm_from": 31.05,
+            "currency": "EUR",
+            "gbp": 26.24
+          },
+          {
+            "hostel": "Pirate Backpackers Faro",
+            "rating": 9.7,
+            "advertised_dorm_from": 30.0,
+            "currency": "EUR",
+            "gbp": 25.35
+          },
+          {
+            "hostel": "Tilia Hostel",
+            "rating": 9.5,
+            "advertised_dorm_from": 22.77,
+            "currency": "EUR",
+            "gbp": 19.24
+          }
+        ],
+        "checked_at": "2026-10-13",
+        "dated_booking_quote": false
+      }
+    },
+    {
+      "name": "Galle",
+      "country_code": "LK",
+      "hostel_gbp": 9.09,
+      "living_monthly_gbp": 382.2,
+      "numbeo": {
+        "url": "https://www.numbeo.com/cost-of-living/in/Colombo?displayCurrency=GBP",
+        "monthly_living_gbp": 382.2,
+        "checked_at": "2026-10-13",
+        "scope": "nearby city proxy",
+        "proxy_city": "Colombo",
+        "proxy_country": "Sri Lanka",
+        "monthly_gbp": 382.2,
+        "reason": "Numbeo city-level single-person summary unavailable"
+      },
+      "hostelworld": {
+        "url": "https://www.hostelworld.com/hostels/asia/sri-lanka/galle/",
+        "scope": "mean of up to five highest-rated displayed dorm starting fares; 8.0+ where 8.5+ unavailable; obvious anomalous prices excluded",
+        "samples": [
+          {
+            "hostel": "Surf & Zen Conomad - Habaraduwa",
+            "rating": 10.0,
+            "advertised_dorm_from": 13.53,
+            "currency": "EUR",
+            "gbp": 11.43
+          },
+          {
+            "hostel": "Old Parkland Hostel",
+            "rating": 9.9,
+            "advertised_dorm_from": 5.31,
+            "currency": "EUR",
+            "gbp": 4.49
+          },
+          {
+            "hostel": "Tanty’s Hostel",
+            "rating": 9.9,
+            "advertised_dorm_from": 3.61,
+            "currency": "EUR",
+            "gbp": 3.05
+          },
+          {
+            "hostel": "The Bunkyard Galle",
+            "rating": 9.7,
+            "advertised_dorm_from": 13.28,
+            "currency": "EUR",
+            "gbp": 11.22
+          },
+          {
+            "hostel": "Snooze Station by Sydney Galle",
+            "rating": 8.9,
+            "advertised_dorm_from": 18.03,
+            "currency": "EUR",
+            "gbp": 15.24
+          }
+        ],
+        "checked_at": "2026-10-13",
+        "dated_booking_quote": false
+      }
+    },
+    {
+      "name": "George Town",
+      "country_code": "MY",
+      "hostel_gbp": 6.62,
+      "living_monthly_gbp": 393.0,
+      "numbeo": {
+        "url": "https://www.numbeo.com/cost-of-living/in/Penang?displayCurrency=GBP",
+        "scope": "city",
+        "checked_at": "2026-10-13",
+        "monthly_gbp": 393.0
+      },
+      "hostelworld": {
+        "url": "https://www.hostelworld.com/hostels/asia/malaysia/penang/",
+        "scope": "mean of up to five highest-rated displayed dorm starting fares; 8.0+ where 8.5+ unavailable; obvious anomalous prices excluded",
+        "samples": [
+          {
+            "hostel": "No Plans No Complaints Backpackers Hostel",
+            "rating": 9.7,
+            "advertised_dorm_from": 4.06,
+            "currency": "EUR",
+            "gbp": 3.43
+          },
+          {
+            "hostel": "Some Place Else",
+            "rating": 9.7,
+            "advertised_dorm_from": 9.94,
+            "currency": "EUR",
+            "gbp": 8.4
+          },
+          {
+            "hostel": "EZ Social Hostel George town, Penang",
+            "rating": 9.5,
+            "advertised_dorm_from": 1.99,
+            "currency": "EUR",
+            "gbp": 1.68
+          },
+          {
+            "hostel": "House of Journey",
+            "rating": 9.5,
+            "advertised_dorm_from": 9.94,
+            "currency": "EUR",
+            "gbp": 8.4
+          },
+          {
+            "hostel": "The Frame Guesthouse",
+            "rating": 8.5,
+            "advertised_dorm_from": 13.25,
+            "currency": "EUR",
+            "gbp": 11.2
+          }
+        ],
+        "checked_at": "2026-10-13",
+        "dated_booking_quote": false
+      }
+    },
+    {
+      "name": "Goreme",
+      "country_code": "TR",
+      "hostel_gbp": 10.14,
+      "living_monthly_gbp": 496.3,
+      "numbeo": {
+        "url": "https://www.numbeo.com/cost-of-living/in/Antalya?displayCurrency=GBP",
+        "monthly_living_gbp": 496.3,
+        "checked_at": "2026-10-13",
+        "scope": "nearby city proxy",
+        "proxy_city": "Antalya",
+        "proxy_country": "Turkey",
+        "monthly_gbp": 496.3,
+        "reason": "Numbeo city-level single-person summary unavailable"
+      },
+      "hostelworld": {
+        "url": "https://www.hostelworld.com/hostels/europe/turkey/goreme/",
+        "scope": "mean of up to five highest-rated displayed dorm starting fares; 8.0+ where 8.5+ unavailable; obvious anomalous prices excluded",
+        "samples": [
+          {
+            "hostel": "Halil Bey House",
+            "rating": 10.0,
+            "advertised_dorm_from": 12.0,
+            "currency": "EUR",
+            "gbp": 10.14
+          },
+          {
+            "hostel": "Diadem Cappadocia Guest House & Hostel",
+            "rating": 9.9,
+            "advertised_dorm_from": 9.0,
+            "currency": "EUR",
+            "gbp": 7.61
+          },
+          {
+            "hostel": "Seven Rock Cave",
+            "rating": 9.4,
+            "advertised_dorm_from": 15.0,
+            "currency": "EUR",
+            "gbp": 12.68
+          }
+        ],
+        "checked_at": "2026-10-13",
+        "dated_booking_quote": false
+      }
+    },
+    {
+      "name": "Gyeongju",
+      "country_code": "KR",
+      "hostel_gbp": 9.2,
+      "living_monthly_gbp": 875.9,
+      "numbeo": {
+        "url": "https://www.numbeo.com/cost-of-living/in/Busan?displayCurrency=GBP",
+        "monthly_living_gbp": 875.9,
+        "checked_at": "2026-10-13",
+        "scope": "nearby city proxy",
+        "proxy_city": "Busan",
+        "proxy_country": "South Korea",
+        "monthly_gbp": 875.9,
+        "reason": "Numbeo city-level single-person summary unavailable"
+      },
+      "hostelworld": {
+        "url": "https://www.hostelworld.com/hostels/asia/south-korea/gyeong-ju/",
+        "scope": "mean of up to five highest-rated displayed dorm starting fares; 8.0+ where 8.5+ unavailable; obvious anomalous prices excluded",
+        "samples": [
+          {
+            "hostel": "Blueboat Hostel Gyeongju",
+            "rating": 8.9,
+            "advertised_dorm_from": 14.14,
+            "currency": "EUR",
+            "gbp": 11.95
+          },
+          {
+            "hostel": "Han Jin Hostel",
+            "rating": 8.9,
+            "advertised_dorm_from": 11.11,
+            "currency": "EUR",
+            "gbp": 9.39
+          },
+          {
+            "hostel": "Doobaki Hostel",
+            "rating": 8.5,
+            "advertised_dorm_from": 7.4,
+            "currency": "EUR",
+            "gbp": 6.25
+          }
+        ],
+        "checked_at": "2026-10-13",
+        "dated_booking_quote": false
+      }
+    },
+    {
+      "name": "Hamburg",
+      "country_code": "DE",
+      "hostel_gbp": 22.22,
+      "living_monthly_gbp": 867.1,
+      "numbeo": {
+        "url": "https://www.numbeo.com/cost-of-living/in/Hamburg?displayCurrency=GBP",
+        "scope": "city",
+        "checked_at": "2026-10-13",
+        "monthly_gbp": 867.1
+      },
+      "hostelworld": {
+        "url": "https://www.hostelworld.com/hostels/europe/germany/hamburg/",
+        "scope": "mean of up to five highest-rated displayed dorm starting fares; 8.0+ where 8.5+ unavailable; obvious anomalous prices excluded",
+        "samples": [
+          {
+            "hostel": "Jugendherberge Hamburg-Auf dem Stintfang",
+            "rating": 9.2,
+            "advertised_dorm_from": 37.7,
+            "currency": "EUR",
+            "gbp": 31.86
+          },
+          {
+            "hostel": "Jugendherberge Hamburg-Horner Rennbahn",
+            "rating": 9.2,
+            "advertised_dorm_from": 32.6,
+            "currency": "EUR",
+            "gbp": 27.55
+          },
+          {
+            "hostel": "Pyjama Park Schanzenviertel",
+            "rating": 8.9,
+            "advertised_dorm_from": 22.5,
+            "currency": "EUR",
+            "gbp": 19.02
+          },
+          {
+            "hostel": "Backpackers St. Pauli",
+            "rating": 8.8,
+            "advertised_dorm_from": 17.65,
+            "currency": "EUR",
+            "gbp": 14.92
+          },
+          {
+            "hostel": "MEININGER Hamburg City Center",
+            "rating": 8.6,
+            "advertised_dorm_from": 21.0,
+            "currency": "EUR",
+            "gbp": 17.75
+          }
+        ],
+        "checked_at": "2026-10-13",
+        "dated_booking_quote": false
+      }
+    },
+    {
+      "name": "Hanoi",
+      "country_code": "VN",
+      "hostel_gbp": 6.77,
+      "living_monthly_gbp": 346.4,
+      "numbeo": {
+        "url": "https://www.numbeo.com/cost-of-living/in/Hanoi?displayCurrency=GBP",
+        "scope": "city",
+        "checked_at": "2026-10-13",
+        "monthly_gbp": 346.4
+      },
+      "hostelworld": {
+        "url": "https://www.hostelworld.com/hostels/asia/vietnam/hanoi/",
+        "scope": "mean of up to five highest-rated displayed dorm starting fares; 8.0+ where 8.5+ unavailable; obvious anomalous prices excluded",
+        "samples": [
+          {
+            "hostel": "Ja Costa Hostel",
+            "rating": 10.0,
+            "advertised_dorm_from": 5.23,
+            "currency": "EUR",
+            "gbp": 4.42
+          },
+          {
+            "hostel": "Nhung Bach House",
+            "rating": 10.0,
+            "advertised_dorm_from": 4.88,
+            "currency": "EUR",
+            "gbp": 4.12
+          },
+          {
+            "hostel": "River Hideaway Hostel",
+            "rating": 10.0,
+            "advertised_dorm_from": 19.17,
+            "currency": "EUR",
+            "gbp": 16.2
+          },
+          {
+            "hostel": "The One Hostel & Rooftop Pool Hanoi",
+            "rating": 9.8,
+            "advertised_dorm_from": 4.36,
+            "currency": "EUR",
+            "gbp": 3.68
+          },
+          {
+            "hostel": "Awesome Hanoi Hostel & Travel",
+            "rating": 9.7,
+            "advertised_dorm_from": 6.45,
+            "currency": "EUR",
+            "gbp": 5.45
+          }
+        ],
+        "checked_at": "2026-10-13",
+        "dated_booking_quote": false
+      }
+    },
+    {
+      "name": "Ho Chi Minh City",
+      "country_code": "VN",
+      "hostel_gbp": 7.71,
+      "living_monthly_gbp": 371.8,
+      "numbeo": {
+        "url": "https://www.numbeo.com/cost-of-living/in/Ho-Chi-Minh-City?displayCurrency=GBP",
+        "scope": "city",
+        "checked_at": "2026-10-13",
+        "monthly_gbp": 371.8
+      },
+      "hostelworld": {
+        "url": "https://www.hostelworld.com/hostels/asia/vietnam/ho-chi-minh/",
+        "scope": "mean of up to five highest-rated displayed dorm starting fares; 8.0+ where 8.5+ unavailable; obvious anomalous prices excluded",
+        "samples": [
+          {
+            "hostel": "B&B Chill Home 2 Hotel – Formerly Phan Anh Hotel",
+            "rating": 10.0,
+            "advertised_dorm_from": 15.68,
+            "currency": "EUR",
+            "gbp": 13.25
+          },
+          {
+            "hostel": "Mailala Hostel & Bar",
+            "rating": 10.0,
+            "advertised_dorm_from": 5.92,
+            "currency": "EUR",
+            "gbp": 5.0
+          },
+          {
+            "hostel": "PH Living",
+            "rating": 10.0,
+            "advertised_dorm_from": 7.67,
+            "currency": "EUR",
+            "gbp": 6.48
+          },
+          {
+            "hostel": "Bui Vien Street Hostel",
+            "rating": 9.9,
+            "advertised_dorm_from": 7.21,
+            "currency": "EUR",
+            "gbp": 6.09
+          }
+        ],
+        "checked_at": "2026-10-13",
+        "dated_booking_quote": false
+      }
+    },
+    {
+      "name": "Hoi An",
+      "country_code": "VN",
+      "hostel_gbp": 4.2,
+      "living_monthly_gbp": 371.8,
+      "numbeo": {
+        "url": "https://www.numbeo.com/cost-of-living/in/Ho-Chi-Minh-City?displayCurrency=GBP",
+        "monthly_living_gbp": 371.8,
+        "checked_at": "2026-10-13",
+        "scope": "nearby city proxy",
+        "proxy_city": "Ho Chi Minh City",
+        "proxy_country": "Vietnam",
+        "monthly_gbp": 371.8,
+        "reason": "Numbeo city-level single-person summary unavailable"
+      },
+      "hostelworld": {
+        "url": "https://www.hostelworld.com/hostels/asia/vietnam/hoi-an/",
+        "scope": "mean of up to five highest-rated displayed dorm starting fares; 8.0+ where 8.5+ unavailable; obvious anomalous prices excluded",
+        "samples": [
+          {
+            "hostel": "Bana Home & Spa",
+            "rating": 10.0,
+            "advertised_dorm_from": 2.79,
+            "currency": "EUR",
+            "gbp": 2.36
+          },
+          {
+            "hostel": "Coral Riverside:Where the river meets the sea",
+            "rating": 10.0,
+            "advertised_dorm_from": 4.36,
+            "currency": "EUR",
+            "gbp": 3.68
+          },
+          {
+            "hostel": "Orchard Living hostel",
+            "rating": 10.0,
+            "advertised_dorm_from": 8.71,
+            "currency": "EUR",
+            "gbp": 7.36
+          },
+          {
+            "hostel": "Backhome Hostel and Bar",
+            "rating": 9.9,
+            "advertised_dorm_from": 4.51,
+            "currency": "EUR",
+            "gbp": 3.81
+          },
+          {
+            "hostel": "Cheerful Hoi An Hostel",
+            "rating": 9.9,
+            "advertised_dorm_from": 4.51,
+            "currency": "EUR",
+            "gbp": 3.81
+          }
+        ],
+        "checked_at": "2026-10-13",
+        "dated_booking_quote": false
+      }
+    },
+    {
+      "name": "Hua Hin",
+      "country_code": "TH",
+      "hostel_gbp": 9.26,
+      "living_monthly_gbp": 467.5,
+      "numbeo": {
+        "url": "https://www.numbeo.com/cost-of-living/in/Hua-Hin?displayCurrency=GBP",
+        "scope": "city",
+        "checked_at": "2026-10-13",
+        "monthly_gbp": 467.5
+      },
+      "hostelworld": {
+        "url": "https://www.hostelworld.com/hostels/asia/thailand/hua-hin/",
+        "scope": "mean of up to five highest-rated displayed dorm starting fares; 8.0+ where 8.5+ unavailable; obvious anomalous prices excluded",
+        "samples": [
+          {
+            "hostel": "Litera Hostel",
+            "rating": 9.9,
+            "advertised_dorm_from": 8.62,
+            "currency": "EUR",
+            "gbp": 7.28
+          },
+          {
+            "hostel": "Mays Hostel",
+            "rating": 9.8,
+            "advertised_dorm_from": 9.43,
+            "currency": "EUR",
+            "gbp": 7.97
+          },
+          {
+            "hostel": "Stardust Boutique Hotel",
+            "rating": 9.7,
+            "advertised_dorm_from": 14.82,
+            "currency": "EUR",
+            "gbp": 12.52
+          }
+        ],
+        "checked_at": "2026-10-13",
+        "dated_booking_quote": false
+      }
+    },
+    {
+      "name": "Hue",
+      "country_code": "VN",
+      "hostel_gbp": 5.63,
+      "living_monthly_gbp": 371.8,
+      "numbeo": {
+        "url": "https://www.numbeo.com/cost-of-living/in/Ho-Chi-Minh-City?displayCurrency=GBP",
+        "monthly_living_gbp": 371.8,
+        "checked_at": "2026-10-13",
+        "scope": "nearby city proxy",
+        "proxy_city": "Ho Chi Minh City",
+        "proxy_country": "Vietnam",
+        "monthly_gbp": 371.8,
+        "reason": "Numbeo city-level single-person summary unavailable"
+      },
+      "hostelworld": {
+        "url": "https://www.hostelworld.com/hostels/asia/vietnam/hue/",
+        "scope": "mean of up to five highest-rated displayed dorm starting fares; 8.0+ where 8.5+ unavailable; obvious anomalous prices excluded",
+        "samples": [
+          {
+            "hostel": "Moon Homestay",
+            "rating": 10.0,
+            "advertised_dorm_from": 9.58,
+            "currency": "EUR",
+            "gbp": 8.1
+          },
+          {
+            "hostel": "Nano Eco Hostel",
+            "rating": 10.0,
+            "advertised_dorm_from": 6.27,
+            "currency": "EUR",
+            "gbp": 5.3
+          },
+          {
+            "hostel": "Va Riverside Retreat",
+            "rating": 9.9,
+            "advertised_dorm_from": 8.71,
+            "currency": "EUR",
+            "gbp": 7.36
+          },
+          {
+            "hostel": "a-mâze house",
+            "rating": 9.7,
+            "advertised_dorm_from": 5.23,
+            "currency": "EUR",
+            "gbp": 4.42
+          },
+          {
+            "hostel": "Hue Happy Homestay",
+            "rating": 9.6,
+            "advertised_dorm_from": 3.52,
+            "currency": "EUR",
+            "gbp": 2.97
+          }
+        ],
+        "checked_at": "2026-10-13",
+        "dated_booking_quote": false
+      }
+    },
+    {
+      "name": "Ipoh",
+      "country_code": "MY",
+      "hostel_gbp": 9.2,
+      "living_monthly_gbp": 398.8,
+      "numbeo": {
+        "country": "Malaysia",
+        "url": "https://www.numbeo.com/cost-of-living/country_result.jsp?country=Malaysia&displayCurrency=GBP",
+        "monthly_living_gbp": 398.8,
+        "checked_at": "2026-10-13",
+        "scope": "country proxy, city summary unavailable",
+        "proxy_country": "Malaysia",
+        "monthly_gbp": 398.8,
+        "reason": "Numbeo city-level single-person summary unavailable"
+      },
+      "hostelworld": {
+        "url": "https://www.hostelworld.com/hostels/asia/malaysia/ipoh/",
+        "scope": "mean of up to five highest-rated displayed dorm starting fares; 8.0+ where 8.5+ unavailable; obvious anomalous prices excluded",
+        "samples": [
+          {
+            "hostel": "Cute Hotel & Dorms Ipoh",
+            "rating": 9.8,
+            "advertised_dorm_from": 7.73,
+            "currency": "EUR",
+            "gbp": 6.53
+          },
+          {
+            "hostel": "Astrid Lofts",
+            "rating": 9.7,
+            "advertised_dorm_from": 11.04,
+            "currency": "EUR",
+            "gbp": 9.33
+          },
+          {
+            "hostel": "Dé Cafe & Rest House",
+            "rating": 9.7,
+            "advertised_dorm_from": 12.15,
+            "currency": "EUR",
+            "gbp": 10.27
+          },
+          {
+            "hostel": "Miner's House Ipoh",
+            "rating": 9.3,
+            "advertised_dorm_from": 12.37,
+            "currency": "EUR",
+            "gbp": 10.45
+          },
+          {
+            "hostel": "The Brownstone Hostel & Space",
+            "rating": 9.2,
+            "advertised_dorm_from": 11.12,
+            "currency": "EUR",
+            "gbp": 9.4
+          }
+        ],
+        "checked_at": "2026-10-13",
+        "dated_booking_quote": false
+      }
+    },
+    {
+      "name": "Izmir",
+      "country_code": "TR",
+      "hostel_gbp": 16.78,
+      "living_monthly_gbp": 533.9,
+      "numbeo": {
+        "url": "https://www.numbeo.com/cost-of-living/in/Izmir?displayCurrency=GBP",
+        "scope": "city",
+        "checked_at": "2026-10-13",
+        "monthly_gbp": 533.9
+      },
+      "hostelworld": {
+        "url": "https://www.hostelworld.com/hostels/europe/turkey/izmir/",
+        "scope": "mean of up to five highest-rated displayed dorm starting fares; 8.0+ where 8.5+ unavailable; obvious anomalous prices excluded",
+        "samples": [
+          {
+            "hostel": "Shantihome Hostel Izmir",
+            "rating": 9.4,
+            "advertised_dorm_from": 20.53,
+            "currency": "EUR",
+            "gbp": 17.35
+          },
+          {
+            "hostel": "Lotus Garden Hostel Izmir",
+            "rating": 8.9,
+            "advertised_dorm_from": 19.18,
+            "currency": "EUR",
+            "gbp": 16.21
+          }
+        ],
+        "checked_at": "2026-10-13",
+        "dated_booking_quote": false
+      }
+    },
+    {
+      "name": "Jakarta",
+      "country_code": "ID",
+      "hostel_gbp": 7.69,
+      "living_monthly_gbp": 371.4,
+      "numbeo": {
+        "url": "https://www.numbeo.com/cost-of-living/in/Jakarta?displayCurrency=GBP",
+        "scope": "city",
+        "checked_at": "2026-10-13",
+        "monthly_gbp": 371.4
+      },
+      "hostelworld": {
+        "url": "https://www.hostelworld.com/hostels/asia/indonesia/jakarta/",
+        "scope": "mean of up to five highest-rated displayed dorm starting fares; 8.0+ where 8.5+ unavailable; obvious anomalous prices excluded",
+        "samples": [
+          {
+            "hostel": "Tuju Arteri Pods",
+            "rating": 10.0,
+            "advertised_dorm_from": 14.73,
+            "currency": "EUR",
+            "gbp": 12.45
+          },
+          {
+            "hostel": "Konko Hostel Jakarta",
+            "rating": 9.2,
+            "advertised_dorm_from": 7.06,
+            "currency": "EUR",
+            "gbp": 5.97
+          },
+          {
+            "hostel": "The Packer Lodge",
+            "rating": 8.9,
+            "advertised_dorm_from": 5.51,
+            "currency": "EUR",
+            "gbp": 4.66
+          }
+        ],
+        "checked_at": "2026-10-13",
+        "dated_booking_quote": false
+      }
+    },
+    {
+      "name": "Kaohsiung",
+      "country_code": "TW",
+      "hostel_gbp": 12.78,
+      "living_monthly_gbp": 564.3,
+      "numbeo": {
+        "url": "https://www.numbeo.com/cost-of-living/in/Kaohsiung?displayCurrency=GBP",
+        "scope": "city",
+        "checked_at": "2026-10-13",
+        "monthly_gbp": 564.3
+      },
+      "hostelworld": {
+        "url": "https://www.hostelworld.com/hostels/asia/taiwan-china/kaohsiung/",
+        "scope": "mean of up to five highest-rated displayed dorm starting fares; 8.0+ where 8.5+ unavailable; obvious anomalous prices excluded",
+        "samples": [
+          {
+            "hostel": "Pathways Hostel",
+            "rating": 9.4,
+            "advertised_dorm_from": 9.89,
+            "currency": "EUR",
+            "gbp": 8.36
+          },
+          {
+            "hostel": "LIKE Hostel & Bar Lounge",
+            "rating": 9.3,
+            "advertised_dorm_from": 21.47,
+            "currency": "EUR",
+            "gbp": 18.14
+          },
+          {
+            "hostel": "PaperPlane Hostel",
+            "rating": 9.3,
+            "advertised_dorm_from": 14.17,
+            "currency": "EUR",
+            "gbp": 11.98
+          },
+          {
+            "hostel": "AHIRUYAH",
+            "rating": 8.9,
+            "advertised_dorm_from": 14.95,
+            "currency": "EUR",
+            "gbp": 12.63
+          }
+        ],
+        "checked_at": "2026-10-13",
+        "dated_booking_quote": false
+      }
+    },
+    {
+      "name": "Kuala Lumpur",
+      "country_code": "MY",
+      "hostel_gbp": 9.24,
+      "living_monthly_gbp": 447.1,
+      "numbeo": {
+        "url": "https://www.numbeo.com/cost-of-living/in/Kuala-Lumpur?displayCurrency=GBP",
+        "scope": "city",
+        "checked_at": "2026-10-13",
+        "monthly_gbp": 447.1
+      },
+      "hostelworld": {
+        "url": "https://www.hostelworld.com/hostels/asia/malaysia/kuala-lumpur/",
+        "scope": "mean of up to five highest-rated displayed dorm starting fares; 8.0+ where 8.5+ unavailable; obvious anomalous prices excluded",
+        "samples": [
+          {
+            "hostel": "Hexa Backpackers Bukit Bintang",
+            "rating": 10.0,
+            "advertised_dorm_from": 9.71,
+            "currency": "EUR",
+            "gbp": 8.21
+          },
+          {
+            "hostel": "Jeea Hostel",
+            "rating": 10.0,
+            "advertised_dorm_from": 4.42,
+            "currency": "EUR",
+            "gbp": 3.74
+          },
+          {
+            "hostel": "NH Staycation KLCC",
+            "rating": 10.0,
+            "advertised_dorm_from": 6.31,
+            "currency": "EUR",
+            "gbp": 5.33
+          },
+          {
+            "hostel": "Poshpack Skyline Hostel",
+            "rating": 9.7,
+            "advertised_dorm_from": 13.25,
+            "currency": "EUR",
+            "gbp": 11.2
+          },
+          {
+            "hostel": "The Bed Bukit Bintang",
+            "rating": 9.7,
+            "advertised_dorm_from": 20.98,
+            "currency": "EUR",
+            "gbp": 17.73
+          }
+        ],
+        "checked_at": "2026-10-13",
+        "dated_booking_quote": false
+      }
+    },
+    {
+      "name": "Kutaisi",
+      "country_code": "GE",
+      "hostel_gbp": 5.54,
+      "living_monthly_gbp": 461.0,
+      "numbeo": {
+        "country": "Georgia",
+        "url": "https://www.numbeo.com/cost-of-living/country_result.jsp?country=Georgia&displayCurrency=GBP",
+        "monthly_living_gbp": 461.0,
+        "checked_at": "2026-10-13",
+        "scope": "country proxy, city summary unavailable",
+        "proxy_country": "Georgia",
+        "monthly_gbp": 461.0,
+        "reason": "Numbeo city-level single-person summary unavailable"
+      },
+      "hostelworld": {
+        "url": "https://www.hostelworld.com/hostels/europe/georgia/kutaisi/",
+        "scope": "mean of up to five highest-rated displayed dorm starting fares; 8.0+ where 8.5+ unavailable; obvious anomalous prices excluded",
+        "samples": [
+          {
+            "hostel": "Hostel Rioni",
+            "rating": 9.7,
+            "advertised_dorm_from": 11.18,
+            "currency": "EUR",
+            "gbp": 9.45
+          },
+          {
+            "hostel": "Bao Hostel",
+            "rating": 9.4,
+            "advertised_dorm_from": 4.5,
+            "currency": "EUR",
+            "gbp": 3.8
+          },
+          {
+            "hostel": "Dingo Backpackers Hostel",
+            "rating": 9.0,
+            "advertised_dorm_from": 4.0,
+            "currency": "EUR",
+            "gbp": 3.38
+          }
+        ],
+        "checked_at": "2026-10-13",
+        "dated_booking_quote": false
+      }
+    },
+    {
+      "name": "Kyoto",
+      "country_code": "JP",
+      "hostel_gbp": 19.16,
+      "living_monthly_gbp": 597.9,
+      "numbeo": {
+        "url": "https://www.numbeo.com/cost-of-living/in/Kyoto?displayCurrency=GBP",
+        "scope": "city",
+        "checked_at": "2026-10-13",
+        "monthly_gbp": 597.9
+      },
+      "hostelworld": {
+        "url": "https://www.hostelworld.com/hostels/asia/japan/kyoto/",
+        "scope": "mean of up to five highest-rated displayed dorm starting fares; 8.0+ where 8.5+ unavailable; obvious anomalous prices excluded",
+        "samples": [
+          {
+            "hostel": "Tsukimi Hotel",
+            "rating": 9.9,
+            "advertised_dorm_from": 27.35,
+            "currency": "EUR",
+            "gbp": 23.11
+          },
+          {
+            "hostel": "Gion Ryokan Q-beh",
+            "rating": 9.7,
+            "advertised_dorm_from": 28.49,
+            "currency": "EUR",
+            "gbp": 24.08
+          },
+          {
+            "hostel": "The Millennials Kyoto",
+            "rating": 9.7,
+            "advertised_dorm_from": 20.51,
+            "currency": "EUR",
+            "gbp": 17.33
+          },
+          {
+            "hostel": "Ryokan Hostel Gion",
+            "rating": 9.6,
+            "advertised_dorm_from": 11.39,
+            "currency": "EUR",
+            "gbp": 9.63
+          },
+          {
+            "hostel": "WGJ HOSTEL KYOTO",
+            "rating": 9.6,
+            "advertised_dorm_from": 25.64,
+            "currency": "EUR",
+            "gbp": 21.67
+          }
+        ],
+        "checked_at": "2026-10-13",
+        "dated_booking_quote": false
+      }
+    },
+    {
+      "name": "Lagos",
+      "country_code": "PT",
+      "hostel_gbp": 22.25,
+      "living_monthly_gbp": 392.1,
+      "numbeo": {
+        "url": "https://www.numbeo.com/cost-of-living/in/Lagos?displayCurrency=GBP",
+        "scope": "city",
+        "checked_at": "2026-10-13",
+        "monthly_gbp": 392.1
+      },
+      "hostelworld": {
+        "url": "https://www.hostelworld.com/hostels/europe/portugal/lagos/",
+        "scope": "mean of up to five highest-rated displayed dorm starting fares; 8.0+ where 8.5+ unavailable; obvious anomalous prices excluded",
+        "samples": [
+          {
+            "hostel": "Vida Boa Lodge",
+            "rating": 9.9,
+            "advertised_dorm_from": 25.0,
+            "currency": "EUR",
+            "gbp": 21.13
+          },
+          {
+            "hostel": "Top City Hostel & Suites",
+            "rating": 9.4,
+            "advertised_dorm_from": 33.32,
+            "currency": "EUR",
+            "gbp": 28.16
+          },
+          {
+            "hostel": "Orange3 Hostel",
+            "rating": 9.3,
+            "advertised_dorm_from": 20.0,
+            "currency": "EUR",
+            "gbp": 16.9
+          },
+          {
+            "hostel": "Cloud 9 Hostel",
+            "rating": 9.2,
+            "advertised_dorm_from": 27.3,
+            "currency": "EUR",
+            "gbp": 23.07
+          },
+          {
+            "hostel": "Olive Hostel Lagos",
+            "rating": 9.2,
+            "advertised_dorm_from": 26.0,
+            "currency": "EUR",
+            "gbp": 21.97
+          }
+        ],
+        "checked_at": "2026-10-13",
+        "dated_booking_quote": false
+      }
+    },
+    {
+      "name": "Malaga",
+      "country_code": "ES",
+      "hostel_gbp": 28.22,
+      "living_monthly_gbp": 609.7,
+      "numbeo": {
+        "url": "https://www.numbeo.com/cost-of-living/in/Malaga?displayCurrency=GBP",
+        "scope": "city",
+        "checked_at": "2026-10-13",
+        "monthly_gbp": 609.7
+      },
+      "hostelworld": {
+        "url": "https://www.hostelworld.com/hostels/europe/spain/malaga/",
+        "scope": "mean of up to five highest-rated displayed dorm starting fares; 8.0+ where 8.5+ unavailable; obvious anomalous prices excluded",
+        "samples": [
+          {
+            "hostel": "Hostel Superlativo Trinidad",
+            "rating": 9.8,
+            "advertised_dorm_from": 31.25,
+            "currency": "EUR",
+            "gbp": 26.41
+          },
+          {
+            "hostel": "Coeo Hernán Ruiz Rooftop Pool Hostel",
+            "rating": 9.5,
+            "advertised_dorm_from": 35.0,
+            "currency": "EUR",
+            "gbp": 29.58
+          },
+          {
+            "hostel": "Coeo Private Pod Hostel Beatas",
+            "rating": 9.5,
+            "advertised_dorm_from": 43.75,
+            "currency": "EUR",
+            "gbp": 36.97
+          },
+          {
+            "hostel": "The Urban Jungle Rooftop Hostel",
+            "rating": 9.2,
+            "advertised_dorm_from": 32.98,
+            "currency": "EUR",
+            "gbp": 27.87
+          },
+          {
+            "hostel": "Funker Hostel",
+            "rating": 8.7,
+            "advertised_dorm_from": 24.0,
+            "currency": "EUR",
+            "gbp": 20.28
+          }
+        ],
+        "checked_at": "2026-10-13",
+        "dated_booking_quote": false
+      }
+    },
+    {
+      "name": "Matara",
+      "country_code": "LK",
+      "hostel_gbp": 8.98,
+      "living_monthly_gbp": 382.2,
+      "numbeo": {
+        "url": "https://www.numbeo.com/cost-of-living/in/Colombo?displayCurrency=GBP",
+        "monthly_living_gbp": 382.2,
+        "checked_at": "2026-10-13",
+        "scope": "nearby city proxy",
+        "proxy_city": "Colombo",
+        "proxy_country": "Sri Lanka",
+        "monthly_gbp": 382.2,
+        "reason": "Numbeo city-level single-person summary unavailable"
+      },
+      "hostelworld": {
+        "url": "https://www.hostelworld.com/hostels/asia/sri-lanka/matara/",
+        "scope": "mean of up to five highest-rated displayed dorm starting fares; 8.0+ where 8.5+ unavailable; obvious anomalous prices excluded",
+        "samples": [
+          {
+            "hostel": "234 Weligama",
+            "rating": 10.0,
+            "advertised_dorm_from": 10.82,
+            "currency": "EUR",
+            "gbp": 9.14
+          },
+          {
+            "hostel": "Chill Hostel - Madiha",
+            "rating": 10.0,
+            "advertised_dorm_from": 6.64,
+            "currency": "EUR",
+            "gbp": 5.61
+          },
+          {
+            "hostel": "La Cove",
+            "rating": 10.0,
+            "advertised_dorm_from": 10.82,
+            "currency": "EUR",
+            "gbp": 9.14
+          },
+          {
+            "hostel": "Testudo Madiha",
+            "rating": 10.0,
+            "advertised_dorm_from": 9.68,
+            "currency": "EUR",
+            "gbp": 8.18
+          },
+          {
+            "hostel": "The Drop In Surfhouse Madiha",
+            "rating": 10.0,
+            "advertised_dorm_from": 15.21,
+            "currency": "EUR",
+            "gbp": 12.85
+          }
+        ],
+        "checked_at": "2026-10-13",
+        "dated_booking_quote": false
+      }
+    },
+    {
+      "name": "Melaka",
+      "country_code": "MY",
+      "hostel_gbp": 5.6,
+      "living_monthly_gbp": 398.8,
+      "numbeo": {
+        "country": "Malaysia",
+        "url": "https://www.numbeo.com/cost-of-living/country_result.jsp?country=Malaysia&displayCurrency=GBP",
+        "monthly_living_gbp": 398.8,
+        "checked_at": "2026-10-13",
+        "scope": "country proxy, city summary unavailable",
+        "proxy_country": "Malaysia",
+        "monthly_gbp": 398.8,
+        "reason": "Numbeo city-level single-person summary unavailable"
+      },
+      "hostelworld": {
+        "url": "https://www.hostelworld.com/hostels/asia/malaysia/melaka/",
+        "scope": "mean of up to five highest-rated displayed dorm starting fares; 8.0+ where 8.5+ unavailable; obvious anomalous prices excluded",
+        "samples": [
+          {
+            "hostel": "Ola Lavanderia Cafe",
+            "rating": 9.9,
+            "advertised_dorm_from": 7.07,
+            "currency": "EUR",
+            "gbp": 5.98
+          },
+          {
+            "hostel": "Three Little Birds Home",
+            "rating": 9.8,
+            "advertised_dorm_from": 5.08,
+            "currency": "EUR",
+            "gbp": 4.29
+          },
+          {
+            "hostel": "Sleep Here Hostel Melaka",
+            "rating": 9.3,
+            "advertised_dorm_from": 6.62,
+            "currency": "EUR",
+            "gbp": 5.59
+          },
+          {
+            "hostel": "Ringos Foyer Guest House and Hostel",
+            "rating": 9.1,
+            "advertised_dorm_from": 7.73,
+            "currency": "EUR",
+            "gbp": 6.53
+          },
+          {
+            "hostel": "Rucksack Inn Premium Melaka",
+            "rating": 9.1,
+            "advertised_dorm_from": 6.62,
+            "currency": "EUR",
+            "gbp": 5.59
+          }
+        ],
+        "checked_at": "2026-10-13",
+        "dated_booking_quote": false
+      }
+    },
+    {
+      "name": "Nha Trang",
+      "country_code": "VN",
+      "hostel_gbp": 3.68,
+      "living_monthly_gbp": 371.8,
+      "numbeo": {
+        "url": "https://www.numbeo.com/cost-of-living/in/Ho-Chi-Minh-City?displayCurrency=GBP",
+        "monthly_living_gbp": 371.8,
+        "checked_at": "2026-10-13",
+        "scope": "nearby city proxy",
+        "proxy_city": "Ho Chi Minh City",
+        "proxy_country": "Vietnam",
+        "monthly_gbp": 371.8,
+        "reason": "Numbeo city-level single-person summary unavailable"
+      },
+      "hostelworld": {
+        "url": "https://www.hostelworld.com/hostels/asia/vietnam/nha-trang/",
+        "scope": "mean of up to five highest-rated displayed dorm starting fares; 8.0+ where 8.5+ unavailable; obvious anomalous prices excluded",
+        "samples": [
+          {
+            "hostel": "The Alley",
+            "rating": 9.1,
+            "advertised_dorm_from": 4.36,
+            "currency": "EUR",
+            "gbp": 3.68
+          }
+        ],
+        "checked_at": "2026-10-13",
+        "dated_booking_quote": false
+      }
+    },
+    {
+      "name": "Ninh Binh",
+      "country_code": "VN",
+      "hostel_gbp": 4.97,
+      "living_monthly_gbp": 371.8,
+      "numbeo": {
+        "url": "https://www.numbeo.com/cost-of-living/in/Ho-Chi-Minh-City?displayCurrency=GBP",
+        "monthly_living_gbp": 371.8,
+        "checked_at": "2026-10-13",
+        "scope": "nearby city proxy",
+        "proxy_city": "Ho Chi Minh City",
+        "proxy_country": "Vietnam",
+        "monthly_gbp": 371.8,
+        "reason": "Numbeo city-level single-person summary unavailable"
+      },
+      "hostelworld": {
+        "url": "https://www.hostelworld.com/hostels/asia/vietnam/ninh-binh/",
+        "scope": "mean of up to five highest-rated displayed dorm starting fares; 8.0+ where 8.5+ unavailable; obvious anomalous prices excluded",
+        "samples": [
+          {
+            "hostel": "Center Tam Coc Homestay",
+            "rating": 10.0,
+            "advertised_dorm_from": 6.97,
+            "currency": "EUR",
+            "gbp": 5.89
+          },
+          {
+            "hostel": "Tam Coc Armany Hotel & Sky Restaurant",
+            "rating": 10.0,
+            "advertised_dorm_from": 6.97,
+            "currency": "EUR",
+            "gbp": 5.89
+          },
+          {
+            "hostel": "Trang An Mountain View Homestay",
+            "rating": 10.0,
+            "advertised_dorm_from": 6.97,
+            "currency": "EUR",
+            "gbp": 5.89
+          },
+          {
+            "hostel": "Tam Coc Mountain Bungalow",
+            "rating": 9.9,
+            "advertised_dorm_from": 4.88,
+            "currency": "EUR",
+            "gbp": 4.12
+          },
+          {
+            "hostel": "Amy House",
+            "rating": 9.8,
+            "advertised_dorm_from": 3.61,
+            "currency": "EUR",
+            "gbp": 3.05
+          }
+        ],
+        "checked_at": "2026-10-13",
+        "dated_booking_quote": false
+      }
+    },
+    {
+      "name": "Osaka",
+      "country_code": "JP",
+      "hostel_gbp": 14.23,
+      "living_monthly_gbp": 572.8,
+      "numbeo": {
+        "url": "https://www.numbeo.com/cost-of-living/in/Osaka?displayCurrency=GBP",
+        "scope": "city",
+        "checked_at": "2026-10-13",
+        "monthly_gbp": 572.8
+      },
+      "hostelworld": {
+        "url": "https://www.hostelworld.com/hostels/asia/japan/osaka/",
+        "scope": "mean of up to five highest-rated displayed dorm starting fares; 8.0+ where 8.5+ unavailable; obvious anomalous prices excluded",
+        "samples": [
+          {
+            "hostel": "Guest House mii",
+            "rating": 10.0,
+            "advertised_dorm_from": 11.39,
+            "currency": "EUR",
+            "gbp": 9.63
+          },
+          {
+            "hostel": "Air Osaka Hostel",
+            "rating": 9.7,
+            "advertised_dorm_from": 14.24,
+            "currency": "EUR",
+            "gbp": 12.03
+          },
+          {
+            "hostel": "Guesthouse Fujitatami",
+            "rating": 9.7,
+            "advertised_dorm_from": 13.67,
+            "currency": "EUR",
+            "gbp": 11.55
+          },
+          {
+            "hostel": "GRAND HOSTEL LDK Osaka Shinsekai",
+            "rating": 9.6,
+            "advertised_dorm_from": 24.78,
+            "currency": "EUR",
+            "gbp": 20.94
+          },
+          {
+            "hostel": "Hostel Mitsuwaya Osaka",
+            "rating": 9.6,
+            "advertised_dorm_from": 20.13,
+            "currency": "EUR",
+            "gbp": 17.01
+          }
+        ],
+        "checked_at": "2026-10-13",
+        "dated_booking_quote": false
+      }
+    },
+    {
+      "name": "Samarkand",
+      "country_code": "UZ",
+      "hostel_gbp": 7.31,
+      "living_monthly_gbp": 403.29,
+      "numbeo": {
+        "url": "https://www.numbeo.com/cost-of-living/in/Tashkent",
+        "monthly_living_gbp": 403.29,
+        "checked_at": "2026-10-13",
+        "scope": "nearby city proxy",
+        "proxy_city": "Tashkent",
+        "data_as_of": "2026-05-30",
+        "corroborating_url": "https://kun.uz/en/news/2026/05/30/how-much-does-it-cost-to-live-comfortably-in-tashkent-without-rent-2b6a03",
+        "verification": "Numbeo estimate quoted by Kun.uz; direct live summary unavailable during research",
+        "original_monthly": 6343000,
+        "currency": "UZS",
+        "proxy_country": "Uzbekistan",
+        "monthly_gbp": 403.29,
+        "reason": "Numbeo city-level single-person summary unavailable"
+      },
+      "hostelworld": {
+        "url": "https://www.hostelworld.com/hostels/asia/uzbekistan/samarkand/",
+        "scope": "mean of up to five highest-rated displayed dorm starting fares; 8.0+ where 8.5+ unavailable; obvious anomalous prices excluded",
+        "samples": [
+          {
+            "hostel": "BridgeStayHostel",
+            "rating": 10.0,
+            "advertised_dorm_from": 7.21,
+            "currency": "EUR",
+            "gbp": 6.09
+          },
+          {
+            "hostel": "Hostel Imona",
+            "rating": 10.0,
+            "advertised_dorm_from": 9.02,
+            "currency": "EUR",
+            "gbp": 7.62
+          },
+          {
+            "hostel": "Hostel Uz",
+            "rating": 10.0,
+            "advertised_dorm_from": 10.82,
+            "currency": "EUR",
+            "gbp": 9.14
+          },
+          {
+            "hostel": "Old Radio Hostel",
+            "rating": 9.6,
+            "advertised_dorm_from": 7.21,
+            "currency": "EUR",
+            "gbp": 6.09
+          },
+          {
+            "hostel": "Heartland Hostel Samarkand",
+            "rating": 9.0,
+            "advertised_dorm_from": 9.02,
+            "currency": "EUR",
+            "gbp": 7.62
+          }
+        ],
+        "checked_at": "2026-10-13",
+        "dated_booking_quote": false
+      }
+    },
+    {
+      "name": "Seoul",
+      "country_code": "KR",
+      "hostel_gbp": 18.39,
+      "living_monthly_gbp": 859.1,
+      "numbeo": {
+        "url": "https://www.numbeo.com/cost-of-living/in/Seoul?displayCurrency=GBP",
+        "scope": "city",
+        "checked_at": "2026-10-13",
+        "monthly_gbp": 859.1
+      },
+      "hostelworld": {
+        "url": "https://www.hostelworld.com/hostels/asia/south-korea/seoul/",
+        "scope": "mean of up to five highest-rated displayed dorm starting fares; 8.0+ where 8.5+ unavailable; obvious anomalous prices excluded",
+        "samples": [
+          {
+            "hostel": "Original Backpackers",
+            "rating": 9.9,
+            "advertised_dorm_from": 28.27,
+            "currency": "EUR",
+            "gbp": 23.89
+          },
+          {
+            "hostel": "Zzzip Guesthouse in Hongdae",
+            "rating": 9.8,
+            "advertised_dorm_from": 15.48,
+            "currency": "EUR",
+            "gbp": 13.08
+          },
+          {
+            "hostel": "Lazy cube",
+            "rating": 9.6,
+            "advertised_dorm_from": 28.68,
+            "currency": "EUR",
+            "gbp": 24.24
+          },
+          {
+            "hostel": "OYO Hostel Myeongdong 5",
+            "rating": 9.4,
+            "advertised_dorm_from": 16.83,
+            "currency": "EUR",
+            "gbp": 14.22
+          },
+          {
+            "hostel": "Jin's Paradise",
+            "rating": 9.3,
+            "advertised_dorm_from": 19.52,
+            "currency": "EUR",
+            "gbp": 16.5
+          }
+        ],
+        "checked_at": "2026-10-13",
+        "dated_booking_quote": false
+      }
+    },
+    {
+      "name": "Surabaya",
+      "country_code": "ID",
+      "hostel_gbp": 5.52,
+      "living_monthly_gbp": 308.6,
+      "numbeo": {
+        "country": "Indonesia",
+        "url": "https://www.numbeo.com/cost-of-living/country_result.jsp?country=Indonesia&displayCurrency=GBP",
+        "monthly_living_gbp": 308.6,
+        "checked_at": "2026-10-13",
+        "scope": "country proxy, city summary unavailable",
+        "proxy_country": "Indonesia",
+        "monthly_gbp": 308.6,
+        "reason": "Numbeo city-level single-person summary unavailable"
+      },
+      "hostelworld": {
+        "url": "https://www.hostelworld.com/hostels/asia/indonesia/surabaya/",
+        "scope": "mean of up to five highest-rated displayed dorm starting fares; 8.0+ where 8.5+ unavailable; obvious anomalous prices excluded",
+        "samples": [
+          {
+            "hostel": "Ikiru to Live",
+            "rating": 9.4,
+            "advertised_dorm_from": 6.53,
+            "currency": "EUR",
+            "gbp": 5.52
+          }
+        ],
+        "checked_at": "2026-10-13",
+        "dated_booking_quote": false
+      }
+    },
+    {
+      "name": "Taichung",
+      "country_code": "TW",
+      "hostel_gbp": 15.75,
+      "living_monthly_gbp": 584.6,
+      "numbeo": {
+        "url": "https://www.numbeo.com/cost-of-living/in/Taichung?displayCurrency=GBP",
+        "scope": "city",
+        "checked_at": "2026-10-13",
+        "monthly_gbp": 584.6
+      },
+      "hostelworld": {
+        "url": "https://www.hostelworld.com/hostels/asia/taiwan-china/taichung/",
+        "scope": "mean of up to five highest-rated displayed dorm starting fares; 8.0+ where 8.5+ unavailable; obvious anomalous prices excluded",
+        "samples": [
+          {
+            "hostel": "Loosha Hostel",
+            "rating": 10.0,
+            "advertised_dorm_from": 18.36,
+            "currency": "EUR",
+            "gbp": 15.52
+          },
+          {
+            "hostel": "Star Hostel Taichung Parklane",
+            "rating": 9.5,
+            "advertised_dorm_from": 26.49,
+            "currency": "EUR",
+            "gbp": 22.39
+          },
+          {
+            "hostel": "Olah Poshtel Taichung Zhongshan",
+            "rating": 9.4,
+            "advertised_dorm_from": 24.86,
+            "currency": "EUR",
+            "gbp": 21.01
+          },
+          {
+            "hostel": "T-Life Hostel",
+            "rating": 9.1,
+            "advertised_dorm_from": 14.13,
+            "currency": "EUR",
+            "gbp": 11.94
+          },
+          {
+            "hostel": "Backpacker 41 Hostel-Taichung",
+            "rating": 8.7,
+            "advertised_dorm_from": 9.32,
+            "currency": "EUR",
+            "gbp": 7.88
+          }
+        ],
+        "checked_at": "2026-10-13",
+        "dated_booking_quote": false
+      }
+    },
+    {
+      "name": "Taipei",
+      "country_code": "TW",
+      "hostel_gbp": 20.09,
+      "living_monthly_gbp": 644.0,
+      "numbeo": {
+        "url": "https://www.numbeo.com/cost-of-living/in/Taipei?displayCurrency=GBP",
+        "scope": "city",
+        "checked_at": "2026-10-13",
+        "monthly_gbp": 644.0
+      },
+      "hostelworld": {
+        "url": "https://www.hostelworld.com/hostels/asia/taiwan-china/taipei/",
+        "scope": "mean of up to five highest-rated displayed dorm starting fares; 8.0+ where 8.5+ unavailable; obvious anomalous prices excluded",
+        "samples": [
+          {
+            "hostel": "Meow Day Hostel",
+            "rating": 10.0,
+            "advertised_dorm_from": 11.3,
+            "currency": "EUR",
+            "gbp": 9.55
+          },
+          {
+            "hostel": "Oani (MEANDER collection)",
+            "rating": 10.0,
+            "advertised_dorm_from": 56.51,
+            "currency": "EUR",
+            "gbp": 47.76
+          },
+          {
+            "hostel": "Star Hostel Taipei East",
+            "rating": 10.0,
+            "advertised_dorm_from": 18.93,
+            "currency": "EUR",
+            "gbp": 16.0
+          },
+          {
+            "hostel": "Taiwan Youth Hostel & Capsule Hotel",
+            "rating": 9.9,
+            "advertised_dorm_from": 19.78,
+            "currency": "EUR",
+            "gbp": 16.72
+          },
+          {
+            "hostel": "Taipei 109 Hostel",
+            "rating": 9.8,
+            "advertised_dorm_from": 12.35,
+            "currency": "EUR",
+            "gbp": 10.44
+          }
+        ],
+        "checked_at": "2026-10-13",
+        "dated_booking_quote": false
+      }
+    },
+    {
+      "name": "Tokyo",
+      "country_code": "JP",
+      "hostel_gbp": 16.7,
+      "living_monthly_gbp": 671.9,
+      "numbeo": {
+        "url": "https://www.numbeo.com/cost-of-living/in/Tokyo?displayCurrency=GBP",
+        "scope": "city",
+        "checked_at": "2026-10-13",
+        "monthly_gbp": 671.9
+      },
+      "hostelworld": {
+        "url": "https://www.hostelworld.com/hostels/asia/japan/tokyo/",
+        "scope": "mean of up to five highest-rated displayed dorm starting fares; 8.0+ where 8.5+ unavailable; obvious anomalous prices excluded",
+        "samples": [
+          {
+            "hostel": "Bedgasm",
+            "rating": 10.0,
+            "advertised_dorm_from": 27.06,
+            "currency": "EUR",
+            "gbp": 22.87
+          },
+          {
+            "hostel": "&AND HOSTEL MINAMISENJU",
+            "rating": 9.9,
+            "advertised_dorm_from": 20.18,
+            "currency": "EUR",
+            "gbp": 17.05
+          },
+          {
+            "hostel": "Edo Tokyo Hostel",
+            "rating": 9.8,
+            "advertised_dorm_from": 16.24,
+            "currency": "EUR",
+            "gbp": 13.72
+          },
+          {
+            "hostel": "Guesthouse toco.",
+            "rating": 9.8,
+            "advertised_dorm_from": 19.37,
+            "currency": "EUR",
+            "gbp": 16.37
+          },
+          {
+            "hostel": "Plat Hostel Keikyu Asakusa Karin",
+            "rating": 9.8,
+            "advertised_dorm_from": 15.95,
+            "currency": "EUR",
+            "gbp": 13.48
+          }
+        ],
+        "checked_at": "2026-10-13",
+        "dated_booking_quote": false
+      }
+    },
+    {
+      "name": "Yogyakarta",
+      "country_code": "ID",
+      "hostel_gbp": 4.98,
+      "living_monthly_gbp": 288.9,
+      "numbeo": {
+        "url": "https://www.numbeo.com/cost-of-living/in/Yogyakarta?displayCurrency=GBP",
+        "scope": "city",
+        "checked_at": "2026-10-13",
+        "monthly_gbp": 288.9
+      },
+      "hostelworld": {
+        "url": "https://www.hostelworld.com/hostels/asia/indonesia/yogyakarta/",
+        "scope": "mean of up to five highest-rated displayed dorm starting fares; 8.0+ where 8.5+ unavailable; obvious anomalous prices excluded",
+        "samples": [
+          {
+            "hostel": "Kali Code Home",
+            "rating": 10.0,
+            "advertised_dorm_from": 9.07,
+            "currency": "EUR",
+            "gbp": 7.67
+          },
+          {
+            "hostel": "Merapi Hotel Backpacker",
+            "rating": 10.0,
+            "advertised_dorm_from": 4.54,
+            "currency": "EUR",
+            "gbp": 3.84
+          },
+          {
+            "hostel": "Omahku Hostel",
+            "rating": 10.0,
+            "advertised_dorm_from": 3.53,
+            "currency": "EUR",
+            "gbp": 2.98
+          },
+          {
+            "hostel": "Syalala",
+            "rating": 10.0,
+            "advertised_dorm_from": 3.02,
+            "currency": "EUR",
+            "gbp": 2.55
+          },
+          {
+            "hostel": "ViaVia Guesthouse",
+            "rating": 10.0,
+            "advertised_dorm_from": 9.3,
+            "currency": "EUR",
+            "gbp": 7.86
+          }
+        ],
+        "checked_at": "2026-10-13",
+        "dated_booking_quote": false
+      }
+    }
+  ],
+  "trips": [
+    {
+      "key": "leaveprints-reels-20261013-001",
+      "name": "Andalusian cities",
+      "highlights": "Madrid galleries, Seville old town, Granada and the Alhambra",
+      "stops": [
+        {
+          "city": "Madrid",
+          "country_code": "ES",
+          "nights": 3
+        },
+        {
+          "city": "Seville",
+          "country_code": "ES",
+          "nights": 2
+        },
+        {
+          "city": "Granada",
+          "country_code": "ES",
+          "nights": 2
+        }
+      ],
+      "legs": [
+        {
+          "mode": "bus",
+          "operator": "Socibus",
+          "source_url": "https://www.rome2rio.com/Bus/Madrid/Seville",
+          "fare_type": "published route estimate, no travel date selected",
+          "fare_currency": "EUR",
+          "fare_low": 40,
+          "fare_high": 60,
+          "budget_gbp": 51,
+          "budget_method": "upper end of sourced range, or published fare, converted to GBP and rounded up",
+          "note": "",
+          "from_city": "Madrid",
+          "to_city": "Seville",
+          "checked_at": "2026-10-13"
+        },
+        {
+          "mode": "bus",
+          "operator": "ALSA",
+          "source_url": "https://www.rome2rio.com/Bus/Seville/Granada",
+          "fare_type": "published route estimate, no travel date selected",
+          "fare_currency": "EUR",
+          "fare_low": 20,
+          "fare_high": 35,
+          "budget_gbp": 30,
+          "budget_method": "upper end of sourced range, or published fare, converted to GBP and rounded up",
+          "note": "",
+          "from_city": "Seville",
+          "to_city": "Granada",
+          "checked_at": "2026-10-13"
+        }
+      ]
+    },
+    {
+      "key": "leaveprints-reels-20261013-002",
+      "name": "Spain's Mediterranean trail",
+      "highlights": "Barcelona architecture, Valencia coast, Madrid museums",
+      "stops": [
+        {
+          "city": "Barcelona",
+          "country_code": "ES",
+          "nights": 3
+        },
+        {
+          "city": "Valencia",
+          "country_code": "ES",
+          "nights": 2
+        },
+        {
+          "city": "Madrid",
+          "country_code": "ES",
+          "nights": 2
+        }
+      ],
+      "legs": [
+        {
+          "mode": "bus",
+          "operator": "ALSA",
+          "source_url": "https://www.rome2rio.com/Bus/Barcelona/Valencia-Spain",
+          "fare_type": "published route estimate, no travel date selected",
+          "fare_currency": "EUR",
+          "fare_low": 30,
+          "fare_high": 50,
+          "budget_gbp": 43,
+          "budget_method": "upper end of sourced range, or published fare, converted to GBP and rounded up",
+          "note": "",
+          "from_city": "Barcelona",
+          "to_city": "Valencia",
+          "checked_at": "2026-10-13"
+        },
+        {
+          "mode": "bus",
+          "operator": "Avanza",
+          "source_url": "https://www.rome2rio.com/Bus/Valencia-Spain/Madrid",
+          "fare_type": "published route estimate, no travel date selected",
+          "fare_currency": "EUR",
+          "fare_low": 60,
+          "fare_high": 80,
+          "budget_gbp": 68,
+          "budget_method": "upper end of sourced range, or published fare, converted to GBP and rounded up",
+          "note": "",
+          "from_city": "Valencia",
+          "to_city": "Madrid",
+          "checked_at": "2026-10-13"
+        }
+      ]
+    },
+    {
+      "key": "leaveprints-reels-20261013-003",
+      "name": "Andalusian coast and palaces",
+      "highlights": "Seville lanes, Granada viewpoints, Malaga beaches",
+      "stops": [
+        {
+          "city": "Seville",
+          "country_code": "ES",
+          "nights": 3
+        },
+        {
+          "city": "Granada",
+          "country_code": "ES",
+          "nights": 2
+        },
+        {
+          "city": "Malaga",
+          "country_code": "ES",
+          "nights": 2
+        }
+      ],
+      "legs": [
+        {
+          "mode": "bus",
+          "operator": "ALSA",
+          "source_url": "https://www.rome2rio.com/Bus/Seville/Granada",
+          "fare_type": "published route estimate, no travel date selected",
+          "fare_currency": "EUR",
+          "fare_low": 20,
+          "fare_high": 35,
+          "budget_gbp": 30,
+          "budget_method": "upper end of sourced range, or published fare, converted to GBP and rounded up",
+          "note": "",
+          "from_city": "Seville",
+          "to_city": "Granada",
+          "checked_at": "2026-10-13"
+        },
+        {
+          "mode": "bus",
+          "operator": "ALSA via Omio",
+          "source_url": "https://www.omio.com/buses/granada/malaga",
+          "fare_type": "advertised example ticket fare, plus EUR 4 budget buffer",
+          "fare_currency": "EUR",
+          "fare_low": 14,
+          "fare_high": 14,
+          "budget_gbp": 16,
+          "budget_method": "upper end of sourced range, or published fare, converted to GBP and rounded up",
+          "note": "",
+          "from_city": "Granada",
+          "to_city": "Malaga",
+          "checked_at": "2026-10-13"
+        }
+      ]
+    },
+    {
+      "key": "leaveprints-reels-20261013-004",
+      "name": "Portugal's university trail",
+      "highlights": "Porto riverside, Coimbra university, Lisbon viewpoints",
+      "stops": [
+        {
+          "city": "Porto",
+          "country_code": "PT",
+          "nights": 2
+        },
+        {
+          "city": "Coimbra",
+          "country_code": "PT",
+          "nights": 2
+        },
+        {
+          "city": "Lisbon",
+          "country_code": "PT",
+          "nights": 2
+        }
+      ],
+      "legs": [
+        {
+          "mode": "bus",
+          "operator": "FlixBus / listed partner",
+          "source_url": "https://www.flixbus.co.uk/bus-routes/porto-coimbra",
+          "fare_type": "operator advertised starting fare, no travel date selected",
+          "fare_currency": "GBP",
+          "fare_low": 2.99,
+          "fare_high": null,
+          "budget_gbp": 7,
+          "budget_method": "advertised minimum x 1.6 + GBP 2, rounded up; availability buffer, not a quote",
+          "from_city": "Porto",
+          "to_city": "Coimbra",
+          "checked_at": "2026-10-13"
+        },
+        {
+          "mode": "bus",
+          "operator": "FlixBus / listed partner",
+          "source_url": "https://www.flixbus.co.uk/bus-routes/coimbra-lisbon",
+          "fare_type": "operator advertised starting fare, no travel date selected",
+          "fare_currency": "GBP",
+          "fare_low": 3.99,
+          "fare_high": null,
+          "budget_gbp": 9,
+          "budget_method": "advertised minimum x 1.6 + GBP 2, rounded up; availability buffer, not a quote",
+          "from_city": "Coimbra",
+          "to_city": "Lisbon",
+          "checked_at": "2026-10-13"
+        }
+      ]
+    },
+    {
+      "key": "leaveprints-reels-20261013-005",
+      "name": "Portugal's southern coast",
+      "highlights": "Lisbon trams, Lagos coast, Faro old town",
+      "stops": [
+        {
+          "city": "Lisbon",
+          "country_code": "PT",
+          "nights": 3
+        },
+        {
+          "city": "Lagos",
+          "country_code": "PT",
+          "nights": 2
+        },
+        {
+          "city": "Faro",
+          "country_code": "PT",
+          "nights": 2
+        }
+      ],
+      "legs": [
+        {
+          "mode": "bus",
+          "operator": "FlixBus / listed partner",
+          "source_url": "https://www.flixbus.co.uk/bus-routes/lisbon-lagos",
+          "fare_type": "operator advertised starting fare, no travel date selected",
+          "fare_currency": "GBP",
+          "fare_low": 4.49,
+          "fare_high": null,
+          "budget_gbp": 10,
+          "budget_method": "advertised minimum x 1.6 + GBP 2, rounded up; availability buffer, not a quote",
+          "from_city": "Lisbon",
+          "to_city": "Lagos",
+          "checked_at": "2026-10-13"
+        },
+        {
+          "mode": "bus",
+          "operator": "FlixBus / listed partner",
+          "source_url": "https://www.flixbus.co.uk/bus-routes/lagos-faro",
+          "fare_type": "operator advertised starting fare, no travel date selected",
+          "fare_currency": "GBP",
+          "fare_low": 2.99,
+          "fare_high": null,
+          "budget_gbp": 7,
+          "budget_method": "advertised minimum x 1.6 + GBP 2, rounded up; availability buffer, not a quote",
+          "from_city": "Lagos",
+          "to_city": "Faro",
+          "checked_at": "2026-10-13"
+        }
+      ]
+    },
+    {
+      "key": "leaveprints-reels-20261013-006",
+      "name": "France's east-side escape",
+      "highlights": "Paris museums, Strasbourg canals, Lyon old town",
+      "stops": [
+        {
+          "city": "Paris",
+          "country_code": "FR",
+          "nights": 3
+        },
+        {
+          "city": "Strasbourg",
+          "country_code": "FR",
+          "nights": 2
+        },
+        {
+          "city": "Lyon",
+          "country_code": "FR",
+          "nights": 2
+        }
+      ],
+      "legs": [
+        {
+          "mode": "bus",
+          "operator": "FlixBus / listed partner",
+          "source_url": "https://www.flixbus.co.uk/bus-routes/paris-strasbourg",
+          "fare_type": "operator advertised starting fare, no travel date selected",
+          "fare_currency": "GBP",
+          "fare_low": 17.99,
+          "fare_high": null,
+          "budget_gbp": 31,
+          "budget_method": "advertised minimum x 1.6 + GBP 2, rounded up; availability buffer, not a quote",
+          "from_city": "Paris",
+          "to_city": "Strasbourg",
+          "checked_at": "2026-10-13"
+        },
+        {
+          "mode": "bus",
+          "operator": "FlixBus / listed partner",
+          "source_url": "https://www.flixbus.co.uk/bus-routes/strasbourg-lyon",
+          "fare_type": "operator advertised starting fare, no travel date selected",
+          "fare_currency": "GBP",
+          "fare_low": 19.99,
+          "fare_high": null,
+          "budget_gbp": 34,
+          "budget_method": "advertised minimum x 1.6 + GBP 2, rounded up; availability buffer, not a quote",
+          "from_city": "Strasbourg",
+          "to_city": "Lyon",
+          "checked_at": "2026-10-13"
+        }
+      ]
+    },
+    {
+      "key": "leaveprints-reels-20261013-007",
+      "name": "France's Mediterranean coast",
+      "highlights": "Lyon food markets, Marseille port, Nice coast",
+      "stops": [
+        {
+          "city": "Lyon",
+          "country_code": "FR",
+          "nights": 3
+        },
+        {
+          "city": "Marseille",
+          "country_code": "FR",
+          "nights": 2
+        },
+        {
+          "city": "Nice",
+          "country_code": "FR",
+          "nights": 2
+        }
+      ],
+      "legs": [
+        {
+          "mode": "bus",
+          "operator": "FlixBus / listed partner",
+          "source_url": "https://www.flixbus.co.uk/bus-routes/lyon-marseille",
+          "fare_type": "operator advertised starting fare, no travel date selected",
+          "fare_currency": "GBP",
+          "fare_low": 9.49,
+          "fare_high": null,
+          "budget_gbp": 18,
+          "budget_method": "advertised minimum x 1.6 + GBP 2, rounded up; availability buffer, not a quote",
+          "from_city": "Lyon",
+          "to_city": "Marseille",
+          "checked_at": "2026-10-13"
+        },
+        {
+          "mode": "bus",
+          "operator": "FlixBus / listed partner",
+          "source_url": "https://www.flixbus.co.uk/bus-routes/marseille-nice",
+          "fare_type": "operator advertised starting fare, no travel date selected",
+          "fare_currency": "GBP",
+          "fare_low": 8.49,
+          "fare_high": null,
+          "budget_gbp": 16,
+          "budget_method": "advertised minimum x 1.6 + GBP 2, rounded up; availability buffer, not a quote",
+          "from_city": "Marseille",
+          "to_city": "Nice",
+          "checked_at": "2026-10-13"
+        }
+      ]
+    },
+    {
+      "key": "leaveprints-reels-20261013-008",
+      "name": "Southern France slow travel",
+      "highlights": "Bordeaux riverside, Toulouse old town, Montpellier squares",
+      "stops": [
+        {
+          "city": "Bordeaux",
+          "country_code": "FR",
+          "nights": 3
+        },
+        {
+          "city": "Toulouse",
+          "country_code": "FR",
+          "nights": 2
+        },
+        {
+          "city": "Montpellier",
+          "country_code": "FR",
+          "nights": 2
+        }
+      ],
+      "legs": [
+        {
+          "mode": "bus",
+          "operator": "FlixBus / listed partner",
+          "source_url": "https://www.flixbus.co.uk/bus-routes/bordeaux-toulouse",
+          "fare_type": "operator advertised starting fare, no travel date selected",
+          "fare_currency": "GBP",
+          "fare_low": 5.49,
+          "fare_high": null,
+          "budget_gbp": 11,
+          "budget_method": "advertised minimum x 1.6 + GBP 2, rounded up; availability buffer, not a quote",
+          "from_city": "Bordeaux",
+          "to_city": "Toulouse",
+          "checked_at": "2026-10-13"
+        },
+        {
+          "mode": "bus",
+          "operator": "FlixBus / listed partner",
+          "source_url": "https://www.flixbus.co.uk/bus-routes/toulouse-montpellier",
+          "fare_type": "operator advertised starting fare, no travel date selected",
+          "fare_currency": "GBP",
+          "fare_low": 7.99,
+          "fare_high": null,
+          "budget_gbp": 15,
+          "budget_method": "advertised minimum x 1.6 + GBP 2, rounded up; availability buffer, not a quote",
+          "from_city": "Toulouse",
+          "to_city": "Montpellier",
+          "checked_at": "2026-10-13"
+        }
+      ]
+    },
+    {
+      "key": "leaveprints-reels-20261013-009",
+      "name": "Northern Italy's canals and cuisine",
+      "highlights": "Milan architecture, Venice canals, Bologna porticoes",
+      "stops": [
+        {
+          "city": "Milan",
+          "country_code": "IT",
+          "nights": 3
+        },
+        {
+          "city": "Venice",
+          "country_code": "IT",
+          "nights": 2
+        },
+        {
+          "city": "Bologna",
+          "country_code": "IT",
+          "nights": 2
+        }
+      ],
+      "legs": [
+        {
+          "mode": "bus",
+          "operator": "FlixBus / listed partner",
+          "source_url": "https://www.flixbus.co.uk/bus-routes/milan-venice",
+          "fare_type": "operator advertised starting fare, no travel date selected",
+          "fare_currency": "GBP",
+          "fare_low": 4.99,
+          "fare_high": null,
+          "budget_gbp": 10,
+          "budget_method": "advertised minimum x 1.6 + GBP 2, rounded up; availability buffer, not a quote",
+          "from_city": "Milan",
+          "to_city": "Venice",
+          "checked_at": "2026-10-13"
+        },
+        {
+          "mode": "bus",
+          "operator": "FlixBus / listed partner",
+          "source_url": "https://www.flixbus.co.uk/bus-routes/venice-bologna",
+          "fare_type": "operator advertised starting fare, no travel date selected",
+          "fare_currency": "GBP",
+          "fare_low": 5.49,
+          "fare_high": null,
+          "budget_gbp": 11,
+          "budget_method": "advertised minimum x 1.6 + GBP 2, rounded up; availability buffer, not a quote",
+          "from_city": "Venice",
+          "to_city": "Bologna",
+          "checked_at": "2026-10-13"
+        }
+      ]
+    },
+    {
+      "key": "leaveprints-reels-20261013-010",
+      "name": "Italy's art-city trail",
+      "highlights": "Bologna porticoes, Florence art, Rome ruins",
+      "stops": [
+        {
+          "city": "Bologna",
+          "country_code": "IT",
+          "nights": 3
+        },
+        {
+          "city": "Florence",
+          "country_code": "IT",
+          "nights": 2
+        },
+        {
+          "city": "Rome",
+          "country_code": "IT",
+          "nights": 2
+        }
+      ],
+      "legs": [
+        {
+          "mode": "bus",
+          "operator": "FlixBus / listed partner",
+          "source_url": "https://www.flixbus.co.uk/bus-routes/bologna-florence",
+          "fare_type": "operator advertised starting fare, no travel date selected",
+          "fare_currency": "GBP",
+          "fare_low": 4.99,
+          "fare_high": null,
+          "budget_gbp": 10,
+          "budget_method": "advertised minimum x 1.6 + GBP 2, rounded up; availability buffer, not a quote",
+          "from_city": "Bologna",
+          "to_city": "Florence",
+          "checked_at": "2026-10-13"
+        },
+        {
+          "mode": "bus",
+          "operator": "FlixBus / listed partner",
+          "source_url": "https://www.flixbus.co.uk/bus-routes/florence-rome",
+          "fare_type": "operator advertised starting fare, no travel date selected",
+          "fare_currency": "GBP",
+          "fare_low": 6.99,
+          "fare_high": null,
+          "budget_gbp": 14,
+          "budget_method": "advertised minimum x 1.6 + GBP 2, rounded up; availability buffer, not a quote",
+          "from_city": "Florence",
+          "to_city": "Rome",
+          "checked_at": "2026-10-13"
+        }
+      ]
+    },
+    {
+      "key": "leaveprints-reels-20261013-011",
+      "name": "Italy's art and southern cities",
+      "highlights": "Florence art, Rome archaeology, Naples street life",
+      "stops": [
+        {
+          "city": "Florence",
+          "country_code": "IT",
+          "nights": 3
+        },
+        {
+          "city": "Rome",
+          "country_code": "IT",
+          "nights": 2
+        },
+        {
+          "city": "Naples",
+          "country_code": "IT",
+          "nights": 2
+        }
+      ],
+      "legs": [
+        {
+          "mode": "bus",
+          "operator": "FlixBus / listed partner",
+          "source_url": "https://www.flixbus.co.uk/bus-routes/florence-rome",
+          "fare_type": "operator advertised starting fare, no travel date selected",
+          "fare_currency": "GBP",
+          "fare_low": 6.99,
+          "fare_high": null,
+          "budget_gbp": 14,
+          "budget_method": "advertised minimum x 1.6 + GBP 2, rounded up; availability buffer, not a quote",
+          "from_city": "Florence",
+          "to_city": "Rome",
+          "checked_at": "2026-10-13"
+        },
+        {
+          "mode": "bus",
+          "operator": "FlixBus / listed partner",
+          "source_url": "https://www.flixbus.co.uk/bus-routes/rome-naples",
+          "fare_type": "operator advertised starting fare, no travel date selected",
+          "fare_currency": "GBP",
+          "fare_low": 5.49,
+          "fare_high": null,
+          "budget_gbp": 11,
+          "budget_method": "advertised minimum x 1.6 + GBP 2, rounded up; availability buffer, not a quote",
+          "from_city": "Rome",
+          "to_city": "Naples",
+          "checked_at": "2026-10-13"
+        }
+      ]
+    },
+    {
+      "key": "leaveprints-reels-20261013-012",
+      "name": "Rome to Sicily overland",
+      "highlights": "Rome history, Palermo markets, Catania architecture",
+      "stops": [
+        {
+          "city": "Rome",
+          "country_code": "IT",
+          "nights": 3
+        },
+        {
+          "city": "Palermo",
+          "country_code": "IT",
+          "nights": 2
+        },
+        {
+          "city": "Catania",
+          "country_code": "IT",
+          "nights": 2
+        }
+      ],
+      "legs": [
+        {
+          "mode": "bus",
+          "operator": "FlixBus / listed partner",
+          "source_url": "https://www.flixbus.co.uk/bus-routes/rome-palermo",
+          "fare_type": "operator advertised starting fare, no travel date selected",
+          "fare_currency": "GBP",
+          "fare_low": 19.49,
+          "fare_high": null,
+          "budget_gbp": 34,
+          "budget_method": "advertised minimum x 1.6 + GBP 2, rounded up; availability buffer, not a quote",
+          "note": "Long overnight-capable connection; check timetable and luggage at booking.",
+          "from_city": "Rome",
+          "to_city": "Palermo",
+          "checked_at": "2026-10-13"
+        },
+        {
+          "mode": "bus",
+          "operator": "FlixBus / listed partner",
+          "source_url": "https://www.flixbus.co.uk/bus-routes/palermo-catania",
+          "fare_type": "operator advertised starting fare, no travel date selected",
+          "fare_currency": "GBP",
+          "fare_low": 11.99,
+          "fare_high": null,
+          "budget_gbp": 22,
+          "budget_method": "advertised minimum x 1.6 + GBP 2, rounded up; availability buffer, not a quote",
+          "from_city": "Palermo",
+          "to_city": "Catania",
+          "checked_at": "2026-10-13"
+        }
+      ]
+    },
+    {
+      "key": "leaveprints-reels-20261013-013",
+      "name": "East Germany's creative cities",
+      "highlights": "Berlin street art, Leipzig music, Dresden riverfront",
+      "stops": [
+        {
+          "city": "Berlin",
+          "country_code": "DE",
+          "nights": 3
+        },
+        {
+          "city": "Leipzig",
+          "country_code": "DE",
+          "nights": 2
+        },
+        {
+          "city": "Dresden",
+          "country_code": "DE",
+          "nights": 2
+        }
+      ],
+      "legs": [
+        {
+          "mode": "bus",
+          "operator": "FlixBus / listed partner",
+          "source_url": "https://www.flixbus.co.uk/bus-routes/berlin-leipzig",
+          "fare_type": "operator advertised starting fare, no travel date selected",
+          "fare_currency": "GBP",
+          "fare_low": 8.49,
+          "fare_high": null,
+          "budget_gbp": 16,
+          "budget_method": "advertised minimum x 1.6 + GBP 2, rounded up; availability buffer, not a quote",
+          "from_city": "Berlin",
+          "to_city": "Leipzig",
+          "checked_at": "2026-10-13"
+        },
+        {
+          "mode": "bus",
+          "operator": "FlixBus / listed partner",
+          "source_url": "https://www.flixbus.co.uk/bus-routes/leipzig-dresden",
+          "fare_type": "operator advertised starting fare, no travel date selected",
+          "fare_currency": "GBP",
+          "fare_low": 6.99,
+          "fare_high": null,
+          "budget_gbp": 14,
+          "budget_method": "advertised minimum x 1.6 + GBP 2, rounded up; availability buffer, not a quote",
+          "from_city": "Leipzig",
+          "to_city": "Dresden",
+          "checked_at": "2026-10-13"
+        }
+      ]
+    },
+    {
+      "key": "leaveprints-reels-20261013-014",
+      "name": "Germany's big-city contrast",
+      "highlights": "Berlin culture, Hamburg harbour, Cologne cathedral",
+      "stops": [
+        {
+          "city": "Berlin",
+          "country_code": "DE",
+          "nights": 3
+        },
+        {
+          "city": "Hamburg",
+          "country_code": "DE",
+          "nights": 2
+        },
+        {
+          "city": "Cologne",
+          "country_code": "DE",
+          "nights": 2
+        }
+      ],
+      "legs": [
+        {
+          "mode": "bus",
+          "operator": "FlixBus / listed partner",
+          "source_url": "https://www.flixbus.co.uk/bus-routes/berlin-hamburg",
+          "fare_type": "operator advertised starting fare, no travel date selected",
+          "fare_currency": "GBP",
+          "fare_low": 9.49,
+          "fare_high": null,
+          "budget_gbp": 18,
+          "budget_method": "advertised minimum x 1.6 + GBP 2, rounded up; availability buffer, not a quote",
+          "from_city": "Berlin",
+          "to_city": "Hamburg",
+          "checked_at": "2026-10-13"
+        },
+        {
+          "mode": "bus",
+          "operator": "FlixBus / listed partner",
+          "source_url": "https://www.flixbus.co.uk/bus-routes/hamburg-cologne",
+          "fare_type": "operator advertised starting fare, no travel date selected",
+          "fare_currency": "GBP",
+          "fare_low": 13.49,
+          "fare_high": null,
+          "budget_gbp": 24,
+          "budget_method": "advertised minimum x 1.6 + GBP 2, rounded up; availability buffer, not a quote",
+          "from_city": "Hamburg",
+          "to_city": "Cologne",
+          "checked_at": "2026-10-13"
+        }
+      ]
+    },
+    {
+      "key": "leaveprints-reels-20261013-015",
+      "name": "Germany's cathedral and castle trail",
+      "highlights": "Cologne cathedral, Nuremberg old town, Munich parks",
+      "stops": [
+        {
+          "city": "Cologne",
+          "country_code": "DE",
+          "nights": 3
+        },
+        {
+          "city": "Nuremberg",
+          "country_code": "DE",
+          "nights": 2
+        },
+        {
+          "city": "Munich",
+          "country_code": "DE",
+          "nights": 2
+        }
+      ],
+      "legs": [
+        {
+          "mode": "bus",
+          "operator": "FlixBus / listed partner",
+          "source_url": "https://www.flixbus.co.uk/bus-routes/cologne-nuremberg",
+          "fare_type": "operator advertised starting fare, no travel date selected",
+          "fare_currency": "GBP",
+          "fare_low": 17.49,
+          "fare_high": null,
+          "budget_gbp": 30,
+          "budget_method": "advertised minimum x 1.6 + GBP 2, rounded up; availability buffer, not a quote",
+          "from_city": "Cologne",
+          "to_city": "Nuremberg",
+          "checked_at": "2026-10-13"
+        },
+        {
+          "mode": "bus",
+          "operator": "FlixBus / listed partner",
+          "source_url": "https://www.flixbus.co.uk/bus-routes/nuremberg-munich",
+          "fare_type": "operator advertised starting fare, no travel date selected",
+          "fare_currency": "GBP",
+          "fare_low": 8.49,
+          "fare_high": null,
+          "budget_gbp": 16,
+          "budget_method": "advertised minimum x 1.6 + GBP 2, rounded up; availability buffer, not a quote",
+          "from_city": "Nuremberg",
+          "to_city": "Munich",
+          "checked_at": "2026-10-13"
+        }
+      ]
+    },
+    {
+      "key": "leaveprints-reels-20261013-016",
+      "name": "Central Europe without flying",
+      "highlights": "Prague architecture, Brno cafes, Vienna museums",
+      "stops": [
+        {
+          "city": "Prague",
+          "country_code": "CZ",
+          "nights": 2
+        },
+        {
+          "city": "Brno",
+          "country_code": "CZ",
+          "nights": 2
+        },
+        {
+          "city": "Vienna",
+          "country_code": "AT",
+          "nights": 2
+        }
+      ],
+      "legs": [
+        {
+          "mode": "bus",
+          "operator": "FlixBus / listed partner",
+          "source_url": "https://www.flixbus.co.uk/bus-routes/prague-brno",
+          "fare_type": "operator advertised starting fare, no travel date selected",
+          "fare_currency": "GBP",
+          "fare_low": 4.99,
+          "fare_high": null,
+          "budget_gbp": 10,
+          "budget_method": "advertised minimum x 1.6 + GBP 2, rounded up; availability buffer, not a quote",
+          "from_city": "Prague",
+          "to_city": "Brno",
+          "checked_at": "2026-10-13"
+        },
+        {
+          "mode": "bus",
+          "operator": "FlixBus / listed partner",
+          "source_url": "https://www.flixbus.co.uk/bus-routes/brno-vienna",
+          "fare_type": "operator advertised starting fare, no travel date selected",
+          "fare_currency": "GBP",
+          "fare_low": 6.99,
+          "fare_high": null,
+          "budget_gbp": 14,
+          "budget_method": "advertised minimum x 1.6 + GBP 2, rounded up; availability buffer, not a quote",
+          "from_city": "Brno",
+          "to_city": "Vienna",
+          "checked_at": "2026-10-13"
+        }
+      ]
+    },
+    {
+      "key": "leaveprints-reels-20261013-017",
+      "name": "Three capitals along the Danube",
+      "highlights": "Vienna palaces, Bratislava old town, Budapest thermal baths",
+      "stops": [
+        {
+          "city": "Vienna",
+          "country_code": "AT",
+          "nights": 3
+        },
+        {
+          "city": "Bratislava",
+          "country_code": "SK",
+          "nights": 2
+        },
+        {
+          "city": "Budapest",
+          "country_code": "HU",
+          "nights": 2
+        }
+      ],
+      "legs": [
+        {
+          "mode": "bus",
+          "operator": "FlixBus / listed partner",
+          "source_url": "https://www.flixbus.co.uk/bus-routes/vienna-bratislava",
+          "fare_type": "operator advertised starting fare, no travel date selected",
+          "fare_currency": "GBP",
+          "fare_low": 4.99,
+          "fare_high": null,
+          "budget_gbp": 10,
+          "budget_method": "advertised minimum x 1.6 + GBP 2, rounded up; availability buffer, not a quote",
+          "from_city": "Vienna",
+          "to_city": "Bratislava",
+          "checked_at": "2026-10-13"
+        },
+        {
+          "mode": "bus",
+          "operator": "FlixBus / listed partner",
+          "source_url": "https://www.flixbus.co.uk/bus-routes/bratislava-budapest",
+          "fare_type": "operator advertised starting fare, no travel date selected",
+          "fare_currency": "GBP",
+          "fare_low": 12.49,
+          "fare_high": null,
+          "budget_gbp": 22,
+          "budget_method": "advertised minimum x 1.6 + GBP 2, rounded up; availability buffer, not a quote",
+          "from_city": "Bratislava",
+          "to_city": "Budapest",
+          "checked_at": "2026-10-13"
+        }
+      ]
+    },
+    {
+      "key": "leaveprints-reels-20261013-018",
+      "name": "Czechia to Poland overland",
+      "highlights": "Prague lanes, Krakow old town, Warsaw museums",
+      "stops": [
+        {
+          "city": "Prague",
+          "country_code": "CZ",
+          "nights": 3
+        },
+        {
+          "city": "Krakow",
+          "country_code": "PL",
+          "nights": 2
+        },
+        {
+          "city": "Warsaw",
+          "country_code": "PL",
+          "nights": 2
+        }
+      ],
+      "legs": [
+        {
+          "mode": "bus",
+          "operator": "FlixBus / listed partner",
+          "source_url": "https://www.flixbus.co.uk/bus-routes/prague-krakow",
+          "fare_type": "operator advertised starting fare, no travel date selected",
+          "fare_currency": "GBP",
+          "fare_low": 10.49,
+          "fare_high": null,
+          "budget_gbp": 19,
+          "budget_method": "advertised minimum x 1.6 + GBP 2, rounded up; availability buffer, not a quote",
+          "from_city": "Prague",
+          "to_city": "Krakow",
+          "checked_at": "2026-10-13"
+        },
+        {
+          "mode": "bus",
+          "operator": "FlixBus / listed partner",
+          "source_url": "https://www.flixbus.co.uk/bus-routes/krakow-warsaw",
+          "fare_type": "operator advertised starting fare, no travel date selected",
+          "fare_currency": "GBP",
+          "fare_low": 5.99,
+          "fare_high": null,
+          "budget_gbp": 12,
+          "budget_method": "advertised minimum x 1.6 + GBP 2, rounded up; availability buffer, not a quote",
+          "from_city": "Krakow",
+          "to_city": "Warsaw",
+          "checked_at": "2026-10-13"
+        }
+      ]
+    },
+    {
+      "key": "leaveprints-reels-20261013-019",
+      "name": "Central Europe to the Adriatic",
+      "highlights": "Budapest baths, Zagreb cafes, Ljubljana riverside",
+      "stops": [
+        {
+          "city": "Budapest",
+          "country_code": "HU",
+          "nights": 3
+        },
+        {
+          "city": "Zagreb",
+          "country_code": "HR",
+          "nights": 2
+        },
+        {
+          "city": "Ljubljana",
+          "country_code": "SI",
+          "nights": 2
+        }
+      ],
+      "legs": [
+        {
+          "mode": "bus",
+          "operator": "FlixBus / listed partner",
+          "source_url": "https://www.flixbus.co.uk/bus-routes/budapest-zagreb",
+          "fare_type": "operator advertised starting fare, no travel date selected",
+          "fare_currency": "GBP",
+          "fare_low": 19.49,
+          "fare_high": null,
+          "budget_gbp": 34,
+          "budget_method": "advertised minimum x 1.6 + GBP 2, rounded up; availability buffer, not a quote",
+          "from_city": "Budapest",
+          "to_city": "Zagreb",
+          "checked_at": "2026-10-13"
+        },
+        {
+          "mode": "bus",
+          "operator": "FlixBus / listed partner",
+          "source_url": "https://www.flixbus.co.uk/bus-routes/zagreb-ljubljana",
+          "fare_type": "operator advertised starting fare, no travel date selected",
+          "fare_currency": "GBP",
+          "fare_low": 10.49,
+          "fare_high": null,
+          "budget_gbp": 19,
+          "budget_method": "advertised minimum x 1.6 + GBP 2, rounded up; availability buffer, not a quote",
+          "from_city": "Zagreb",
+          "to_city": "Ljubljana",
+          "checked_at": "2026-10-13"
+        }
+      ]
+    },
+    {
+      "key": "leaveprints-reels-20261013-020",
+      "name": "Poland from the Baltic south",
+      "highlights": "Gdansk harbour, Warsaw history, Krakow old town",
+      "stops": [
+        {
+          "city": "Gdansk",
+          "country_code": "PL",
+          "nights": 3
+        },
+        {
+          "city": "Warsaw",
+          "country_code": "PL",
+          "nights": 2
+        },
+        {
+          "city": "Krakow",
+          "country_code": "PL",
+          "nights": 2
+        }
+      ],
+      "legs": [
+        {
+          "mode": "bus",
+          "operator": "FlixBus / listed partner",
+          "source_url": "https://www.flixbus.co.uk/bus-routes/gdansk-warsaw",
+          "fare_type": "operator advertised starting fare, no travel date selected",
+          "fare_currency": "GBP",
+          "fare_low": 11.49,
+          "fare_high": null,
+          "budget_gbp": 21,
+          "budget_method": "advertised minimum x 1.6 + GBP 2, rounded up; availability buffer, not a quote",
+          "from_city": "Gdansk",
+          "to_city": "Warsaw",
+          "checked_at": "2026-10-13"
+        },
+        {
+          "mode": "bus",
+          "operator": "FlixBus / listed partner",
+          "source_url": "https://www.flixbus.co.uk/bus-routes/warsaw-krakow",
+          "fare_type": "operator advertised starting fare, no travel date selected",
+          "fare_currency": "GBP",
+          "fare_low": 5.49,
+          "fare_high": null,
+          "budget_gbp": 11,
+          "budget_method": "advertised minimum x 1.6 + GBP 2, rounded up; availability buffer, not a quote",
+          "from_city": "Warsaw",
+          "to_city": "Krakow",
+          "checked_at": "2026-10-13"
+        }
+      ]
+    },
+    {
+      "key": "leaveprints-reels-20261013-021",
+      "name": "Poland beyond the capitals",
+      "highlights": "Poznan squares, Wroclaw islands, Krakow history",
+      "stops": [
+        {
+          "city": "Poznan",
+          "country_code": "PL",
+          "nights": 3
+        },
+        {
+          "city": "Wroclaw",
+          "country_code": "PL",
+          "nights": 2
+        },
+        {
+          "city": "Krakow",
+          "country_code": "PL",
+          "nights": 2
+        }
+      ],
+      "legs": [
+        {
+          "mode": "bus",
+          "operator": "FlixBus / listed partner",
+          "source_url": "https://www.flixbus.co.uk/bus-routes/poznan-wroclaw",
+          "fare_type": "operator advertised starting fare, no travel date selected",
+          "fare_currency": "GBP",
+          "fare_low": 4.99,
+          "fare_high": null,
+          "budget_gbp": 10,
+          "budget_method": "advertised minimum x 1.6 + GBP 2, rounded up; availability buffer, not a quote",
+          "from_city": "Poznan",
+          "to_city": "Wroclaw",
+          "checked_at": "2026-10-13"
+        },
+        {
+          "mode": "bus",
+          "operator": "FlixBus / listed partner",
+          "source_url": "https://www.flixbus.co.uk/bus-routes/wroclaw-krakow",
+          "fare_type": "operator advertised starting fare, no travel date selected",
+          "fare_currency": "GBP",
+          "fare_low": 4.49,
+          "fare_high": null,
+          "budget_gbp": 10,
+          "budget_method": "advertised minimum x 1.6 + GBP 2, rounded up; availability buffer, not a quote",
+          "from_city": "Wroclaw",
+          "to_city": "Krakow",
+          "checked_at": "2026-10-13"
+        }
+      ]
+    },
+    {
+      "key": "leaveprints-reels-20261013-022",
+      "name": "The Baltic capitals",
+      "highlights": "Vilnius lanes, Riga architecture, Tallinn city walls",
+      "stops": [
+        {
+          "city": "Vilnius",
+          "country_code": "LT",
+          "nights": 3
+        },
+        {
+          "city": "Riga",
+          "country_code": "LV",
+          "nights": 2
+        },
+        {
+          "city": "Tallinn",
+          "country_code": "EE",
+          "nights": 2
+        }
+      ],
+      "legs": [
+        {
+          "mode": "bus",
+          "operator": "FlixBus / listed partner",
+          "source_url": "https://www.flixbus.co.uk/bus-routes/vilnius-riga",
+          "fare_type": "operator advertised starting fare, no travel date selected",
+          "fare_currency": "GBP",
+          "fare_low": 7.99,
+          "fare_high": null,
+          "budget_gbp": 15,
+          "budget_method": "advertised minimum x 1.6 + GBP 2, rounded up; availability buffer, not a quote",
+          "from_city": "Vilnius",
+          "to_city": "Riga",
+          "checked_at": "2026-10-13"
+        },
+        {
+          "mode": "bus",
+          "operator": "FlixBus / listed partner",
+          "source_url": "https://www.flixbus.co.uk/bus-routes/riga-tallinn",
+          "fare_type": "operator advertised starting fare, no travel date selected",
+          "fare_currency": "GBP",
+          "fare_low": 7.99,
+          "fare_high": null,
+          "budget_gbp": 15,
+          "budget_method": "advertised minimum x 1.6 + GBP 2, rounded up; availability buffer, not a quote",
+          "from_city": "Riga",
+          "to_city": "Tallinn",
+          "checked_at": "2026-10-13"
+        }
+      ]
+    },
+    {
+      "key": "leaveprints-reels-20261013-023",
+      "name": "Lithuania to Latvia",
+      "highlights": "Kaunas street art, Vilnius old town, Riga markets",
+      "stops": [
+        {
+          "city": "Kaunas",
+          "country_code": "LT",
+          "nights": 2
+        },
+        {
+          "city": "Vilnius",
+          "country_code": "LT",
+          "nights": 2
+        },
+        {
+          "city": "Riga",
+          "country_code": "LV",
+          "nights": 2
+        }
+      ],
+      "legs": [
+        {
+          "mode": "bus",
+          "operator": "FlixBus / listed partner",
+          "source_url": "https://www.flixbus.co.uk/bus-routes/kaunas-vilnius",
+          "fare_type": "operator advertised starting fare, no travel date selected",
+          "fare_currency": "GBP",
+          "fare_low": 10.89,
+          "fare_high": null,
+          "budget_gbp": 20,
+          "budget_method": "advertised minimum x 1.6 + GBP 2, rounded up; availability buffer, not a quote",
+          "from_city": "Kaunas",
+          "to_city": "Vilnius",
+          "checked_at": "2026-10-13"
+        },
+        {
+          "mode": "bus",
+          "operator": "FlixBus / listed partner",
+          "source_url": "https://www.flixbus.co.uk/bus-routes/vilnius-riga",
+          "fare_type": "operator advertised starting fare, no travel date selected",
+          "fare_currency": "GBP",
+          "fare_low": 7.99,
+          "fare_high": null,
+          "budget_gbp": 15,
+          "budget_method": "advertised minimum x 1.6 + GBP 2, rounded up; availability buffer, not a quote",
+          "from_city": "Vilnius",
+          "to_city": "Riga",
+          "checked_at": "2026-10-13"
+        }
+      ]
+    },
+    {
+      "key": "leaveprints-reels-20261013-024",
+      "name": "Bulgaria from mountains to sea",
+      "highlights": "Sofia mountains, Plovdiv old town, Varna coast",
+      "stops": [
+        {
+          "city": "Sofia",
+          "country_code": "BG",
+          "nights": 3
+        },
+        {
+          "city": "Plovdiv",
+          "country_code": "BG",
+          "nights": 2
+        },
+        {
+          "city": "Varna",
+          "country_code": "BG",
+          "nights": 2
+        }
+      ],
+      "legs": [
+        {
+          "mode": "bus",
+          "operator": "FlixBus / listed partner",
+          "source_url": "https://www.flixbus.co.uk/bus-routes/sofia-plovdiv",
+          "fare_type": "operator advertised starting fare, no travel date selected",
+          "fare_currency": "GBP",
+          "fare_low": 17.94,
+          "fare_high": null,
+          "budget_gbp": 31,
+          "budget_method": "advertised minimum x 1.6 + GBP 2, rounded up; availability buffer, not a quote",
+          "from_city": "Sofia",
+          "to_city": "Plovdiv",
+          "checked_at": "2026-10-13"
+        },
+        {
+          "mode": "bus",
+          "operator": "Karat-S / listed operators",
+          "source_url": "https://www.rome2rio.com/Bus/Plovdiv/Varna",
+          "fare_type": "published route estimate, no travel date selected",
+          "fare_currency": "USD",
+          "fare_low": 35,
+          "fare_high": 50,
+          "budget_gbp": 38,
+          "budget_method": "upper end of sourced range, or published fare, converted to GBP and rounded up",
+          "note": "",
+          "from_city": "Plovdiv",
+          "to_city": "Varna",
+          "checked_at": "2026-10-13"
+        }
+      ]
+    },
+    {
+      "key": "leaveprints-reels-20261013-025",
+      "name": "Romania's Transylvanian trail",
+      "highlights": "Bucharest architecture, Brasov mountains, Sibiu squares",
+      "stops": [
+        {
+          "city": "Bucharest",
+          "country_code": "RO",
+          "nights": 3
+        },
+        {
+          "city": "Brasov",
+          "country_code": "RO",
+          "nights": 2
+        },
+        {
+          "city": "Sibiu",
+          "country_code": "RO",
+          "nights": 2
+        }
+      ],
+      "legs": [
+        {
+          "mode": "bus",
+          "operator": "FlixBus / listed partner",
+          "source_url": "https://www.flixbus.co.uk/bus-routes/bucharest-brasov",
+          "fare_type": "operator advertised starting fare, no travel date selected",
+          "fare_currency": "GBP",
+          "fare_low": 4.49,
+          "fare_high": null,
+          "budget_gbp": 10,
+          "budget_method": "advertised minimum x 1.6 + GBP 2, rounded up; availability buffer, not a quote",
+          "from_city": "Bucharest",
+          "to_city": "Brasov",
+          "checked_at": "2026-10-13"
+        },
+        {
+          "mode": "bus",
+          "operator": "FlixBus / listed partner",
+          "source_url": "https://www.flixbus.co.uk/bus-routes/brasov-sibiu",
+          "fare_type": "operator advertised starting fare, no travel date selected",
+          "fare_currency": "GBP",
+          "fare_low": 3.99,
+          "fare_high": null,
+          "budget_gbp": 9,
+          "budget_method": "advertised minimum x 1.6 + GBP 2, rounded up; availability buffer, not a quote",
+          "from_city": "Brasov",
+          "to_city": "Sibiu",
+          "checked_at": "2026-10-13"
+        }
+      ]
+    },
+    {
+      "key": "leaveprints-reels-20261013-026",
+      "name": "Bosnia to the Adriatic",
+      "highlights": "Sarajevo old town, Mostar bridge, Dubrovnik walls",
+      "stops": [
+        {
+          "city": "Sarajevo",
+          "country_code": "BA",
+          "nights": 3
+        },
+        {
+          "city": "Mostar",
+          "country_code": "BA",
+          "nights": 2
+        },
+        {
+          "city": "Dubrovnik",
+          "country_code": "HR",
+          "nights": 2
+        }
+      ],
+      "legs": [
+        {
+          "mode": "train",
+          "operator": "ZFBH",
+          "source_url": "https://www.rome2rio.com/Train/Sarajevo/Mostar",
+          "fare_type": "published route estimate, no travel date selected",
+          "fare_currency": "USD",
+          "fare_low": 8,
+          "fare_high": 10,
+          "budget_gbp": 8,
+          "budget_method": "upper end of sourced range, or published fare, converted to GBP and rounded up",
+          "note": "",
+          "from_city": "Sarajevo",
+          "to_city": "Mostar",
+          "checked_at": "2026-10-13"
+        },
+        {
+          "mode": "bus",
+          "operator": "FlixBus / listed partner",
+          "source_url": "https://www.flixbus.co.uk/bus-routes/mostar-dubrovnik",
+          "fare_type": "operator advertised starting fare, no travel date selected",
+          "fare_currency": "GBP",
+          "fare_low": 27.32,
+          "fare_high": null,
+          "budget_gbp": 46,
+          "budget_method": "advertised minimum x 1.6 + GBP 2, rounded up; availability buffer, not a quote",
+          "from_city": "Mostar",
+          "to_city": "Dubrovnik",
+          "checked_at": "2026-10-13"
+        }
+      ]
+    },
+    {
+      "key": "leaveprints-reels-20261013-027",
+      "name": "Albania's Ottoman heritage",
+      "highlights": "Tirana cafes, Berat hillside houses, Gjirokaster castle",
+      "stops": [
+        {
+          "city": "Tirana",
+          "country_code": "AL",
+          "nights": 3
+        },
+        {
+          "city": "Berat",
+          "country_code": "AL",
+          "nights": 2
+        },
+        {
+          "city": "Gjirokaster",
+          "country_code": "AL",
+          "nights": 2
+        }
+      ],
+      "legs": [
+        {
+          "mode": "bus",
+          "operator": "Tibe",
+          "source_url": "https://www.rome2rio.com/Bus/Tirana/Berat",
+          "fare_type": "published route estimate, no travel date selected",
+          "fare_currency": "USD",
+          "fare_low": 6,
+          "fare_high": 10,
+          "budget_gbp": 8,
+          "budget_method": "upper end of sourced range, or published fare, converted to GBP and rounded up",
+          "note": "",
+          "from_city": "Tirana",
+          "to_city": "Berat",
+          "checked_at": "2026-10-13"
+        },
+        {
+          "mode": "bus",
+          "operator": "Argjiro via Gjirafa Travel",
+          "source_url": "https://travel.gjirafa.com/en/bus/berat-to-gjirokaster",
+          "fare_type": "booking platform published fare, plus EUR 2.50 buffer",
+          "fare_currency": "EUR",
+          "fare_low": 11.5,
+          "fare_high": 11.5,
+          "budget_gbp": 12,
+          "budget_method": "upper end of sourced range, or published fare, converted to GBP and rounded up",
+          "note": "",
+          "from_city": "Berat",
+          "to_city": "Gjirokaster",
+          "checked_at": "2026-10-13"
+        }
+      ]
+    },
+    {
+      "key": "leaveprints-reels-20261013-028",
+      "name": "Montenegro to northern Albania",
+      "highlights": "Kotor bay, Budva old town, Shkoder lake",
+      "stops": [
+        {
+          "city": "Kotor",
+          "country_code": "ME",
+          "nights": 3
+        },
+        {
+          "city": "Budva",
+          "country_code": "ME",
+          "nights": 2
+        },
+        {
+          "city": "Shkoder",
+          "country_code": "AL",
+          "nights": 2
+        }
+      ],
+      "legs": [
+        {
+          "mode": "bus",
+          "operator": "FlixBus / listed partner",
+          "source_url": "https://www.flixbus.co.uk/bus-routes/kotor-budva",
+          "fare_type": "operator advertised starting fare, no travel date selected",
+          "fare_currency": "GBP",
+          "fare_low": 6.09,
+          "fare_high": null,
+          "budget_gbp": 12,
+          "budget_method": "advertised minimum x 1.6 + GBP 2, rounded up; availability buffer, not a quote",
+          "from_city": "Kotor",
+          "to_city": "Budva",
+          "checked_at": "2026-10-13"
+        },
+        {
+          "mode": "bus",
+          "operator": "FlixBus / listed partner",
+          "source_url": "https://www.flixbus.co.uk/bus-routes/budva-shkoder",
+          "fare_type": "operator advertised starting fare, no travel date selected",
+          "fare_currency": "GBP",
+          "fare_low": 22.18,
+          "fare_high": null,
+          "budget_gbp": 38,
+          "budget_method": "advertised minimum x 1.6 + GBP 2, rounded up; availability buffer, not a quote",
+          "from_city": "Budva",
+          "to_city": "Shkoder",
+          "checked_at": "2026-10-13"
+        }
+      ]
+    },
+    {
+      "key": "leaveprints-reels-20261013-029",
+      "name": "Balkan lakes and cities",
+      "highlights": "Skopje bazaar, Lake Ohrid, Tirana street life",
+      "stops": [
+        {
+          "city": "Skopje",
+          "country_code": "MK",
+          "nights": 3
+        },
+        {
+          "city": "Ohrid",
+          "country_code": "MK",
+          "nights": 2
+        },
+        {
+          "city": "Tirana",
+          "country_code": "AL",
+          "nights": 2
+        }
+      ],
+      "legs": [
+        {
+          "mode": "bus",
+          "operator": "FlixBus / listed partner",
+          "source_url": "https://www.flixbus.co.uk/bus-routes/skopje-ohrid",
+          "fare_type": "operator advertised starting fare, no travel date selected",
+          "fare_currency": "GBP",
+          "fare_low": 12.18,
+          "fare_high": null,
+          "budget_gbp": 22,
+          "budget_method": "advertised minimum x 1.6 + GBP 2, rounded up; availability buffer, not a quote",
+          "from_city": "Skopje",
+          "to_city": "Ohrid",
+          "checked_at": "2026-10-13"
+        },
+        {
+          "mode": "bus",
+          "operator": "FlixBus / listed partner",
+          "source_url": "https://www.flixbus.co.uk/bus-routes/ohrid-tirana",
+          "fare_type": "operator advertised starting fare, no travel date selected",
+          "fare_currency": "GBP",
+          "fare_low": 11.16,
+          "fare_high": null,
+          "budget_gbp": 20,
+          "budget_method": "advertised minimum x 1.6 + GBP 2, rounded up; availability buffer, not a quote",
+          "from_city": "Ohrid",
+          "to_city": "Tirana",
+          "checked_at": "2026-10-13"
+        }
+      ]
+    },
+    {
+      "key": "leaveprints-reels-20261013-030",
+      "name": "Benelux city-hop",
+      "highlights": "Amsterdam canals, Brussels squares, Ghent nightlife",
+      "stops": [
+        {
+          "city": "Amsterdam",
+          "country_code": "NL",
+          "nights": 3
+        },
+        {
+          "city": "Brussels",
+          "country_code": "BE",
+          "nights": 2
+        },
+        {
+          "city": "Ghent",
+          "country_code": "BE",
+          "nights": 2
+        }
+      ],
+      "legs": [
+        {
+          "mode": "bus",
+          "operator": "FlixBus / listed partner",
+          "source_url": "https://www.flixbus.co.uk/bus-routes/amsterdam-brussels",
+          "fare_type": "operator advertised starting fare, no travel date selected",
+          "fare_currency": "GBP",
+          "fare_low": 9.49,
+          "fare_high": null,
+          "budget_gbp": 18,
+          "budget_method": "advertised minimum x 1.6 + GBP 2, rounded up; availability buffer, not a quote",
+          "from_city": "Amsterdam",
+          "to_city": "Brussels",
+          "checked_at": "2026-10-13"
+        },
+        {
+          "mode": "bus",
+          "operator": "FlixBus / listed partner",
+          "source_url": "https://www.flixbus.co.uk/bus-routes/brussels-ghent",
+          "fare_type": "operator advertised starting fare, no travel date selected",
+          "fare_currency": "GBP",
+          "fare_low": 3.49,
+          "fare_high": null,
+          "budget_gbp": 8,
+          "budget_method": "advertised minimum x 1.6 + GBP 2, rounded up; availability buffer, not a quote",
+          "from_city": "Brussels",
+          "to_city": "Ghent",
+          "checked_at": "2026-10-13"
+        }
+      ]
+    },
+    {
+      "key": "leaveprints-reels-20261013-031",
+      "name": "Belgium's medieval city trail",
+      "highlights": "Brussels architecture, Ghent canals, Bruges lanes",
+      "stops": [
+        {
+          "city": "Brussels",
+          "country_code": "BE",
+          "nights": 2
+        },
+        {
+          "city": "Ghent",
+          "country_code": "BE",
+          "nights": 2
+        },
+        {
+          "city": "Bruges",
+          "country_code": "BE",
+          "nights": 2
+        }
+      ],
+      "legs": [
+        {
+          "mode": "bus",
+          "operator": "FlixBus / listed partner",
+          "source_url": "https://www.flixbus.co.uk/bus-routes/brussels-ghent",
+          "fare_type": "operator advertised starting fare, no travel date selected",
+          "fare_currency": "GBP",
+          "fare_low": 3.49,
+          "fare_high": null,
+          "budget_gbp": 8,
+          "budget_method": "advertised minimum x 1.6 + GBP 2, rounded up; availability buffer, not a quote",
+          "from_city": "Brussels",
+          "to_city": "Ghent",
+          "checked_at": "2026-10-13"
+        },
+        {
+          "mode": "bus",
+          "operator": "FlixBus / listed partner",
+          "source_url": "https://www.flixbus.co.uk/bus-routes/ghent-bruges",
+          "fare_type": "operator advertised starting fare, no travel date selected",
+          "fare_currency": "GBP",
+          "fare_low": 2.99,
+          "fare_high": null,
+          "budget_gbp": 7,
+          "budget_method": "advertised minimum x 1.6 + GBP 2, rounded up; availability buffer, not a quote",
+          "from_city": "Ghent",
+          "to_city": "Bruges",
+          "checked_at": "2026-10-13"
+        }
+      ]
+    },
+    {
+      "key": "leaveprints-reels-20261013-032",
+      "name": "Scandinavia's west-coast trail",
+      "highlights": "Copenhagen cycling, Gothenburg harbour, Stockholm islands",
+      "stops": [
+        {
+          "city": "Copenhagen",
+          "country_code": "DK",
+          "nights": 3
+        },
+        {
+          "city": "Gothenburg",
+          "country_code": "SE",
+          "nights": 2
+        },
+        {
+          "city": "Stockholm",
+          "country_code": "SE",
+          "nights": 2
+        }
+      ],
+      "legs": [
+        {
+          "mode": "bus",
+          "operator": "FlixBus / listed partner",
+          "source_url": "https://www.flixbus.co.uk/bus-routes/copenhagen-gothenburg",
+          "fare_type": "operator advertised starting fare, no travel date selected",
+          "fare_currency": "GBP",
+          "fare_low": 15.99,
+          "fare_high": null,
+          "budget_gbp": 28,
+          "budget_method": "advertised minimum x 1.6 + GBP 2, rounded up; availability buffer, not a quote",
+          "from_city": "Copenhagen",
+          "to_city": "Gothenburg",
+          "checked_at": "2026-10-13"
+        },
+        {
+          "mode": "bus",
+          "operator": "FlixBus / listed partner",
+          "source_url": "https://www.flixbus.co.uk/bus-routes/gothenburg-stockholm",
+          "fare_type": "operator advertised starting fare, no travel date selected",
+          "fare_currency": "GBP",
+          "fare_low": 22.99,
+          "fare_high": null,
+          "budget_gbp": 39,
+          "budget_method": "advertised minimum x 1.6 + GBP 2, rounded up; availability buffer, not a quote",
+          "from_city": "Gothenburg",
+          "to_city": "Stockholm",
+          "checked_at": "2026-10-13"
+        }
+      ]
+    },
+    {
+      "key": "leaveprints-reels-20261013-033",
+      "name": "Baltic Sea cities",
+      "highlights": "Stockholm museums, Tallinn old town, Helsinki design",
+      "stops": [
+        {
+          "city": "Stockholm",
+          "country_code": "SE",
+          "nights": 3
+        },
+        {
+          "city": "Tallinn",
+          "country_code": "EE",
+          "nights": 3
+        },
+        {
+          "city": "Helsinki",
+          "country_code": "FI",
+          "nights": 3
+        }
+      ],
+      "legs": [
+        {
+          "mode": "ferry",
+          "operator": "Tallink Silja / Viking via Direct Ferries",
+          "source_url": "https://www.directferries.co.uk/stockholm_tallinn_ferry.htm",
+          "fare_type": "published average foot-passenger price GBP 150, plus 20% buffer",
+          "fare_currency": "GBP",
+          "fare_low": null,
+          "fare_high": 150,
+          "budget_gbp": 180,
+          "budget_method": "upper end of sourced range, or published fare, converted to GBP and rounded up",
+          "note": "Published average foot-passenger price; check cabin and sailing terms.",
+          "from_city": "Stockholm",
+          "to_city": "Tallinn",
+          "checked_at": "2026-10-13"
+        },
+        {
+          "mode": "ferry",
+          "operator": "FlixBus / listed partner",
+          "source_url": "https://www.flixbus.co.uk/bus-routes/tallinn-helsinki",
+          "fare_type": "operator advertised starting fare, no travel date selected",
+          "fare_currency": "GBP",
+          "fare_low": 34.99,
+          "fare_high": null,
+          "budget_gbp": 58,
+          "budget_method": "advertised minimum x 1.6 + GBP 2, rounded up; availability buffer, not a quote",
+          "note": "FlixBus-listed combined connection with sea crossing; sailing and connection must be checked at booking.",
+          "from_city": "Tallinn",
+          "to_city": "Helsinki",
+          "checked_at": "2026-10-13"
+        }
+      ]
+    },
+    {
+      "key": "leaveprints-reels-20261013-034",
+      "name": "Turkey's cities and fairy chimneys",
+      "highlights": "Istanbul history, Ankara museums, Goreme landscapes",
+      "stops": [
+        {
+          "city": "Istanbul",
+          "country_code": "TR",
+          "nights": 3
+        },
+        {
+          "city": "Ankara",
+          "country_code": "TR",
+          "nights": 3
+        },
+        {
+          "city": "Goreme",
+          "country_code": "TR",
+          "nights": 3
+        }
+      ],
+      "legs": [
+        {
+          "mode": "train",
+          "operator": "TCDD YHT",
+          "source_url": "https://www.haberturk.com/ekonomi/yht-bilet-fiyatlarina-zam-3906136",
+          "fare_type": "reported current standard fare plus TRY 110 transfer/budget buffer",
+          "fare_currency": "TRY",
+          "fare_low": 990,
+          "fare_high": 990,
+          "budget_gbp": 17,
+          "budget_method": "upper end of sourced range, or published fare, converted to GBP and rounded up",
+          "note": "Economy fare reported after 17 August 2026 increase; urban transfer allowance included.",
+          "from_city": "Istanbul",
+          "to_city": "Ankara",
+          "checked_at": "2026-10-13"
+        },
+        {
+          "mode": "bus",
+          "operator": "Listed operators via Obilet",
+          "source_url": "https://www.obilet.com/otobus-bileti/ankara-goreme",
+          "fare_type": "booking platform starting fare plus TRY 201 buffer",
+          "fare_currency": "TRY",
+          "fare_low": 799,
+          "fare_high": 799,
+          "budget_gbp": 16,
+          "budget_method": "upper end of sourced range, or published fare, converted to GBP and rounded up",
+          "note": "",
+          "from_city": "Ankara",
+          "to_city": "Goreme",
+          "checked_at": "2026-10-13"
+        }
+      ]
+    },
+    {
+      "key": "leaveprints-reels-20261013-035",
+      "name": "Turkey's Aegean to Mediterranean",
+      "highlights": "Istanbul markets, Izmir waterfront, Antalya old town",
+      "stops": [
+        {
+          "city": "Istanbul",
+          "country_code": "TR",
+          "nights": 3
+        },
+        {
+          "city": "Izmir",
+          "country_code": "TR",
+          "nights": 3
+        },
+        {
+          "city": "Antalya",
+          "country_code": "TR",
+          "nights": 3
+        }
+      ],
+      "legs": [
+        {
+          "mode": "bus",
+          "operator": "Kamil Koc",
+          "source_url": "https://www.flixbus.com.tr/otobus-seferleri/istanbul-izmir",
+          "fare_type": "operator advertised starting fare plus 20% buffer",
+          "fare_currency": "TRY",
+          "fare_low": 1500,
+          "fare_high": 1500,
+          "budget_gbp": 28,
+          "budget_method": "upper end of sourced range, or published fare, converted to GBP and rounded up",
+          "note": "",
+          "from_city": "Istanbul",
+          "to_city": "Izmir",
+          "checked_at": "2026-10-13"
+        },
+        {
+          "mode": "bus",
+          "operator": "Kamil Koc",
+          "source_url": "https://www.flixbus.com.tr/otobus-seferleri/izmir-antalya",
+          "fare_type": "operator advertised starting fare plus TRY 291 buffer",
+          "fare_currency": "TRY",
+          "fare_low": 909,
+          "fare_high": 909,
+          "budget_gbp": 19,
+          "budget_method": "upper end of sourced range, or published fare, converted to GBP and rounded up",
+          "note": "",
+          "from_city": "Izmir",
+          "to_city": "Antalya",
+          "checked_at": "2026-10-13"
+        }
+      ]
+    },
+    {
+      "key": "leaveprints-reels-20261013-036",
+      "name": "Georgia's cities and coast",
+      "highlights": "Tbilisi lanes, Kutaisi markets, Batumi seafront",
+      "stops": [
+        {
+          "city": "Tbilisi",
+          "country_code": "GE",
+          "nights": 3
+        },
+        {
+          "city": "Kutaisi",
+          "country_code": "GE",
+          "nights": 3
+        },
+        {
+          "city": "Batumi",
+          "country_code": "GE",
+          "nights": 3
+        }
+      ],
+      "legs": [
+        {
+          "mode": "bus",
+          "operator": "Georgia Minibuses",
+          "source_url": "https://www.rome2rio.com/s/Tbilisi/Kutaisi",
+          "fare_type": "published route estimate, no travel date selected",
+          "fare_currency": "USD",
+          "fare_low": 8,
+          "fare_high": 8,
+          "budget_gbp": 10,
+          "budget_method": "upper end of sourced range, or published fare, converted to GBP and rounded up",
+          "note": "",
+          "from_city": "Tbilisi",
+          "to_city": "Kutaisi",
+          "checked_at": "2026-10-13"
+        },
+        {
+          "mode": "train",
+          "operator": "Georgian Railway commuter service",
+          "source_url": "https://www.rome2rio.com/s/Kutaisi/Batumi",
+          "fare_type": "published route estimate, no travel date selected",
+          "fare_currency": "USD",
+          "fare_low": 3,
+          "fare_high": 4,
+          "budget_gbp": 4,
+          "budget_method": "upper end of sourced range, or published fare, converted to GBP and rounded up",
+          "note": "",
+          "from_city": "Kutaisi",
+          "to_city": "Batumi",
+          "checked_at": "2026-10-13"
+        }
+      ]
+    },
+    {
+      "key": "leaveprints-reels-20261013-037",
+      "name": "Uzbekistan's Silk Road highlights",
+      "highlights": "Tashkent markets, Samarkand architecture, Bukhara old town",
+      "stops": [
+        {
+          "city": "Tashkent",
+          "country_code": "UZ",
+          "nights": 3
+        },
+        {
+          "city": "Samarkand",
+          "country_code": "UZ",
+          "nights": 3
+        },
+        {
+          "city": "Bukhara",
+          "country_code": "UZ",
+          "nights": 3
+        }
+      ],
+      "legs": [
+        {
+          "mode": "train",
+          "operator": "Uzbekistan Railways high-speed",
+          "source_url": "https://www.rome2rio.com/s/Tashkent/Samarkand",
+          "fare_type": "published route estimate, no travel date selected",
+          "fare_currency": "USD",
+          "fare_low": 23,
+          "fare_high": 35,
+          "budget_gbp": 27,
+          "budget_method": "upper end of sourced range, or published fare, converted to GBP and rounded up",
+          "note": "",
+          "from_city": "Tashkent",
+          "to_city": "Samarkand",
+          "checked_at": "2026-10-13"
+        },
+        {
+          "mode": "train",
+          "operator": "Uzbekistan Railways",
+          "source_url": "https://www.rome2rio.com/s/Samarkand/Bukhara",
+          "fare_type": "published route estimate, no travel date selected",
+          "fare_currency": "USD",
+          "fare_low": 10,
+          "fare_high": 15,
+          "budget_gbp": 16,
+          "budget_method": "upper end of sourced range, or published fare, converted to GBP and rounded up",
+          "note": "Bukhara 1 station is outside the old city; USD 5 local-transfer allowance included.",
+          "from_city": "Samarkand",
+          "to_city": "Bukhara",
+          "checked_at": "2026-10-13"
+        }
+      ]
+    },
+    {
+      "key": "leaveprints-reels-20261013-038",
+      "name": "Thailand's temples and northern hills",
+      "highlights": "Bangkok markets, Ayutthaya ruins, Chiang Mai temples",
+      "stops": [
+        {
+          "city": "Bangkok",
+          "country_code": "TH",
+          "nights": 3
+        },
+        {
+          "city": "Ayutthaya",
+          "country_code": "TH",
+          "nights": 3
+        },
+        {
+          "city": "Chiang Mai",
+          "country_code": "TH",
+          "nights": 3
+        }
+      ],
+      "legs": [
+        {
+          "mode": "train",
+          "operator": "State Railway of Thailand",
+          "source_url": "https://www.seat61.com/Thailand.htm",
+          "fare_type": "published third-class fare plus THB 30 buffer",
+          "fare_currency": "THB",
+          "fare_low": 20,
+          "fare_high": 20,
+          "budget_gbp": 2,
+          "budget_method": "upper end of sourced range, or published fare, converted to GBP and rounded up",
+          "note": "Third-class rapid-train fare; choose the correct departure station.",
+          "from_city": "Bangkok",
+          "to_city": "Ayutthaya",
+          "checked_at": "2026-10-13"
+        },
+        {
+          "mode": "train",
+          "operator": "State Railway of Thailand",
+          "source_url": "https://www.rome2rio.com/s/Ayutthaya-Historical-Park/Chiang-Mai",
+          "fare_type": "published route estimate, no travel date selected",
+          "fare_currency": "THB",
+          "fare_low": 170,
+          "fare_high": 900,
+          "budget_gbp": 25,
+          "budget_method": "upper end of sourced range, or published fare, converted to GBP and rounded up",
+          "note": "Range varies by train and class; reservation fees may differ.",
+          "from_city": "Ayutthaya",
+          "to_city": "Chiang Mai",
+          "checked_at": "2026-10-13"
+        }
+      ]
+    },
+    {
+      "key": "leaveprints-reels-20261013-039",
+      "name": "Thailand down the peninsula",
+      "highlights": "Bangkok city life, Hua Hin beaches, Chumphon coast",
+      "stops": [
+        {
+          "city": "Bangkok",
+          "country_code": "TH",
+          "nights": 3
+        },
+        {
+          "city": "Hua Hin",
+          "country_code": "TH",
+          "nights": 3
+        },
+        {
+          "city": "Chumphon",
+          "country_code": "TH",
+          "nights": 3
+        }
+      ],
+      "legs": [
+        {
+          "mode": "train",
+          "operator": "State Railway of Thailand",
+          "source_url": "https://www.rome2rio.com/s/Bangkok/Hua-Hin",
+          "fare_type": "published route estimate, no travel date selected",
+          "fare_currency": "THB",
+          "fare_low": 75,
+          "fare_high": 900,
+          "budget_gbp": 21,
+          "budget_method": "upper end of sourced range, or published fare, converted to GBP and rounded up",
+          "note": "",
+          "from_city": "Bangkok",
+          "to_city": "Hua Hin",
+          "checked_at": "2026-10-13"
+        },
+        {
+          "mode": "train",
+          "operator": "State Railway of Thailand",
+          "source_url": "https://www.rome2rio.com/s/Hua-Hin/Chumphon",
+          "fare_type": "published route estimate, no travel date selected",
+          "fare_currency": "THB",
+          "fare_low": 140,
+          "fare_high": 180,
+          "budget_gbp": 5,
+          "budget_method": "upper end of sourced range, or published fare, converted to GBP and rounded up",
+          "note": "Second-class fan seating estimate, not sleeper class.",
+          "from_city": "Hua Hin",
+          "to_city": "Chumphon",
+          "checked_at": "2026-10-13"
+        }
+      ]
+    },
+    {
+      "key": "leaveprints-reels-20261013-040",
+      "name": "Vietnam's northern-to-central trail",
+      "highlights": "Hanoi old quarter, Ninh Binh scenery, Hue history",
+      "stops": [
+        {
+          "city": "Hanoi",
+          "country_code": "VN",
+          "nights": 3
+        },
+        {
+          "city": "Ninh Binh",
+          "country_code": "VN",
+          "nights": 3
+        },
+        {
+          "city": "Hue",
+          "country_code": "VN",
+          "nights": 3
+        }
+      ],
+      "legs": [
+        {
+          "mode": "train",
+          "operator": "Vietnam Railways partner Vexere",
+          "source_url": "https://vexere.com/vn/trains/from-hanoi-to-ninh-binh-ninh-binh.24.534.en",
+          "fare_type": "published route estimate, no travel date selected",
+          "fare_currency": "VND",
+          "fare_low": 98000,
+          "fare_high": 228000,
+          "budget_gbp": 7,
+          "budget_method": "upper end of sourced range, or published fare, converted to GBP and rounded up",
+          "note": "Low is standard-seat floor; high is published average across classes.",
+          "from_city": "Hanoi",
+          "to_city": "Ninh Binh",
+          "checked_at": "2026-10-13"
+        },
+        {
+          "mode": "train",
+          "operator": "Vietnam Railways partner Vexere",
+          "source_url": "https://vexere.com/vn/trains/from-ninh-binh-to-hue-thua-thien-hue.42.705.en",
+          "fare_type": "published route estimate, no travel date selected",
+          "fare_currency": "VND",
+          "fare_low": 414000,
+          "fare_high": 954000,
+          "budget_gbp": 28,
+          "budget_method": "upper end of sourced range, or published fare, converted to GBP and rounded up",
+          "note": "Low is standard-seat floor; high is published average across classes.",
+          "from_city": "Ninh Binh",
+          "to_city": "Hue",
+          "checked_at": "2026-10-13"
+        }
+      ]
+    },
+    {
+      "key": "leaveprints-reels-20261013-041",
+      "name": "Vietnam's central coast",
+      "highlights": "Hue citadel, Hai Van rail scenery, Hoi An old town",
+      "stops": [
+        {
+          "city": "Hue",
+          "country_code": "VN",
+          "nights": 3
+        },
+        {
+          "city": "Da Nang",
+          "country_code": "VN",
+          "nights": 3
+        },
+        {
+          "city": "Hoi An",
+          "country_code": "VN",
+          "nights": 3
+        }
+      ],
+      "legs": [
+        {
+          "mode": "train",
+          "operator": "Vietnam Railways partner Vexere",
+          "source_url": "https://vexere.com/vn/trains/from-hue-thua-thien-hue-to-gio-linh-quang-tri.705.15.en",
+          "fare_type": "published route estimate, no travel date selected",
+          "fare_currency": "VND",
+          "fare_low": 79000,
+          "fare_high": 223000,
+          "budget_gbp": 7,
+          "budget_method": "upper end of sourced range, or published fare, converted to GBP and rounded up",
+          "note": "Source page title and station details identify Hue to Da Nang despite legacy URL slug.",
+          "from_city": "Hue",
+          "to_city": "Da Nang",
+          "checked_at": "2026-10-13"
+        },
+        {
+          "mode": "bus",
+          "operator": "Local bus route 02 / LK02",
+          "source_url": "https://vietadvisor.travel/hoi-an/da-nang-to-hoi-an",
+          "fare_type": "published route estimate, no travel date selected",
+          "fare_currency": "VND",
+          "fare_low": 30000,
+          "fare_high": 35000,
+          "budget_gbp": 2,
+          "budget_method": "upper end of sourced range, or published fare, converted to GBP and rounded up",
+          "note": "Through route may require connecting local bus; VND 15,000 allowance added.",
+          "from_city": "Da Nang",
+          "to_city": "Hoi An",
+          "checked_at": "2026-10-13"
+        }
+      ]
+    },
+    {
+      "key": "leaveprints-reels-20261013-042",
+      "name": "Vietnam's highlands and beaches",
+      "highlights": "Ho Chi Minh City markets, Da Lat hills, Nha Trang beaches",
+      "stops": [
+        {
+          "city": "Ho Chi Minh City",
+          "country_code": "VN",
+          "nights": 3
+        },
+        {
+          "city": "Da Lat",
+          "country_code": "VN",
+          "nights": 3
+        },
+        {
+          "city": "Nha Trang",
+          "country_code": "VN",
+          "nights": 3
+        }
+      ],
+      "legs": [
+        {
+          "mode": "bus",
+          "operator": "FUTA via 12Go",
+          "source_url": "https://12go.asia/en/bus/ho-chi-minh-city/da-lat",
+          "fare_type": "published VIP cabin example plus USD 3.21 buffer",
+          "fare_currency": "USD",
+          "fare_low": 16.79,
+          "fare_high": 16.79,
+          "budget_gbp": 16,
+          "budget_method": "upper end of sourced range, or published fare, converted to GBP and rounded up",
+          "note": "",
+          "from_city": "Ho Chi Minh City",
+          "to_city": "Da Lat",
+          "checked_at": "2026-10-13"
+        },
+        {
+          "mode": "bus",
+          "operator": "FUTA via redBus",
+          "source_url": "https://www.redbus.vn/en/bus-tickets/operators/phuong-trang",
+          "fare_type": "published route estimate, no travel date selected",
+          "fare_currency": "VND",
+          "fare_low": 170000,
+          "fare_high": 250000,
+          "budget_gbp": 8,
+          "budget_method": "upper end of sourced range, or published fare, converted to GBP and rounded up",
+          "note": "",
+          "from_city": "Da Lat",
+          "to_city": "Nha Trang",
+          "checked_at": "2026-10-13"
+        }
+      ]
+    },
+    {
+      "key": "leaveprints-reels-20261013-043",
+      "name": "Malaysia's heritage and street food",
+      "highlights": "Kuala Lumpur skyline, Ipoh architecture, George Town heritage",
+      "stops": [
+        {
+          "city": "Kuala Lumpur",
+          "country_code": "MY",
+          "nights": 3
+        },
+        {
+          "city": "Ipoh",
+          "country_code": "MY",
+          "nights": 3
+        },
+        {
+          "city": "George Town",
+          "country_code": "MY",
+          "nights": 3
+        }
+      ],
+      "legs": [
+        {
+          "mode": "bus",
+          "operator": "Billion Stars / listed operators",
+          "source_url": "https://www.rome2rio.com/s/Kuala-Lumpur/Ipoh",
+          "fare_type": "published route estimate, no travel date selected",
+          "fare_currency": "MYR",
+          "fare_low": 25,
+          "fare_high": 60,
+          "budget_gbp": 14,
+          "budget_method": "upper end of sourced range, or published fare, converted to GBP and rounded up",
+          "note": "Terminal Meru Raya is outside central Ipoh; MYR 15 local-transfer allowance added.",
+          "from_city": "Kuala Lumpur",
+          "to_city": "Ipoh",
+          "checked_at": "2026-10-13"
+        },
+        {
+          "mode": "bus",
+          "operator": "Listed bus operators plus local bus",
+          "source_url": "https://www.rome2rio.com/s/Ipoh/George-Town",
+          "fare_type": "published route estimate, no travel date selected",
+          "fare_currency": "MYR",
+          "fare_low": 21,
+          "fare_high": 40,
+          "budget_gbp": 10,
+          "budget_method": "upper end of sourced range, or published fare, converted to GBP and rounded up",
+          "note": "Combined bus and line 401 route; MYR 10 terminal-transfer allowance added.",
+          "from_city": "Ipoh",
+          "to_city": "George Town",
+          "checked_at": "2026-10-13"
+        }
+      ]
+    },
+    {
+      "key": "leaveprints-reels-20261013-044",
+      "name": "Malaysia's west-coast heritage",
+      "highlights": "George Town street art, Kuala Lumpur markets, Melaka old town",
+      "stops": [
+        {
+          "city": "George Town",
+          "country_code": "MY",
+          "nights": 3
+        },
+        {
+          "city": "Kuala Lumpur",
+          "country_code": "MY",
+          "nights": 3
+        },
+        {
+          "city": "Melaka",
+          "country_code": "MY",
+          "nights": 3
+        }
+      ],
+      "legs": [
+        {
+          "mode": "bus",
+          "operator": "Billion Stars Express",
+          "source_url": "https://www.rome2rio.com/s/George-Town/Kuala-Lumpur",
+          "fare_type": "published route estimate, no travel date selected",
+          "fare_currency": "MYR",
+          "fare_low": 70,
+          "fare_high": 110,
+          "budget_gbp": 21,
+          "budget_method": "upper end of sourced range, or published fare, converted to GBP and rounded up",
+          "note": "",
+          "from_city": "George Town",
+          "to_city": "Kuala Lumpur",
+          "checked_at": "2026-10-13"
+        },
+        {
+          "mode": "bus",
+          "operator": "Melor Interline / listed operators",
+          "source_url": "https://www.rome2rio.com/s/Kuala-Lumpur/Melaka",
+          "fare_type": "published route estimate, no travel date selected",
+          "fare_currency": "MYR",
+          "fare_low": 13,
+          "fare_high": 20,
+          "budget_gbp": 6,
+          "budget_method": "upper end of sourced range, or published fare, converted to GBP and rounded up",
+          "note": "Bus to Melaka Sentral plus MYR 10 old-town transfer allowance.",
+          "from_city": "Kuala Lumpur",
+          "to_city": "Melaka",
+          "checked_at": "2026-10-13"
+        }
+      ]
+    },
+    {
+      "key": "leaveprints-reels-20261013-045",
+      "name": "Taiwan's west-coast rail trail",
+      "highlights": "Taipei night markets, Taichung cafes, Kaohsiung harbour",
+      "stops": [
+        {
+          "city": "Taipei",
+          "country_code": "TW",
+          "nights": 3
+        },
+        {
+          "city": "Taichung",
+          "country_code": "TW",
+          "nights": 3
+        },
+        {
+          "city": "Kaohsiung",
+          "country_code": "TW",
+          "nights": 3
+        }
+      ],
+      "legs": [
+        {
+          "mode": "train",
+          "operator": "Taiwan High Speed Rail",
+          "source_url": "https://en.thsrc.com.tw/ArticleContent/4c3efc1d-e6df-4bfd-97b4-52e89f79ee5c",
+          "fare_type": "official standard adult tariff plus local-transfer allowance",
+          "fare_currency": "TWD",
+          "fare_low": 700,
+          "fare_high": 700,
+          "budget_gbp": 18,
+          "budget_method": "upper end of sourced range, or published fare, converted to GBP and rounded up",
+          "note": "Standard reserved fare; TWD 40 transfer from HSR station allowance.",
+          "from_city": "Taipei",
+          "to_city": "Taichung",
+          "checked_at": "2026-10-13"
+        },
+        {
+          "mode": "train",
+          "operator": "Taiwan High Speed Rail",
+          "source_url": "https://en.thsrc.com.tw/ArticleContent/4c3efc1d-e6df-4bfd-97b4-52e89f79ee5c",
+          "fare_type": "official standard adult tariff plus local-transfer allowance",
+          "fare_currency": "TWD",
+          "fare_low": 790,
+          "fare_high": 790,
+          "budget_gbp": 21,
+          "budget_method": "upper end of sourced range, or published fare, converted to GBP and rounded up",
+          "note": "HSR to Zuoying; TWD 60 city-transfer allowance.",
+          "from_city": "Taichung",
+          "to_city": "Kaohsiung",
+          "checked_at": "2026-10-13"
+        }
+      ]
+    },
+    {
+      "key": "leaveprints-reels-20261013-046",
+      "name": "Japan's classic city trio",
+      "highlights": "Tokyo neighbourhoods, Kyoto temples, Osaka street food",
+      "stops": [
+        {
+          "city": "Tokyo",
+          "country_code": "JP",
+          "nights": 3
+        },
+        {
+          "city": "Kyoto",
+          "country_code": "JP",
+          "nights": 3
+        },
+        {
+          "city": "Osaka",
+          "country_code": "JP",
+          "nights": 3
+        }
+      ],
+      "legs": [
+        {
+          "mode": "train",
+          "operator": "JR Central smartEX Nozomi",
+          "source_url": "https://smart-ex.jp/en/product/plan/service/pdf/service_fares_reserved.pdf",
+          "fare_type": "official reserved tariff plus maximum stated single-line seasonal surcharge",
+          "fare_currency": "JPY",
+          "fare_low": 13970,
+          "fare_high": 13970,
+          "budget_gbp": 69,
+          "budget_method": "upper end of sourced range, or published fare, converted to GBP and rounded up",
+          "note": "Regular-season ordinary reserved seat; JPY 400 super-peak allowance included.",
+          "from_city": "Tokyo",
+          "to_city": "Kyoto",
+          "checked_at": "2026-10-13"
+        },
+        {
+          "mode": "train",
+          "operator": "JR Kyoto Line",
+          "source_url": "https://transit.yahoo.co.jp/search/result/%E4%BA%AC%E9%83%BD-%E5%A4%A7%E9%98%AA",
+          "fare_type": "published journey-planner standard fare rounded up",
+          "fare_currency": "JPY",
+          "fare_low": 580,
+          "fare_high": 580,
+          "budget_gbp": 3,
+          "budget_method": "upper end of sourced range, or published fare, converted to GBP and rounded up",
+          "note": "Conventional JR rapid/local fare, without limited-express surcharge.",
+          "from_city": "Kyoto",
+          "to_city": "Osaka",
+          "checked_at": "2026-10-13"
+        }
+      ]
+    },
+    {
+      "key": "leaveprints-reels-20261013-047",
+      "name": "South Korea's historic cities",
+      "highlights": "Seoul palaces, Gyeongju heritage, Busan coast",
+      "stops": [
+        {
+          "city": "Seoul",
+          "country_code": "KR",
+          "nights": 3
+        },
+        {
+          "city": "Gyeongju",
+          "country_code": "KR",
+          "nights": 3
+        },
+        {
+          "city": "Busan",
+          "country_code": "KR",
+          "nights": 3
+        }
+      ],
+      "legs": [
+        {
+          "mode": "bus",
+          "operator": "Seoul Express Bus Terminal operators",
+          "source_url": "https://www.rome2rio.com/s/Seoul/Gyeongju",
+          "fare_type": "published route estimate, no travel date selected",
+          "fare_currency": "KRW",
+          "fare_low": 22000,
+          "fare_high": 46000,
+          "budget_gbp": 27,
+          "budget_method": "upper end of sourced range, or published fare, converted to GBP and rounded up",
+          "note": "",
+          "from_city": "Seoul",
+          "to_city": "Gyeongju",
+          "checked_at": "2026-10-13"
+        },
+        {
+          "mode": "bus",
+          "operator": "Gyeongju Bus Terminal / TxBus",
+          "source_url": "https://www.rome2rio.com/s/Gyeongju/Busan",
+          "fare_type": "published route estimate, no travel date selected",
+          "fare_currency": "KRW",
+          "fare_low": 7500,
+          "fare_high": 13000,
+          "budget_gbp": 8,
+          "budget_method": "upper end of sourced range, or published fare, converted to GBP and rounded up",
+          "note": "",
+          "from_city": "Gyeongju",
+          "to_city": "Busan",
+          "checked_at": "2026-10-13"
+        }
+      ]
+    },
+    {
+      "key": "leaveprints-reels-20261013-048",
+      "name": "Java's cities and culture",
+      "highlights": "Jakarta museums, Yogyakarta culture, Surabaya history",
+      "stops": [
+        {
+          "city": "Jakarta",
+          "country_code": "ID",
+          "nights": 3
+        },
+        {
+          "city": "Yogyakarta",
+          "country_code": "ID",
+          "nights": 3
+        },
+        {
+          "city": "Surabaya",
+          "country_code": "ID",
+          "nights": 3
+        }
+      ],
+      "legs": [
+        {
+          "mode": "train",
+          "operator": "Kereta Api Indonesia",
+          "source_url": "https://www.rome2rio.com/s/Jakarta/Yogyakarta",
+          "fare_type": "published route estimate, no travel date selected",
+          "fare_currency": "IDR",
+          "fare_low": 320000,
+          "fare_high": 370000,
+          "budget_gbp": 16,
+          "budget_method": "upper end of sourced range, or published fare, converted to GBP and rounded up",
+          "note": "",
+          "from_city": "Jakarta",
+          "to_city": "Yogyakarta",
+          "checked_at": "2026-10-13"
+        },
+        {
+          "mode": "train",
+          "operator": "Kereta Api Indonesia",
+          "source_url": "https://www.rome2rio.com/s/Yogyakarta/Surabaya",
+          "fare_type": "published route estimate, no travel date selected",
+          "fare_currency": "IDR",
+          "fare_low": 180000,
+          "fare_high": 330000,
+          "budget_gbp": 14,
+          "budget_method": "upper end of sourced range, or published fare, converted to GBP and rounded up",
+          "note": "",
+          "from_city": "Yogyakarta",
+          "to_city": "Surabaya",
+          "checked_at": "2026-10-13"
+        }
+      ]
+    },
+    {
+      "key": "leaveprints-reels-20261013-049",
+      "name": "Sri Lanka's coastal railway",
+      "highlights": "Colombo city life, Galle fort, Matara coast",
+      "stops": [
+        {
+          "city": "Colombo",
+          "country_code": "LK",
+          "nights": 3
+        },
+        {
+          "city": "Galle",
+          "country_code": "LK",
+          "nights": 3
+        },
+        {
+          "city": "Matara",
+          "country_code": "LK",
+          "nights": 3
+        }
+      ],
+      "legs": [
+        {
+          "mode": "train",
+          "operator": "Sri Lanka Railways",
+          "source_url": "https://blog.reservations.lk/colombo-to-galle-train-guide/",
+          "fare_type": "published second-class unreserved station fare",
+          "fare_currency": "LKR",
+          "fare_low": 500,
+          "fare_high": 500,
+          "budget_gbp": 2,
+          "budget_method": "upper end of sourced range, or published fare, converted to GBP and rounded up",
+          "note": "Second-class unreserved; no guaranteed seat.",
+          "from_city": "Colombo",
+          "to_city": "Galle",
+          "checked_at": "2026-10-13"
+        },
+        {
+          "mode": "train",
+          "operator": "Sri Lanka Railways",
+          "source_url": "https://trainschedule.lk/schedule/achs3fa/2026-10-12/galle-to-matara-train-timetable",
+          "fare_type": "published second-class unreserved station fare",
+          "fare_currency": "LKR",
+          "fare_low": 250,
+          "fare_high": 250,
+          "budget_gbp": 1,
+          "budget_method": "upper end of sourced range, or published fare, converted to GBP and rounded up",
+          "note": "Second-class unreserved; no guaranteed seat.",
+          "from_city": "Galle",
+          "to_city": "Matara",
+          "checked_at": "2026-10-13"
+        }
+      ]
+    },
+    {
+      "key": "leaveprints-reels-20261013-050",
+      "name": "Morocco's rail-connected cities",
+      "highlights": "Marrakech markets, Casablanca architecture, Rabat history",
+      "stops": [
+        {
+          "city": "Marrakech",
+          "country_code": "MA",
+          "nights": 3
+        },
+        {
+          "city": "Casablanca",
+          "country_code": "MA",
+          "nights": 3
+        },
+        {
+          "city": "Rabat",
+          "country_code": "MA",
+          "nights": 3
+        }
+      ],
+      "legs": [
+        {
+          "mode": "train",
+          "operator": "ONCF",
+          "source_url": "https://www.rome2rio.com/s/Marrakesh/Casablanca",
+          "fare_type": "published route estimate, no travel date selected",
+          "fare_currency": "MAD",
+          "fare_low": 100,
+          "fare_high": 200,
+          "budget_gbp": 16,
+          "budget_method": "upper end of sourced range, or published fare, converted to GBP and rounded up",
+          "note": "",
+          "from_city": "Marrakech",
+          "to_city": "Casablanca",
+          "checked_at": "2026-10-13"
+        },
+        {
+          "mode": "train",
+          "operator": "ONCF",
+          "source_url": "https://www.rome2rio.com/s/Casablanca/Rabat",
+          "fare_type": "published route estimate, no travel date selected",
+          "fare_currency": "MAD",
+          "fare_low": 35,
+          "fare_high": 75,
+          "budget_gbp": 6,
+          "budget_method": "upper end of sourced range, or published fare, converted to GBP and rounded up",
+          "note": "",
+          "from_city": "Casablanca",
+          "to_city": "Rabat",
+          "checked_at": "2026-10-13"
+        }
+      ]
+    }
+  ]
+}
